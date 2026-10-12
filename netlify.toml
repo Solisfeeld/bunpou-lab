@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# O Identity responde em /.netlify/identity e as Functions em
+# /.netlify/functions — ambos servidos pelo mesmo domínio do site, de modo
+# que o cookie de sessão (nf_jwt) acompanha as chamadas automaticamente.
