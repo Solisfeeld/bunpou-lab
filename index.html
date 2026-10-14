@@ -326,6 +326,25 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .opt.right .k{border-color:var(--midori);background:var(--midori);color:#fff;}
 .opt.wrong{border-color:var(--shu);background:var(--shu-wash);}
 .opt.wrong .k{border-color:var(--shu);background:var(--shu);color:#fff;}
+/* Estado da alternativa DEPOIS da correção (mc e ★). Cor nunca é o único
+   sinal: a marca escrita (“✓ Correta”, “✗ Sua escolha”), o risco na escolha
+   errada e a borda tracejada do chute dizem o mesmo sem depender de verde,
+   vermelho ou âmbar. */
+.opt .jp{flex:1 1 auto;min-width:0;}
+.opt .omark{flex:none;display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding-left:8px;
+  font-size:11.5px;font-weight:800;white-space:nowrap;}
+.opt.right .omark{color:var(--midori);}
+.opt.wrong .omark{color:var(--shu);}
+.opt.wrong .jp{text-decoration:line-through;text-decoration-thickness:1.5px;}
+.opt.guess{outline:2px dashed var(--gold);outline-offset:2px;}
+.opt .omark .chute{color:var(--gold);background:var(--gold-wash);border:1px solid var(--gold);
+  border-radius:999px;padding:0 7px;font-weight:700;}
+/* celular: a marca desce para uma linha própria, alinhada ao texto da
+   alternativa, em vez de espremer alternativas longas numa coluna estreita */
+@media (max-width:520px){
+  .opt{flex-wrap:wrap;row-gap:3px;}
+  .opt .omark{flex:1 0 100%;margin-left:0;padding-left:34px;white-space:normal;}
+}
 .cztext{
   background:var(--card-2);border:1px solid var(--line);border-radius:12px;
   padding:15px 17px;line-height:2.15;font-size:15.5px;margin-top:14px;
@@ -383,6 +402,13 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .fb .verdict{font-weight:800;font-size:15px;margin-bottom:9px;display:flex;align-items:center;gap:8px;}
 .fb .fline{font-size:13.5px;margin-top:8px;}
 .fb .fline .fl-t{font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:block;}
+/* blocos do feedback compacto de acerto (tradução · ponto-chave · forma) */
+.fb .fline .fl-tr{display:block;}
+/* Perguntar ao ChatGPT: ação secundária depois da correção */
+.chat-hint{font-size:12px;color:var(--ink-faint);margin-top:8px;line-height:1.45;}
+.chat-fallback{margin-top:10px;}
+.chat-fallback textarea{width:100%;min-height:150px;border:1.5px solid var(--line-strong);background:var(--card-2);
+  color:var(--ink);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;}
 
 /* progress bar / timer */
 .sessbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
@@ -2969,6 +2995,7 @@ X('iadj','trans','man',{p:'Passe para a negativa:<br><span class="jpq">この �
 /* ---------- suki / ii ---------- */
 X('ga-ii','mc','dif',{p:'A: ピクニックは きんようびと どようびと どちらが いいですか。<br>B: わたしは どようび（　）いいです。',
  o:['が','は','を','に'],a:0,h:['Você está escolhendo entre duas opções oferecidas.','OPÇÃO ＋ ? ＋ いいです'],
+ okfb:{tr:'わたしは どようびが いいです。\n“Prefiro sábado.” / “Sábado é melhor.”',pt:'どちらが いいですか pede uma ESCOLHA, e が destaca a opção escolhida — é ela que responde ao “qual?”. は soaria como comentário ou contraste (“sábado, sim, dá”).'},
  w:'どようびが いいです = “Prefiro sábado.” / “Sábado é melhor.” どちらが いいですか pede uma ESCOLHA, e が destaca a opção escolhida — é ela que responde ao “qual?”. は (どようびは いいです) soaria como comentário ou contraste (“sábado, sim, dá”), não como a escolha pedida.',ne:['わたしは おちゃが いいです。','Eu prefiro chá.']});
 X('suki','mc','dif',{p:'Você acabou de assistir a um filme e quer dizer que <b>foi bom</b>.<br>えいがは（　）。',
  o:['すきでした','おもしろかったです','すきです','すきじゃないです'],a:1,
@@ -3196,6 +3223,7 @@ X('kara-node','mc','dif',{og:'nnk',pg:'node',p:'この ふくが すき（　）
  o:['だので','なので','ので','でので'],a:1,
  h:['すき é NA-adjetivo.','Diante de ので, NA-adjetivo não usa だ.'],
  fbRule:'node-na',
+ okfb:{tr:'この ふくが すきなので、かいます。\n“Gosto desta roupa, por isso a compro.”',pt:'〜ので apresenta a causa (“como…”, “porque…”) de modo neutro e objetivo.',fm:'NA-adjetivo afirmativo ＋ な ＋ ので\nすき → すきなので'},
  w:'すきなので、かいます。 〜ので apresenta a causa (“como…”, “porque…”) de modo neutro e objetivo: gosto desta roupa → por isso a compro. Antes de ので, o NA-adjetivo afirmativo leva な: すき → すきなので.',
  wr:{'だので':'ので nunca vem depois de だ.'},
  ne:['おとななので、きっぷは １０００えんです。','Por ser adulto, o bilhete custa 1000 ienes.']});
@@ -3349,12 +3377,14 @@ X('n-desu','mc','dif',{p:'A: あの え、きれいですね。<br>B: ええ、�
  o:['ゆうめいだ','ゆうめいな','ゆうめい','ゆうめいで'],a:1,
  h:['Antes de んです, NA-adjetivo não usa だ.','NA-adj ＋ ? ＋ んです'],
  fbRule:'ndesu-na',
+ okfb:{tr:'ええ、とても ゆうめいなんですよ。\n“É muito famoso, sabia?” / “É que ele é muito famoso.”',pt:'〜んです apresenta a frase como explicação ou contexto. Aqui, B acrescenta uma informação relevante sobre o quadro; não quer dizer que ele é bonito PORQUE é famoso.',fm:'NA-adjetivo ＋ な ＋ んです\nゆうめい → ゆうめいなんです'},
  w:'ゆうめいなんですよ。 〜んです apresenta a frase como explicação ou contexto: B acrescenta uma informação relevante sobre o quadro — “É muito famoso, sabia?” / “É que ele é muito famoso.” Não quer dizer “é bonito PORQUE é famoso”. Forma: NA-adjetivo ＋ な ＋ んです — ゆうめい → ゆうめいなんです.',
  wr:{'ゆうめいだ':'だ nunca aparece diante de んです.'},
  ne:['かれからの プレゼントなんです。','É que foi presente do meu namorado.']});
 X('n-desu','mc','dif',{p:'A: どうしたんですか。<br>B: おなかが（　）んです。',
  o:['いたいだ','いたい','いたく','いたいな'],a:1,
  h:['O adjetivo desta frase é do tipo I.','I-adjetivo liga-se a んです na forma simples, sem acréscimos.'],
+ okfb:{tr:'おなかが いたいんです。\n“É que estou com dor de barriga.”',pt:'どうしたんですか (“O que houve?”) pede uma explicação para algo que A percebeu; B a dá com 〜んです.',fm:'I-adjetivo na forma simples ＋ んです, sem な nem だ\nいたい → いたいんです'},
  w:'おなかが いたいんです。 どうしたんですか (“O que houve?”) pede uma explicação para algo que A percebeu; B responde com 〜んです, dando essa explicação: “É que estou com dor de barriga.” I-adjetivo entra direto, na forma simples: いたい ＋ んです, sem な nem だ.',ne:['とても やすかったんですよ。','É que estava muito barato.']});
 X('n-desu','prod','pro',{p:'Explique em japonês: <b>“É que ganhei esta bolsa da minha irmã mais velha.”</b> （この かばん · あね = irmã mais velha · もらいます）',
  acc:['この かばんは あねに もらったんです','この かばんは あねに もらったんです。','このかばんはあねにもらったんです。','この かばんは あねから もらったんです'],
@@ -3366,6 +3396,7 @@ X('to-omoimasu','mc','dif',{p:'たなかさんは メキシコりょうりが（
  o:['すきです','すきだ','すきな','すき'],a:1,
  h:['Antes de と おもいます usa-se a forma simples.','NA-adjetivo na forma simples termina em だ.'],
  fbRule:'opinion-na',
+ okfb:{tr:'たなかさんは メキシコりょうりが すきだと おもいます。\n“Acho que o Tanaka gosta de comida mexicana.”',pt:'〜と おもいます = “acho que…”: apresenta uma opinião ou suposição sua.',fm:'forma simples ＋ と おもいます; NA-adjetivo afirmativo leva だ\nすき → すきだと おもいます'},
  w:'すきだと おもいます。 〜と おもいます = “acho que…”: apresenta uma opinião ou suposição sua — “Acho que o Tanaka gosta de comida mexicana.” Antes de と おもいます vem a forma simples; para NA-adjetivo afirmativo, すきだ.',
  wr:{'すきです':'Retira-se です antes de と おもいます.','すきな':'な é usado antes de substantivo ou de んです.'},
  ne:['べんりだと おもいます。','Acho que é prático.']});
@@ -3486,6 +3517,7 @@ X('nagara','prod','pro',{og:'nnk',p:'Escreva em japonês: <b>“Estudo ouvindo m
 X('hou-ga-yori','mc','dif',{og:'nnk',p:'この ほんの ほうが あの ほん（　）たかいです。',
  o:['より','から','まで','でも'],a:0,
  h:['ほう aponta o que é “mais”; falta marcar o termo de comparação.','A の ほうが B ＋ ? ＋ adjetivo'],
+ okfb:{tr:'この ほんの ほうが あの ほんより たかいです。\n“Este livro é mais caro que aquele.”',pt:'より = “do que / em comparação com” e marca a REFERÊNCIA (あの ほん). の ほうが destaca o lado que tem MAIS da característica (この ほん). たかい sozinho é só “caro”; o “mais” vem da comparação.'},
  w:'この ほんの ほうが あの ほんより たかいです = “Este livro é mais caro que aquele.” より = “do que / em comparação com” e marca a REFERÊNCIA (あの ほん). の ほうが destaca o lado que tem MAIS da característica (この ほん). たかい sozinho é só “caro”; o “mais” vem da comparação com より.',
  ne:['としょかんの ほうが がっこうより しずかです。','A biblioteca é mais silenciosa que a escola.']});
 X('hou-ga-yori','order','pro',{og:'nnk',p:'Monte: <b>“A biblioteca é mais silenciosa que a escola.”</b>',
@@ -3507,6 +3539,7 @@ X('comparar','mc','dif',{pg:'dochira-ga-ii',p:'Você tem <b>duas</b> opções e 
 X('nakucha-ikenai','mc','dif',{og:'nnk',p:'かいものを（　）いけない。<br><span class="muted">Tenho que fazer compras.</span>',
  o:['しなくちゃ','してなくちゃ','するなくちゃ','しないなくちゃ'],a:0,
  h:['A estrutura parte da forma ない, sem o ない final.','しない → し ＋ ?'],
+ okfb:{tr:'かいものを しなくちゃ いけない。\n“Tenho que fazer compras.”',pt:'〜なくちゃ いけない = “ter que / precisar” fazer algo. É o jeito casual, de conversa, de falar de obrigação.',fm:'する → しない → しなくちゃ いけない\n(troque ない por なくちゃ)'},
  w:'〜なくちゃ いけない = “ter que / precisar” fazer algo: かいものを しなくちゃ いけない = “Tenho que fazer compras.” É o jeito casual, de conversa, de falar de obrigação. Forma: parta da negativa e troque ない por なくちゃ — する → しない → しなくちゃ いけない.',ne:['しゅくだいを おわらなくちゃ いけない。','Tenho que terminar o dever.']});
 X('deshou','mc','dif',{og:'nnk',p:'あしたは あめが ふる（　）。<br><span class="muted">Previsão: provavelmente vai chover.</span>',
  o:['です','でしょう','ました','ています'],a:1,
@@ -4500,6 +4533,7 @@ X('hou-ga-ii','mc','dif',{p:'あした がっこうを（　）ほうが いい�
 X('nakucha-ikenai','mc','dif',{p:'しゅくだいを（　）いけない。<br><span class="muted">(おわります = terminar)</span>',
  o:['おわらなくちゃ','おわりなくちゃ','おわるなくちゃ','おわってなくちゃ'],a:0,
  h:['Parta da forma ない e retire o ない final.','おわらない → おわら ＋ ?'],
+ okfb:{tr:'しゅくだいを おわらなくちゃ いけない。\n“Tenho que terminar a lição de casa.”',pt:'〜なくちゃ いけない = “ter que / precisar” fazer algo. É o jeito casual, de conversa, de falar de obrigação.',fm:'おわる → おわらない → おわらなくちゃ いけない\n(troque ない por なくちゃ)'},
  w:'〜なくちゃ いけない = “ter que / precisar” fazer algo: しゅくだいを おわらなくちゃ いけない = “Tenho que terminar a lição de casa.” É o jeito casual, de conversa, de falar de obrigação. Forma: parta da negativa e troque ない por なくちゃ — おわる → おわらない → おわらなくちゃ いけない.',ne:['かいものを しなくちゃ いけない。','Tenho que fazer compras.']});
 X('deshou','mc','dif',{p:'あの ひとは がくせい（　）。<br><span class="muted">Suposição, não certeza.</span>',
  o:['です','でしょう','でした','じゃないです'],a:1,
@@ -4867,6 +4901,7 @@ X('janai-dewa','mc','dif',{pg:'desu',p:'<span class="muted">Você está conversa
 X('janai-dewa','mc','dif',{pg:'dewa-arimasen',p:'Placa de informação num aeroporto:<br><span class="jpq">ここは とうじょうぐち（　）。</span>',
  o:['ではありません','じゃない','じゃないよ','くありません'],a:0,
  h:['Painel de aeroporto é texto público.','Quanto mais formal o contexto, mais longa a negativa.'],
+ okfb:{tr:'ここは とうじょうぐちでは ありません。\n“Aqui não é o portão de embarque.”',pt:'Placas e avisos públicos usam o registro formal: ではありません é a negativa formal de substantivo, com o mesmo sentido de じゃないです.'},
  w:'Placas e avisos públicos usam o registro formal. ではありません é a negativa formal de substantivo — o mesmo sentido de じゃないです, só que mais formal: とうじょうぐちでは ありません = “Aqui não é o portão de embarque.”',
  wr:{'じゃない':'Casual demais para sinalização.','じゃないよ':'よ acrescenta tom de conversa.','くありません':'Só para i-adjetivo.'},
  ne:['ここは ひじょうぐちでは ありません。','Aqui não é a saída de emergência.']});
@@ -6453,6 +6488,7 @@ X('ni-aite','mc','dif',{p:'わたしは かぞく（　）にほんの しゃし
 
 X('hou-ga-yori','mc','dif',{p:'きょうは きのう（　）さむいです。<br><span class="muted">Hoje está mais frio que ontem.</span>',
  o:['より','の ほうが','から','まで'],a:0,h:['きのう é o termo com que hoje é comparado.'],
+ okfb:{tr:'きょうは きのうより さむいです。\n“Hoje está mais frio que ontem.”',pt:'きょう (o assunto, com は) é quem tem mais frio; きのうより é a referência: より = “do que”. さむい sozinho é só “frio”; o “mais” vem de より.',fm:'A は B より ＋ adjetivo — aqui não é preciso の ほうが'},
  w:'きょうは きのうより さむいです = “Hoje está mais frio que ontem.” きょう (o assunto, com は) é quem tem mais frio; きのうより é a referência: より = “do que”. さむい sozinho é só “frio”; o “mais” vem de より. Não é preciso の ほうが: A は B より ＋ adjetivo já compara.',
  wr:{'の ほうが':'の ほうが marcaria きのう como o “mais frio”, o contrário do que se quer dizer.',
      'から':'から marca origem ou motivo, não comparação.',
@@ -6460,6 +6496,7 @@ X('hou-ga-yori','mc','dif',{p:'きょうは きのう（　）さむいです。
  ne:['この みせは あの みせより やすいです。','Esta loja é mais barata que aquela.']});
 X('hou-ga-yori','mc','dif',{p:'とうきょう（　）おおさか（　）おおきいです。<br><span class="muted">Tóquio é maior que Osaka.</span>',
  o:['は … より','より … は','が … を','の … より'],a:0,h:['Quem é o assunto, e com quem ele é comparado?'],
+ okfb:{tr:'とうきょうは おおさかより おおきいです。\n“Tóquio é maior que Osaka.”',pt:'とうきょう (o assunto, com は) é quem tem mais da característica; おおさかより é a referência: “do que Osaka”. おおきい sozinho é só “grande”; o “mais” vem de より.'},
  w:'とうきょうは おおさかより おおきいです = “Tóquio é maior que Osaka.” とうきょう (o assunto, com は) é quem tem mais da característica; おおさかより é a referência: “do que Osaka”. おおきい sozinho é só “grande”; o “mais” vem de より.',
  wr:{'より … は':'Inverte o sentido: diria que Osaka é maior que Tóquio.',
      'が … を':'おおきい é adjetivo: não tem objeto com を, e não há comparação sem より.',
@@ -7843,7 +7880,7 @@ document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==
 /* o popover de conta fecha ao clicar fora ou com Esc; cliques dentro dele
    param a propagação, e a navegação o fecha em go() */
 document.addEventListener('click',()=>{ if(V.acctOpen){V.acctOpen=false;render();} });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&V.acctOpen){V.acctOpen=false;render();} });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&V.acctOpen){e.preventDefault();V.acctOpen=false;render();} });
 /* Atalhos 1..N para escolher alternativa. Só SELECIONAM, pelo mesmo pick() do
    clique — quem envia continua sendo Responder/Enter. Valem só onde há UM
    conjunto numerável: mc (A–D) e star (rotulado 1–4). Cloze tem várias
@@ -8722,6 +8759,25 @@ function sessBar(){
       V.run.notes&&V.run.notes.length?`<div class="muted">${V.run.notes.map(esc).join(' ')}</div>`:''}</div>`:'')}`;
 }
 
+/* Estado VISUAL de uma alternativa de mc/★ (i e correct no mesmo índice que
+   V.ans usa). Só lê o que finish()/markGuess() já registraram em V.graded —
+   não decide nada de SRS. Antes da correção, só a seleção azul de sempre.
+   Depois: a correta fica sempre marcada; a escolha errada só em erro de
+   verdade (em “Não sei” nada é pintado de erro, mesmo que houvesse uma
+   alternativa selecionada); o chute mantém a correta e ganha o selo. */
+function optState(i,correct){
+  const g=V.graded;
+  if(!g) return {cls:V.ans===i?'sel':'',mark:''};
+  const res=g.res, mine=V.ans===i&&res!=='idk', right=i===correct;
+  if(right){
+    const txt=res==='idk'?'✓ Resposta correta':(mine?'✓ Sua resposta · correta':'✓ Correta');
+    return {cls:'right'+(res==='guess'?' guess':''),
+      mark:`<span class="omark">${txt}${res==='guess'?'<span class="chute">chute</span>':''}</span>`};
+  }
+  if(mine&&res==='bad') return {cls:'wrong',mark:'<span class="omark">✗ Sua escolha</span>'};
+  return {cls:'',mark:''};
+}
+
 /* ---- render de uma atividade ---- */
 function renderRun(){
   const it=cur();
@@ -8733,9 +8789,9 @@ function renderRun(){
       `<code class="jp">${esc(k)}</code> = ${esc(v)}`).join(' · ')}</div>`:'';
   let body='';
   if(x.t==='mc'){
-    body=`<div class="opts">${x.o.map((o,i)=>
-      `<button class="opt ${V.ans===i?'sel':''}" ${V.graded?'disabled':''} onclick="pick(${i})">
-        <span class="k">${'ABCD'[i]}</span><span class="jp">${esc(o)}</span></button>`).join('')}</div>`;
+    body=`<div class="opts">${x.o.map((o,i)=>{const st=optState(i,x.a);
+      return `<button class="opt ${st.cls}" ${V.graded?'disabled':''} onclick="pick(${i})">
+        <span class="k">${'ABCD'[i]}</span><span class="jp">${esc(o)}</span>${st.mark}</button>`;}).join('')}</div>`;
   } else if(x.t==='order'){
     const a=V.ans||[], pool=ordTokens(x), view=orderView(x);
     body=`<div class="slot">${a.map((idx,pos)=>
@@ -8768,10 +8824,10 @@ function renderRun(){
         x.ord.map((_,pos)=>`<span class="stslot${pos===x.star?' on':''}">${pos===x.star?'★':'＿＿'}</span>`).join('')
       }${starText(x.post)}</div>
       <div class="muted" style="margin:10px 0 4px">Monte a frase mentalmente. Qual fragmento fica na posição ★?</div>
-      <div class="opts">${sv.map((i,p)=>
-        `<button class="opt ${a===i?'sel':''} ${V.graded&&i===x.ord[x.star]?'right':''} ${V.graded&&a===i&&a!==x.ord[x.star]?'wrong':''}"
+      <div class="opts">${sv.map((i,p)=>{const st=optState(i,x.ord[x.star]);
+        return `<button class="opt ${st.cls}"
           ${V.graded?'disabled':''} onclick="pick(${i})">
-          <span class="k">${p+1}</span><span class="jp">${esc(x.tk[i])}</span></button>`).join('')}</div>`;
+          <span class="k">${p+1}</span><span class="jp">${esc(x.tk[i])}</span>${st.mark}</button>`;}).join('')}</div>`;
   } else {
     /* Todos os tipos escritos (fill · trans · correct · prod) cabem numa linha:
        a resposta mais longa do banco tem 29 caracteres. Um único campo dá a
@@ -8820,7 +8876,14 @@ function renderRun(){
        <button class="btn btn-primary" id="ctaNext" onclick="next()">${V.graded.next==='results'?'Ver resultado':'Continuar'}</button>
        ${canGuess(x)?`<button class="btn btn-ghost" onclick="markGuess()"
           title="Acertei, mas não tinha certeza — ver a explicação">Chutei</button>`:''}
-     </div>`:''}
+       <button class="btn btn-ghost" onclick="askChatGPT()"
+          title="Copia esta questão e a explicação da tela e abre o ChatGPT em nova aba">Perguntar ao ChatGPT ↗</button>
+     </div>
+     <div class="chat-hint">“Perguntar ao ChatGPT” copia a questão e a explicação desta tela e abre o ChatGPT em nova aba. Lá, cole (Ctrl+V ou ⌘V) e escreva sua dúvida — nada é enviado automaticamente.</div>
+     ${V.chatFallback&&V.chatFallback.i===V.i?`<div class="chat-fallback">
+       <div class="muted">Não foi possível copiar automaticamente. Selecione o texto abaixo, copie e cole no
+         <a href="${CHAT_URL}" target="_blank" rel="noopener">ChatGPT</a>.</div>
+       <textarea readonly onfocus="this.select()">${esc(V.chatFallback.txt)}</textarea></div>`:''}`:''}
     <!-- Sem btn-sm: era o único controle da tela de prática com a variante
          reduzida (padding 6/12 · 14px→12.5px · raio 8), o que o fazia parecer
          de outro sistema visual. Segue secundário pelo btn-ghost. -->
@@ -9302,8 +9365,20 @@ function feedbackHtml(x,g){
     <div class="fline"><span class="fl-t">Ordem correta</span><span class="jp">${x.ord.map((i,pos)=>
       `<span class="stfrag${pos===x.star?' on':''}">${esc(x.tk[i])}</span>`).join('<span class="starrow">→</span>')}</span></div>
     <div class="fline"><span class="fl-t">Frase montada</span><span class="jp good" style="font-size:16px">${esc(starSentence(x))}</span></div>`:'';
-  if(res==='ok')return `<div class="fb good"><div class="verdict">${head}</div>
+  if(res==='ok'){
+    /* `okfb` (opcional) separa o acerto em blocos curtos: tradução (só a que
+       já existe escrita na atividade), ponto-chave e forma. Sem `okfb`, o
+       acerto continua com o ponto-chave único de sempre. Erro, “Não sei” e
+       chute não usam este campo. */
+    const ok=x.okfb;
+    if(ok&&(ok.tr||ok.pt||ok.fm)){
+      const bloco=(t,v)=>v?`<div class="fline"><span class="fl-t">${t}</span><span class="fl-tr">${esc(v).replace(/\n/g,'<br>')}</span></div>`:'';
+      return `<div class="fb good"><div class="verdict">${head}</div>
+        ${bloco('Tradução',ok.tr)}${bloco('Ponto-chave',ok.pt)}${bloco('Forma',ok.fm)}</div>`;
+    }
+    return `<div class="fb good"><div class="verdict">${head}</div>
     ${point?`<div class="fline"><span class="fl-t">Ponto-chave</span>${esc(point)}</div>`:''}</div>`;
+  }
   return `<div class="fb ${cls}">
     <div class="verdict">${head}</div>
     ${res==='bad'&&chosen?`<div class="fline"><span class="fl-t">Você marcou</span><span class="jp bad strike">${esc(chosen)}</span></div>`:''}
@@ -9747,8 +9822,105 @@ document.addEventListener('click',e=>{ if(!e.target.closest||!e.target.closest('
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape') return;
   if(!document.querySelector('.ori-pop:not([hidden])')) return;   /* nada aberto: não interfere */
+  e.preventDefault();   /* este Esc já foi usado: não chega a encerrar a sessão */
   closeOrigin();
 });
+/* Esc na tela de atividade = o MESMO confirmQuit() do botão “Encerrar
+   sessão”: abre a mesma confirmação, com o mesmo texto e os mesmos botões, e
+   não encerra nada sozinho. Com essa confirmação aberta, Esc faz o que o
+   botão Continuar (cancelar) faz: closeModal(). Os Esc já usados por outro
+   handler (popover de conta, popover de origem) chegam com defaultPrevented e
+   são ignorados. Fora da tela de atividade, nada muda. */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape'||e.defaultPrevented||e.repeat) return;
+  if(e.isComposing||e.keyCode===229) return;
+  if(V.view!=='run'||!V.run) return;
+  const ov=document.getElementById('overlay');
+  if(ov&&ov.classList.contains('show')){ e.preventDefault(); closeModal(); return; }
+  if(document.querySelector('.overlay.show')) return;
+  const t=e.target;
+  if(t&&t.id!=='inp'&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)) return;
+  if(!cur()) return;
+  e.preventDefault();
+  confirmQuit();
+});
+/* ---------- Perguntar ao ChatGPT ----------
+   O ChatGPT não oferece, de forma documentada e segura, um jeito de PREENCHER
+   o campo sem enviar: o parâmetro ?q= insere e envia sozinho (ver relatório).
+   Por isso o fluxo é: copiar o texto → abrir chatgpt.com numa NOVA aba (a
+   sessão daqui fica intacta) → a pessoa cola e escreve a dúvida.
+
+   O texto leva só o que está na tela: enunciado, vocabulário visível,
+   alternativas (com as mesmas marcas visuais de correta/escolha/chute) e o
+   feedback LIDO DO DOM já renderizado (.qcard .fb). Nada de id, gid, SRS,
+   histórico, origem interna ou campos que não foram desenhados. */
+const CHAT_URL='https://chatgpt.com/';
+/* HTML que o próprio app gerou → texto com as quebras de bloco preservadas. */
+function visibleText(html){
+  return String(html||'')
+    .replace(/<span class="starrow">[^<]*<\/span>/g,' → ')
+    .replace(/<span class="stfrag on">([^<]*)<\/span>/g,'$1 (★)')
+    .replace(/<span class="fl-t">([^<]*)<\/span>/g,'\n$1:\n')
+    .replace(/<span class="czn">([^<]*)<\/span>/g,'$1. ')
+    .replace(/<br\s*\/?>/gi,'\n')
+    .replace(/<\/?(div|p)\b[^>]*>/gi,'\n')
+    .replace(/<[^>]+>/g,'')
+    .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&')
+    .split('\n').map(l=>l.replace(/[ \t]+/g,' ').trim()).join('\n')
+    .replace(/\n{3,}/g,'\n\n').trim();
+}
+function chatOptLine(label,txt,i,correct){
+  const g=V.graded, mine=V.ans===i&&g.res!=='idk', marks=[];
+  if(i===correct) marks.push(g.res==='idk'?'resposta correta':'correta');
+  if(mine&&g.res!=='idk') marks.push(i===correct?'minha resposta':'minha escolha');
+  if(i===correct&&g.res==='guess') marks.push('marquei como chute');
+  return label+'. '+txt+(marks.length?'  ← '+marks.join(' · '):'');
+}
+function chatPayload(){
+  const it=cur(); if(!it||!it.ex||!V.graded) return '';
+  const x=it.ex, L=[];
+  L.push('Estou estudando japonês para o JLPT N5 e fiquei com dúvida nesta questão do Bunpou Lab.','','QUESTÃO','');
+  L.push(visibleText(x.p));
+  if(x.gl) L.push('','Vocabulário: '+Object.entries(x.gl).map(([k,v])=>k+' = '+v).join(' · '));
+  if(x.t==='mc'){
+    L.push('','Alternativas:');
+    x.o.forEach((o,i)=>L.push(chatOptLine('ABCD'[i],o,i,x.a)));
+  } else if(x.t==='star'){
+    L.push('',(x.pre+x.ord.map((_,p)=>p===x.star?'★':'＿＿').join(' ')+x.post).replace(/<br\s*\/?>/gi,'\n'));
+    L.push('','Alternativas (fragmento da posição ★):');
+    starView(x).forEach((i,p)=>L.push(chatOptLine(String(p+1),x.tk[i],i,x.ord[x.star])));
+  } else if(x.t==='cloze'){
+    L.push('',String(x.tx).replace(/｛(\d+)｝/g,'［$1］'));
+    x.bl.forEach((b,i)=>{ L.push('','Lacuna ［'+(i+1)+'］:'); b.o.forEach((o,j)=>L.push('ABCD'[j]+'. '+o)); });
+  }
+  const fbEl=document.querySelector('.qcard .fb');
+  const fb=visibleText(fbEl?fbEl.innerHTML:'');
+  L.push('','EXPLICAÇÃO MOSTRADA PELO BUNPOU LAB','',fb||'(sem explicação na tela)');
+  L.push('','Minha dúvida:','');
+  return L.join('\n');
+}
+function copyTextSync(t){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=t; ta.setAttribute('readonly','');
+    ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    return !!ok;
+  }catch(e){ return false; }
+}
+async function askChatGPT(){
+  const txt=chatPayload(); if(!txt) return;
+  let ok=copyTextSync(txt);
+  if(!ok&&navigator.clipboard&&navigator.clipboard.writeText){
+    try{ await navigator.clipboard.writeText(txt); ok=true; }catch(e){}
+  }
+  if(!ok){ V.chatFallback={i:V.i,txt}; render(); return; }
+  V.chatFallback=null;
+  toast('Questão copiada. No ChatGPT, cole (Ctrl+V ou ⌘V) e escreva sua dúvida.');
+  window.open(CHAT_URL,'_blank','noopener');
+}
 function toggleProva(n){
   const cur=S.cfg.manual[SRC_PROVAS];
   const man=Array.isArray(cur)?cur.slice():[];
