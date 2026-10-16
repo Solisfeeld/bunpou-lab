@@ -327,15 +327,15 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .opt.wrong{border-color:var(--shu);background:var(--shu-wash);}
 .opt.wrong .k{border-color:var(--shu);background:var(--shu);color:#fff;}
 /* Estado da alternativa DEPOIS da correção (mc e ★). Cor nunca é o único
-   sinal: a marca escrita (“✓ Correta”, “✗ Sua escolha”), o risco na escolha
-   errada e a borda tracejada do chute dizem o mesmo sem depender de verde,
-   vermelho ou âmbar. */
+   sinal: a marca escrita (“✓ Correta”, “✗ Sua escolha”) e a borda tracejada
+   do chute dizem o mesmo sem depender de verde, vermelho ou âmbar. O texto
+   da escolha errada NÃO é riscado: precisa continuar legível para comparar
+   com a correta. */
 .opt .jp{flex:1 1 auto;min-width:0;}
 .opt .omark{flex:none;display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding-left:8px;
   font-size:11.5px;font-weight:800;white-space:nowrap;}
 .opt.right .omark{color:var(--midori);}
 .opt.wrong .omark{color:var(--shu);}
-.opt.wrong .jp{text-decoration:line-through;text-decoration-thickness:1.5px;}
 .opt.guess{outline:2px dashed var(--gold);outline-offset:2px;}
 .opt .omark .chute{color:var(--gold);background:var(--gold-wash);border:1px solid var(--gold);
   border-radius:999px;padding:0 7px;font-weight:700;}
@@ -405,7 +405,12 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 /* blocos do feedback compacto de acerto (tradução · ponto-chave · forma) */
 .fb .fline .fl-tr{display:block;}
 /* Perguntar ao ChatGPT: ação secundária depois da correção */
-.chat-hint{font-size:12px;color:var(--ink-faint);margin-top:8px;line-height:1.45;}
+.fb-foot{display:flex;justify-content:flex-start;margin-top:12px;padding-top:9px;border-top:1px dashed var(--line-strong);}
+.chat-btn{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:5px 11px;border-radius:999px;
+  border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);font-size:12.5px;font-weight:700;line-height:1;}
+.chat-btn:hover{border-color:var(--ai);color:var(--ai);}
+.chat-btn:focus-visible{outline:2px solid var(--ai);outline-offset:2px;}
+.chat-btn svg{width:15px;height:15px;flex:none;}
 .chat-fallback{margin-top:10px;}
 .chat-fallback textarea{width:100%;min-height:150px;border:1.5px solid var(--line-strong);background:var(--card-2);
   color:var(--ink);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;}
@@ -786,8 +791,8 @@ G({id:'part-wa-topico', t:'は — marcar o tópico', jp:'は', src:[['intro',3]
  ex:[['わたしは ミケです。','Eu sou o Mike.'],
      ['しゅみは どくしょです。','Meu hobby é leitura.'],
      ['あの ひとは だれですか。','Quem é aquela pessoa? — o interrogativo está no fim, então は.'],
-     ['やまは あまり すきじゃないです。','Montanha eu não gosto muito. — em frase negativa, は marca o contraste.'],
-     ['テストですから、ほんは 見ないで ください。','É prova, então não olhe o livro. — com verbo negativo, は é o normal.']],
+     ['やまは あまり すきじゃないです。','Montanha eu não gosto muito. — は marca o contraste: montanha, essa não.'],
+     ['テストですから、ほんは 見ないで ください。','É prova, então não olhe o livro. — は destaca o livro em contraste: o livro, não.']],
  er:['わたしが ミケです。(ao se apresentar normalmente)','わたしは ミケです。','Numa apresentação neutra o tópico é は.'],
  tip:'Em frase negativa, は aparece com muita frequência marcando contraste: 〜は すきじゃないです ／ ほんは 見ないで ください. E numa pergunta, a resposta copia a partícula: 「あの ひとは だれですか」→「あの ひとは たなかさんです」. Depois de に／で／へ／から／まで, は se junta à partícula (には, では, へは, からは, までは) para marcar tópico ou contraste; já が e を dão lugar a は.',
  ct:['part-ga-sujeito','part-mo']});
@@ -1113,7 +1118,7 @@ G({id:'mashou', t:'〜ましょう — vamos', jp:'ましょう', src:[['intro',
 
 G({id:'hoshii', t:'〜が ほしいです — querer um objeto', jp:'ほしいです', src:[['intro',15],['try',10],['intro',18],['basico',10]], tg:['adjetivo'], prod:true,
  f:'Expressa desejo de POSSUIR alguma coisa. ほしい é i-adjetivo, não verbo.',
- s:'substantivo ＋ が ほしいです。 → negativa: 〜は ほしくないです。',
+ s:'substantivo ＋ が ほしいです。 → negativa: 〜は ほしくないです (は em contraste, muito comum aqui; não é a negativa que obriga は).',
  u:'Dizer o que se quer ganhar, comprar, ter.',
  no:'Não use ほしいです para querer FAZER algo — aí é 〜たいです. E não pergunte 〜が ほしいですか a um superior nem a um cliente: soa como sondagem.',
  ex:[['あたらしい くつが ほしいです。','Quero sapatos novos.'],
@@ -1437,7 +1442,7 @@ G({id:'suki-neg', t:'〜は すきじゃないです — não gostar', jp:'す�
  ex:[['ふゆは すきじゃないです。','Não gosto do inverno.'],
      ['やまは あまり すきじゃないです。','Não gosto muito de montanha.'],
      ['わたしは あついのが にがてです。','Não aprecio o calor.']],
- er:['ふゆが すきじゃないです。(neutro)','ふゆは すきじゃないです。','Na negativa o normal é marcar com は.'],
+ er:['ふゆは すきくないです。','ふゆは すきじゃないです。','すき é NA-adjetivo: a negativa é すきじゃないです, não すきくない.'],
  tip:'あまり sempre acompanha negativa.',
  ct:['suki','freq-adv']});
 
@@ -2287,12 +2292,12 @@ G({id:'to-iu', t:'A という B — um B chamado A', jp:'〜という', src:[['b
  f:'Apresenta o NOME de algo que o interlocutor provavelmente não conhece — ou que o próprio falante também não conhece bem. A é o nome; B é a categoria a que pertence.',
  s:'nome ＋ という ＋ substantivo comum',
  u:'Citar uma loja, um bairro, uma pessoa ou um prato que o outro nunca ouviu falar — ou que você mesmo acabou de ouvir e ainda não conhece.',
- no:'Não use quando os DOIS já sabem claramente do que se trata: ×ふじさんという やま soa como se nem você nem ele conhecessem o Fuji.',
+ no:'ふじさんという やま é gramatical. Mas, se o interlocutor já conhece o monte Fuji, という tende a soar desnecessário — a estrutura serve sobretudo para apresentar ou identificar algo pelo nome.',
  ex:[['「さくら」という みせに いきました。','Fui a uma loja chamada Sakura.'],
      ['たなかさんという ひとから でんわが ありました。','Ligou uma pessoa chamada Tanaka. — nome novo também para quem fala.'],
      ['なっとうという たべものを しっていますか。','Você conhece uma comida chamada nattô?']],
- er:['とうきょうという まちに すんでいます。','とうきょうに すんでいます。','Tóquio os dois conhecem; という só entra quando o nome é novo para alguém da conversa.'],
- tip:'Se alguém ali precisaria completar com “é um/uma …”, という cabe — vale tanto para quem ouve quanto para quem fala. Se os dois já sabem o que é, não cabe.',
+ er:['みせという 「さくら」に いきました。','「さくら」という みせに いきました。','O NOME vem antes de という e a categoria depois: A (nome) という B (categoria).'],
+ tip:'Se alguém ali precisaria completar com “é um/uma …”, という cabe — vale tanto para quem ouve quanto para quem fala. Se os dois já sabem o que é, normalmente dispensa という.',
  ct:['part-no','rentai']});
 
 /* dake — o TRY! (cap.9 §1.16, p.113) só registra だけ como partícula, com UM
@@ -4918,20 +4923,20 @@ X('to-iu','mc','rec',{p:'あたらしい みせに いきました。あいて�
  w:'「さくら」という みせ = “uma loja chamada Sakura”.',
  wr:{'の':'の ligaria posse ou tipo, não apresentaria o nome.','と':'と listaria dois substantivos.','が':'が marcaria sujeito.'},
  ne:['「はな」という カフェに いきました。','Fui a um café chamado Hana.']});
-X('to-iu','mc','dif',{p:'O interlocutor conhece Fuji, Tóquio e Japão, mas perguntou o que é なっとう. Qual resposta é natural?',
+X('to-iu','mc','dif',{p:'Seu amigo conhece o monte Fuji, Tóquio e o Japão, mas nunca ouviu falar de なっとう. Em qual destas frases o uso de という é natural para ele?',
  o:['「なっとう」という たべものを たべました。','ふじさんという やまに のぼりました。','とうきょうという まちに すんでいます。','にほんという くにに いきました。'],a:0,
- h:['Veja qual nome o contexto diz que precisa ser apresentado ao interlocutor.','Use nome ＋ という ＋ categoria apenas para なっとう neste diálogo.'],
- w:'Como o interlocutor não conhece なっとう, という o apresenta como um tipo de comida.',
- wr:{'ふじさんという やまに のぼりました。':'Neste diálogo o interlocutor já conhece o Fuji; não é preciso apresentá-lo como “uma montanha chamada Fuji”.','とうきょうという まちに すんでいます。':'O contexto diz que Tóquio já é conhecida; という acrescentaria uma apresentação desnecessária.','にほんという くにに いきました。':'O contexto diz que Japão já é conhecido; という acrescentaria uma apresentação desnecessária.'},
+ h:['Qual destes nomes o seu amigo ainda não conhece?','という apresenta um nome novo: nome ＋ という ＋ categoria.'],
+ w:'「なっとう」という たべもの = “uma comida chamada nattō”. A という B apresenta algo pelo nome: A (なっとう) é o nome, B (たべもの) é a categoria. É útil justamente quando o nome é novo para quem ouve — como なっとう para o seu amigo. As outras três frases também existem em japonês; só que ali という apresentaria nomes que ele já conhece.',
+ wr:{'ふじさんという やまに のぼりました。':'É uma frase possível em japonês, mas o seu amigo já conhece o Fuji: apresentá-lo como “uma montanha chamada Fuji” soa como se ele não soubesse o que é. O nome novo para ele é なっとう.','とうきょうという まちに すんでいます。':'É uma frase possível em japonês, mas o seu amigo já conhece Tóquio: “uma cidade chamada Tóquio” apresenta um nome que não precisa de apresentação. O nome novo para ele é なっとう.','にほんという くにに いきました。':'É uma frase possível em japonês, mas o seu amigo já conhece o Japão: “um país chamado Japão” apresenta um nome que não precisa de apresentação. O nome novo para ele é なっとう.'},
  ne:['「たこやき」という たべものを しっていますか。','Conhece uma comida chamada takoyaki?']});
 X('to-iu','fill','man',{p:'Complete:<br>たなかさん（　）ひとから でんわが ありました。<span class="muted">seu interlocutor não conhece essa pessoa</span>',short:true,acc:['という'],
  h:['Apresenta-se o nome de alguém desconhecido.','nome ＋ ? ＋ ひと'],
  w:'たなかさんという ひとから でんわが ありました。',
  ne:['やまださんという かたが きました。','Veio uma pessoa chamada Yamada.']});
-X('to-iu','correct','man',{p:'Corrija a frase:<br><span class="jpq">「さくら」の みせに いきました。</span><span class="muted">apresentando o nome pela primeira vez</span>',
+X('to-iu','correct','man',{p:'Reescreva para dizer “Fui a uma loja chamada Sakura”:<br><span class="jpq">「さくら」の みせに いきました。</span><span class="muted">「さくら」の みせ é gramatical, mas diria “a loja da Sakura”</span>',
  acc:['さくらという みせに いきました','「さくら」という みせに いきました','さくらという みせに いきました。'],
- h:['の não apresenta nomes novos.','nome ＋ ? ＋ categoria'],
- w:'「さくら」という みせに いきました。',
+ h:['Aqui “Sakura” é o NOME da loja, não a dona dela.','nome ＋ ? ＋ categoria'],
+ w:'「さくら」という みせ = “uma loja chamada Sakura”. 「さくら」の みせ também é gramatical, mas tem outro sentido: “a loja da Sakura”, ou uma loja ligada a Sakura. Para apresentar o nome, use という.',
  ne:['「もり」という ホテルに とまりました。','Fiquei num hotel chamado Mori.']});
 X('to-iu','trans','man',{p:'Junte numa frase só:<br><span class="jpq">みせに いきました。 ＋ その みせの なまえは 「はな」です。</span>',
  acc:['はなという みせに いきました','「はな」という みせに いきました','はなという みせに いきました。'],
@@ -5713,8 +5718,10 @@ X('part-no','mc','rec',{su:1,exam:'2013/07',qno:'問題1(1)',
 X('part-wa-topico','mc','rec',{su:1,exam:'2013/07',qno:'問題1(2)',
  p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">先生「あした、テスト（　）ありません。」</span>',
  o:['を','は','へ','に'],a:1,
- h:['A frase é negativa: ありません.','Em frase negativa, aquilo cuja existência se nega costuma ser o assunto.'],
- w:'テストは ありません = “Prova (amanhã) não tem.” Em frase negativa, aquilo cuja existência se nega costuma levar は: vira o assunto do aviso (“quanto à prova, não tem”). が é o normal ao anunciar que algo existe, na afirmativa: テストが あります.'});
+ h:['Do que o professor está falando?','A partícula precisa marcar テスト como o assunto do aviso.'],
+ okfb:{tr:'先生「あした、テストは ありません。」\n“Amanhã não tem prova.” / “Quanto à prova, amanhã não haverá.”',pt:'は põe テスト como tópico — o assunto do aviso, muitas vezes em contraste: quanto à prova, não há. Não é a negativa que “pede” は: テストが ありません também pode ser gramatical em outro contexto, mas が não está entre as alternativas.'},
+ w:'あした、テストは ありません = “Amanhã não tem prova.” / “Quanto à prova, amanhã não haverá.” は põe テスト como tópico — o assunto de que o professor fala, muitas vezes em contraste com outras coisas: quanto à prova, não há. Não é a frase ser negativa que “pede” は: para apresentar algo que existe é comum が (テストが あります = “há uma prova”), e テストが ありません também pode ser gramatical em outro contexto. Esta questão não testa “negativa → は”: entre as alternativas oferecidas (を, は, へ, に), は é a única que serve.',
+ wr:{'を':'を marca o objeto de uma ação (ほんを よみます). あります／ありません exprimem existência e não têm objeto: テストを ありません não funciona.','へ':'へ marca a direção de um movimento (がっこうへ いきます). Aqui não há movimento nenhum.','に':'に pode marcar o LUGAR onde algo existe (きょうしつに せんせいが います), mas テスト não é um lugar: テストに ありません não funciona nesta frase.'}});
 X('wa-ga-adj','mc','rec',{su:1,exam:'2013/07',qno:'問題1(4)',
  p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">山口さんの 家は にわ（　）広いです。</span>',
  o:['の','が','を','や'],a:1,
@@ -8876,10 +8883,7 @@ function renderRun(){
        <button class="btn btn-primary" id="ctaNext" onclick="next()">${V.graded.next==='results'?'Ver resultado':'Continuar'}</button>
        ${canGuess(x)?`<button class="btn btn-ghost" onclick="markGuess()"
           title="Acertei, mas não tinha certeza — ver a explicação">Chutei</button>`:''}
-       <button class="btn btn-ghost" onclick="askChatGPT()"
-          title="Copia esta questão e a explicação da tela e abre o ChatGPT em nova aba">Perguntar ao ChatGPT ↗</button>
      </div>
-     <div class="chat-hint">“Perguntar ao ChatGPT” copia a questão e a explicação desta tela e abre o ChatGPT em nova aba. Lá, cole (Ctrl+V ou ⌘V) e escreva sua dúvida — nada é enviado automaticamente.</div>
      ${V.chatFallback&&V.chatFallback.i===V.i?`<div class="chat-fallback">
        <div class="muted">Não foi possível copiar automaticamente. Selecione o texto abaixo, copie e cole no
          <a href="${CHAT_URL}" target="_blank" rel="noopener">ChatGPT</a>.</div>
@@ -9322,11 +9326,22 @@ function idkNote(){
   return 'Registrado como “não sei” — não conta como acerto. O ponto volta para revisão na próxima sessão'+
     (V.run&&V.run.mode!=='jlpt'?' e outro exemplo aparece mais adiante nesta.':'.');
 }
+/* Rodapé interno de TODO quadro de feedback: o controle do ChatGPT pertence
+   à explicação. `data-nochat` marca o que é da interface ou do registro
+   (este rodapé, a nota de “não sei”, o aviso de chute) e fica fora do texto
+   levado ao ChatGPT — o que é pedagógico vai inteiro. */
+const CHAT_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.5 10a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5"/><path d="M12 16.5h.01"/></svg>';
 function feedbackHtml(x,g){
+  const html=feedbackBody(x,g);
+  const foot=`<div class="fb-foot" data-nochat><button type="button" class="chat-btn" onclick="askChatGPT()"
+      title="Perguntar ao ChatGPT" aria-label="Perguntar ao ChatGPT">${CHAT_ICON}<span>ChatGPT</span></button></div>`;
+  return html.replace(/<\/div>\s*$/,foot+'</div>');
+}
+function feedbackBody(x,g){
   const res=V.graded.res,ok=res==='ok'||res==='guess';
   const cls=(res==='idk'||res==='guess')?'idk':(ok?'good':'bad');
   const head=res==='ok'?'✓ Correto':
-             res==='guess'?'✓ Correto — você marcou como chute':
+             res==='guess'?'✓ Correto<span data-nochat> — você marcou como chute</span>':
              res==='idk'?'Vamos ver juntos':'✗ Ainda não';
   /* Cloze continua julgando cada lacuna de modo independente. Se tudo foi
      certo, evita-se a parede de texto; erro/“não sei” abre o detalhe. */
@@ -9342,7 +9357,7 @@ function feedbackHtml(x,g){
         const b=x.bl[i],gb=GMAP[b.g],brule=feedbackRuleHtml(b,gb?[gb]:[],true);
         return `<div class="czfb ${p.ok?'good':'bad'}">
           <div class="czfb-h"><span class="czn">${i+1}</span>
-            ${!p.ok&&p.chosen?`<span class="muted">você marcou <span class="jp bad strike">${esc(p.chosen)}</span> · </span>`:''}
+            ${!p.ok&&p.chosen?`<span class="muted">você marcou <span class="jp bad">${esc(p.chosen)}</span> · </span>`:''}
             ${!p.ok&&!p.chosen?'<span class="muted">em branco · </span>':''}
             <span class="jp good">${esc(p.expected)}</span></div>
           <div class="czfb-w">${esc(b.w||'')}</div>
@@ -9350,7 +9365,7 @@ function feedbackHtml(x,g){
           ${brule?`<div class="muted" style="margin-top:4px">Regra: ${brule}</div>`:''}
         </div>`;}).join('')}
       ${x.w?`<div class="fline"><span class="fl-t">Sobre o texto</span>${esc(x.w)}</div>`:''}
-      ${res==='idk'?`<div class="fline muted">${idkNote()}</div>`:''}
+      ${res==='idk'?`<div class="fline muted" data-nochat>${idkNote()}</div>`:''}
     </div>`;
   }
   const gs=primaryGrammars(x,g&&g.id),point=feedbackPoint(x,gs),ct=feedbackContrast(x);
@@ -9381,7 +9396,7 @@ function feedbackHtml(x,g){
   }
   return `<div class="fb ${cls}">
     <div class="verdict">${head}</div>
-    ${res==='bad'&&chosen?`<div class="fline"><span class="fl-t">Você marcou</span><span class="jp bad strike">${esc(chosen)}</span></div>`:''}
+    ${res==='bad'&&chosen?`<div class="fline"><span class="fl-t">Você marcou</span><span class="jp bad">${esc(chosen)}</span></div>`:''}
     ${res==='bad'||res==='idk'?`<div class="fline"><span class="fl-t">${x.t==='star'?'Fragmento correto em ★':'Resposta correta'}</span><span class="jp good" style="font-size:16px">${esc(exp)}</span></div>`:''}
     ${res==='bad'?`<div class="fline"><span class="fl-t">${x.t==='mc'?'Por que sua escolha não é a resposta':'Por que esta resposta não atende ao pedido'}</span>${esc(reason)}</div>`:''}
     ${point?`<div class="fline"><span class="fl-t">Ponto-chave</span>${esc(point)}</div>`:''}
@@ -9390,7 +9405,7 @@ function feedbackHtml(x,g){
     ${x.ne?`<div class="fline"><span class="fl-t">Outro exemplo da mesma regra</span>
       <span class="jp" style="font-size:16px">${esc(x.ne[0])}</span><br><span class="muted">${esc(x.ne[1])}</span></div>`:''}
     ${ct?`<div class="fline"><span class="fl-t">Contraste útil aqui</span><span class="jp">${esc(ct.t)}</span> — ${esc(ct.note)}</div>`:''}
-    ${res==='idk'?`<div class="fline muted">${idkNote()}</div>`:''}
+    ${res==='idk'?`<div class="fline muted" data-nochat>${idkNote()}</div>`:''}
   </div>`;
 }
 
@@ -9845,19 +9860,21 @@ document.addEventListener('keydown',e=>{
   confirmQuit();
 });
 /* ---------- Perguntar ao ChatGPT ----------
-   O ChatGPT não oferece, de forma documentada e segura, um jeito de PREENCHER
-   o campo sem enviar: o parâmetro ?q= insere e envia sozinho (ver relatório).
-   Por isso o fluxo é: copiar o texto → abrir chatgpt.com numa NOVA aba (a
-   sessão daqui fica intacta) → a pessoa cola e escreve a dúvida.
+   chatgpt.com/?prompt=… abre uma conversa nova com o texto JÁ no campo de
+   mensagem e não envia (testado em navegador real). NÃO usar ?q=, que envia
+   sozinho. Abre em NOVA aba: a sessão daqui não muda. Só se a URL passar de
+   CHAT_PREFILL_MAX é que o fluxo antigo (copiar e colar) entra.
 
    O texto leva só o que está na tela: enunciado, vocabulário visível,
    alternativas (com as mesmas marcas visuais de correta/escolha/chute) e o
    feedback LIDO DO DOM já renderizado (.qcard .fb). Nada de id, gid, SRS,
    histórico, origem interna ou campos que não foram desenhados. */
 const CHAT_URL='https://chatgpt.com/';
+const CHAT_PREFILL_MAX=8000;   /* caracteres da URL já codificada */
 /* HTML que o próprio app gerou → texto com as quebras de bloco preservadas. */
 function visibleText(html){
   return String(html||'')
+    .replace(/<(div|span)\b[^>]*\bdata-nochat\b[^>]*>[\s\S]*?<\/\1>/g,'')
     .replace(/<span class="starrow">[^<]*<\/span>/g,' → ')
     .replace(/<span class="stfrag on">([^<]*)<\/span>/g,'$1 (★)')
     .replace(/<span class="fl-t">([^<]*)<\/span>/g,'\n$1:\n')
@@ -9873,7 +9890,6 @@ function chatOptLine(label,txt,i,correct){
   const g=V.graded, mine=V.ans===i&&g.res!=='idk', marks=[];
   if(i===correct) marks.push(g.res==='idk'?'resposta correta':'correta');
   if(mine&&g.res!=='idk') marks.push(i===correct?'minha resposta':'minha escolha');
-  if(i===correct&&g.res==='guess') marks.push('marquei como chute');
   return label+'. '+txt+(marks.length?'  ← '+marks.join(' · '):'');
 }
 function chatPayload(){
@@ -9912,6 +9928,8 @@ function copyTextSync(t){
 }
 async function askChatGPT(){
   const txt=chatPayload(); if(!txt) return;
+  const url=CHAT_URL+'?prompt='+encodeURIComponent(txt);
+  if(url.length<=CHAT_PREFILL_MAX){ window.open(url,'_blank','noopener'); return; }
   let ok=copyTextSync(txt);
   if(!ok&&navigator.clipboard&&navigator.clipboard.writeText){
     try{ await navigator.clipboard.writeText(txt); ok=true; }catch(e){}
