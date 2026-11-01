@@ -44,6 +44,9 @@ html[data-theme="dark"]{
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
+/* reserva o espaço da barra de rolagem: quando o feedback alonga a página, a
+   barra aparece sem empurrar o conteúdo para o lado */
+html{scrollbar-gutter:stable;}
 body{
   font-family:"Zen Kaku Gothic New",system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
   background:var(--paper); color:var(--ink); line-height:1.62;
@@ -64,16 +67,22 @@ a{color:var(--ai-2);}
   position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
   background:var(--glass);border-bottom:1px solid var(--line);
 }
-.topbar-in{max-width:940px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:12px;}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.01em;background:none;border:0;color:var(--ink);padding:0;}
+/* A barra precisa caber em qualquer largura e não pode mudar de tamanho sozinha.
+   Ela é fixa no topo: se o relógio ou o estado da conta alterassem sua largura,
+   a marca quebraria de linha e a barra estouraria a tela, fazendo a altura e a
+   rolagem da página oscilarem a cada segundo. Por isso o relógio e o controle
+   da conta têm largura própria e a marca é a parte que encolhe. */
+.topbar-in{max-width:940px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:12px;min-width:0;}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.01em;background:none;border:0;color:var(--ink);padding:0;
+  flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-align:left;}
 .brand .seal{
   width:31px;height:31px;border-radius:50%;background:var(--shu);color:#FBF7EE;
   display:grid;place-items:center;font-size:15px;font-weight:800;flex:none;
 }
 .brand small{display:block;font-size:10.5px;color:var(--ink-faint);font-weight:500;letter-spacing:.06em;text-transform:uppercase;}
-.sp{flex:1}
+.sp{flex:1;min-width:0;}
 .iconbtn{
-  border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  flex:none;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
   border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:600;
 }
 .iconbtn:hover{border-color:var(--ai);color:var(--ai);}
@@ -86,7 +95,10 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .h-sec{font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin:34px 0 13px;}
 .lead{color:var(--ink-soft);font-size:15px;max-width:64ch;}
 .jp{font-size:1.06em;}
-.jpq{font-weight:700;font-size:1.1em;letter-spacing:.01em;}
+/* frase-alvo: separada do comando em português pelo tamanho e pela linha
+   própria, não por negrito — diálogos sem .jpq já eram peso normal, e o
+   negrito fazia parte das questões parecer em destaque sem motivo */
+.jpq{font-size:1.1em;letter-spacing:.01em;}
 .muted{color:var(--ink-faint);font-size:13px;}
 
 /* ---------- cards ---------- */
@@ -136,9 +148,13 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 /* cartão da sessão: escolha de duração + botão de início */
 .act.hero{grid-column:1/-1;cursor:default;}
 .act.hero:hover{transform:none;}
-.seg{display:inline-flex;border:1px solid rgba(255,255,255,.34);border-radius:11px;overflow:hidden;margin:13px 0 11px;}
-.seg button{background:transparent;border:0;border-right:1px solid rgba(255,255,255,.24);
-  color:rgba(255,255,255,.86);padding:7px 15px;font-size:13px;font-weight:800;line-height:1.25;text-align:center;}
+/* quatro colunas iguais: a largura vem da grade, não do texto de cada botão,
+   e o botão selecionado muda só as cores */
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;max-width:400px;
+  border:1px solid rgba(255,255,255,.34);border-radius:11px;overflow:hidden;margin:13px 0 11px;}
+.seg button{background:transparent;border:0;border-right:1px solid rgba(255,255,255,.24);min-width:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:52px;
+  color:rgba(255,255,255,.86);padding:7px 4px;font-size:13px;font-weight:800;line-height:1.25;text-align:center;}
 .seg button:last-child{border-right:0;}
 .seg button:hover{background:rgba(255,255,255,.12);}
 .seg button.on{background:#fff;color:var(--ai);}
@@ -167,6 +183,9 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .acct-btn:hover{border-color:var(--ai);color:var(--ai);}
 .acct-btn .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .acct-btn .lbl.short{display:none;}
+/* conectado: o rótulo troca a cada salvamento (Pendente, Sincronizando,
+   Sincronizado); a largura fixa evita que a barra se mexa junto */
+.acct-btn.acct-on{width:138px;max-width:none;}
 .acct-btn.warn{border-color:var(--gold);color:var(--gold);background:var(--gold-wash);}
 .acct-btn.attn{border-color:var(--shu);color:var(--shu);background:var(--shu-wash);}
 .acct-pop{
@@ -183,7 +202,14 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
   .brand small{display:none;}
   .acct-btn{max-width:none;padding:6px 11px;}
   .acct-btn .lbl.full{display:none;} .acct-btn .lbl.short{display:inline;}
+  /* no celular o estado vem pelo ponto colorido; o texto fica no painel da conta */
+  .acct-btn.acct-on{width:36px;height:34px;padding:0;justify-content:center;}
+  .acct-btn.acct-on .lbl.full,.acct-btn.acct-on .lbl.short{display:none;}
   .acct-pop{position:fixed;top:56px;left:12px;right:12px;width:auto;}
+}
+@media (max-width:430px){
+  .topbar-in{padding:10px 12px;gap:8px;}
+  .brand>span:last-child{display:none;}   /* fica o selo 文; a marca não cabe ao lado do relógio */
 }
 
 /* ---------- buttons ---------- */
@@ -267,11 +293,13 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .bad{color:var(--shu);}
 .strike{text-decoration:line-through;}
 .good{color:var(--midori);font-weight:700;}
+.fb.good,.czfb.good{font-weight:400;}   /* o quadro inteiro não é destaque; o veredito tem peso próprio */
 
 /* ---------- exercise ---------- */
 .qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;}
 .qtop{display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-wrap:wrap;}
 .qprompt{font-size:17px;line-height:1.65;margin-bottom:6px;}
+.qprompt .muted{display:block;}   /* nota em português sempre em linha própria, nunca grudada na frase japonesa */
 .qprompt .blank{
   display:inline-block;min-width:56px;border-bottom:2.5px solid var(--shu);
   text-align:center;font-weight:800;color:var(--shu);
@@ -279,6 +307,25 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .gloss{font-size:12.5px;color:var(--ink-faint);margin-top:8px;}
 .gloss code{background:var(--card-2);border-radius:4px;padding:1px 5px;font-family:inherit;font-weight:700;color:var(--ink-soft);}
 .opts{display:grid;gap:9px;margin-top:16px;}
+/* furigana: fina e menor que o kanji, sem herdar negrito; fora da seleção para
+   a cópia de texto continuar japonês normal */
+ruby{ruby-position:over;ruby-align:center;}
+rt{font-size:.52em;font-weight:400;letter-spacing:0;line-height:1;color:var(--ink-soft);-webkit-user-select:none;user-select:none;}
+.fb rt,.good rt,.bad rt{color:inherit;opacity:.85;}
+.qprompt,.cztext,.startx{line-height:2.05;}
+.opt .jp{line-height:1.95;}
+.fb .fline,.czfb-w,.czfb-ctx,.exlist .j,.callout{line-height:1.9;}
+/* tesourinha: fica sobre a alternativa, mas é botão à parte */
+.optw{position:relative;min-width:0;}
+.optw.has-cut .opt{padding-right:46px;}
+.cutb{position:absolute;top:50%;right:6px;transform:translateY(-50%);display:grid;place-items:center;width:34px;height:34px;padding:0;
+  border:0;border-radius:8px;background:transparent;color:var(--ink-faint);transition:color .13s,background .13s;}
+.cutb:hover{color:var(--ink);background:var(--line);}
+.cutb:focus-visible{outline:2px solid var(--ai);outline-offset:1px;}
+.cutb[aria-pressed="true"]{color:var(--shu);}
+/* eliminada: apagada, borda tracejada e ícone ativo; texto legível, sem risco */
+.optw.cut .opt{opacity:.62;border-style:dashed;background:transparent;cursor:default;}
+.optw.cut .opt:hover{border-color:var(--line);}
 .opt{
   display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);background:var(--card-2);
   border-radius:11px;padding:12px 15px;text-align:left;font-size:15px;color:var(--ink);width:100%;
@@ -420,22 +467,20 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
   .chat-btn{width:34px;height:34px;min-height:34px;padding:0;justify-content:center;}
   .chat-btn span{display:none;}
 }
-/* Takoboto. O botão e a busca ficam FORA do fluxo das etiquetas: o cabeçalho
-   só reserva, à direita, a largura do botão (padding-right), e as etiquetas
-   se organizam exatamente como sem o botão. Abrir e fechar a busca anima só
-   clip-path e opacidade, que não mexem em layout — nenhuma etiqueta muda de
-   tamanho, lugar ou linha. Sem espaço ao lado das etiquetas, a busca abre num
-   cartão logo abaixo do cabeçalho, alinhado à direita, e o enunciado desce
-   para não ficar coberto. */
-.qtop{position:relative;padding-right:43px;transition:margin-bottom .2s ease;--tako-w:280px;}   /* largura PADRÃO da busca */
-.tako-btn{position:absolute;top:-3.5px;right:0;display:grid;place-items:center;width:34px;height:34px;padding:0;border-radius:50%;
+/* Takoboto. Layout único em todas as telas: ícone no canto superior esquerdo do
+   cartão e busca à direita dele, numa linha própria ACIMA das etiquetas. O
+   espaço dessa linha já fica reservado com a busca fechada (padding-top) e os
+   dois ficam fora do fluxo. Abrir e fechar anima só clip-path e opacidade, que
+   não mexem em layout: a busca nunca move etiquetas nem enunciado. */
+.qtop{position:relative;padding-top:42px;}
+.tako-btn{position:absolute;top:0;left:0;display:grid;place-items:center;width:34px;height:34px;padding:0;border-radius:50%;
   border:1px solid var(--line-strong);background:var(--card);transition:border-color .13s,background .13s;}
 .tako-btn:hover{border-color:var(--ai);}
 .tako-btn[aria-expanded="true"]{border-color:var(--ai);background:var(--ai-wash);}
 .tako-btn:focus-visible{outline:2px solid var(--ai);outline-offset:2px;}
 .tako-btn svg{width:21px;height:21px;}
-.tako-pop{position:absolute;top:-3.5px;right:42px;width:min(var(--tako-w),calc(100vw - 32px));height:34px;display:flex;gap:6px;align-items:center;z-index:3;
-  clip-path:inset(0 0 0 100% round 10px);opacity:0;visibility:hidden;
+.tako-pop{position:absolute;top:0;left:42px;width:min(300px,calc(100% - 42px));height:34px;display:flex;gap:6px;align-items:center;z-index:3;
+  clip-path:inset(0 100% 0 0 round 10px);opacity:0;visibility:hidden;
   transition:clip-path .2s ease,opacity .2s ease,visibility 0s linear .2s;}
 .tako-pop.open{clip-path:inset(0 0 0 0 round 10px);opacity:1;visibility:visible;
   transition:clip-path .2s ease,opacity .2s ease,visibility 0s;}
@@ -443,11 +488,8 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
   border-radius:9px;padding:0 10px;font-size:14.5px;}
 .tako-pop input:focus{outline:none;border-color:var(--ai);}
 .tako-pop .btn{height:34px;padding:0 14px;font-size:13px;flex:none;}
-.tako-pop[data-mode="below"]{top:calc(100% + 8px);right:0;width:min(var(--tako-w),100%);height:auto;padding:7px;
-  background:var(--card);border:1px solid var(--line-strong);border-radius:12px;box-shadow:var(--shadow);}
-.qtop.tako-below{margin-bottom:64px;}
-@media (max-width:520px){ .tako-pop input{font-size:16px;} }   /* 16px: o iOS não dá zoom ao focar */
-@media (prefers-reduced-motion:reduce){ .qtop,.tako-pop,.tako-pop.open{transition:none;} }
+@media (max-width:820px){ .tako-pop input{font-size:16px;} }   /* 16px: o iOS não dá zoom ao focar */
+@media (prefers-reduced-motion:reduce){ .tako-pop,.tako-pop.open{transition:none;} }
 .chat-fallback{margin-top:10px;}
 .chat-fallback textarea{width:100%;min-height:150px;border:1.5px solid var(--line-strong);background:var(--card-2);
   color:var(--ink);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;}
@@ -459,7 +501,8 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .stage-dots{display:flex;gap:5px;}
 .stage-dots i{width:8px;height:8px;border-radius:50%;background:var(--line-strong);}
 .stage-dots i.on{background:var(--ai);} .stage-dots i.done{background:var(--midori);}
-.clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:13.5px;color:var(--ink-soft);border:1px solid var(--line-strong);border-radius:8px;padding:4px 10px;}
+/* largura fixa: a fonte nem sempre tem dígitos de mesma largura */
+.clock{flex:none;width:62px;text-align:center;font-variant-numeric:tabular-nums;font-weight:700;font-size:13.5px;color:var(--ink-soft);border:1px solid var(--line-strong);border-radius:8px;padding:4px 0;}
 /* tempo do plano já atingido — visível assim que a aba volta do background */
 .clock.over{color:var(--shu);border-color:var(--shu);background:var(--shu-wash);}
 /* rosca dos resultados: SVG nativo, sem biblioteca; as cores saem das mesmas
@@ -519,6 +562,9 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .modal{background:var(--card);border:1px solid var(--line-strong);border-radius:16px;padding:24px;max-width:440px;width:100%;box-shadow:var(--shadow-lg);}
 .modal h3{font-size:18px;margin-bottom:8px;}
 .modal p{color:var(--ink-soft);font-size:14px;margin:0 0 18px;}
+/* opção selecionada pelo teclado na confirmação de saída */
+.modal .btn:focus{outline:none;}
+.modal .btn.msel{outline:3px solid var(--ai);outline-offset:2px;box-shadow:0 0 0 1px var(--card);}
 .toast{
   position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
   background:var(--ink);color:var(--paper);padding:11px 20px;border-radius:99px;font-size:13.5px;font-weight:600;
@@ -618,7 +664,8 @@ provas:[
  {n:1, jp:'2013年7月',     pt:'Prova JLPT N5 — julho de 2013',               tag:'Prova 2013/07',     kind:'g'},
  {n:2, jp:'Workbook 2012', pt:'JLPT Official Practice Workbook — N5 (2012)', tag:'Practice Workbook', kind:'g'},
  {n:3, jp:'2025年7月',     pt:'Prova JLPT N5 — julho de 2025',               tag:'Prova 2025/07',     kind:'g'},
- {n:4, jp:'2025年12月',    pt:'Prova JLPT N5 — dezembro de 2025',            tag:'Prova 2025/12',     kind:'g'}
+ {n:4, jp:'2025年12月',    pt:'Prova JLPT N5 — dezembro de 2025',            tag:'Prova 2025/12',     kind:'g'},
+ {n:5, jp:'2023年7月',     pt:'Prova JLPT N5 — julho de 2023',               tag:'Prova 2023/07',     kind:'g'}
 ],
 intro:[
  {n:1,  jp:'ひらがな',                pt:'Hiragana e cumprimentos',        kind:'base'},
@@ -2991,7 +3038,7 @@ X('kureru','mc','dif',{og:'basico',p:'あには わたしに チョコレート�
 X('wo-kudasai','mc','dif',{p:'Numa loja, você quer <b>este objeto</b>.<br>これ（　）ください。',
  o:['を','に','が','で'],a:0,h:['Você está pedindo uma coisa, não uma ação.','OBJETO ＋ ? ＋ ください'],
  w:'Pedir um objeto: 〜を ください.',ne:['みずを ください。','Me dê água, por favor.']});
-X('te-kudasai','mc','dif',{og:'basico',p:'Você quer que a pessoa <b>espere um pouco</b>.<br>ちょっと（　）ください。',
+X('te-kudasai','mc','dif',{og:'basico',p:'Você quer que a pessoa espere um pouco.<br>ちょっと（　）ください。',
  o:['まちを','まって','まちます','まつを'],a:1,
  h:['Aqui se pede uma ação, não um objeto.','Ações pedidas usam uma forma verbal específica.'],
  w:'Pedido de ação: forma て ＋ ください. まちます → まって.',
@@ -3039,7 +3086,7 @@ X('ga-ii','mc','dif',{p:'A: ピクニックは きんようびと どようび�
  o:['が','は','を','に'],a:0,h:['Você está escolhendo entre duas opções oferecidas.','OPÇÃO ＋ ? ＋ いいです'],
  okfb:{tr:'わたしは どようびが いいです。\n“Prefiro sábado.” / “Sábado é melhor.”',pt:'どちらが いいですか pede uma ESCOLHA, e が destaca a opção escolhida — é ela que responde ao “qual?”. は soaria como comentário ou contraste (“sábado, sim, dá”).'},
  w:'どようびが いいです = “Prefiro sábado.” / “Sábado é melhor.” どちらが いいですか pede uma ESCOLHA, e が destaca a opção escolhida — é ela que responde ao “qual?”. は (どようびは いいです) soaria como comentário ou contraste (“sábado, sim, dá”), não como a escolha pedida.',ne:['わたしは おちゃが いいです。','Eu prefiro chá.']});
-X('suki','mc','dif',{p:'Você acabou de assistir a um filme e quer dizer que <b>foi bom</b>.<br>えいがは（　）。',
+X('suki','mc','dif',{p:'Você acabou de assistir a um filme e quer dizer que foi bom.<br>えいがは（　）。',
  o:['すきでした','おもしろかったです','すきです','すきじゃないです'],a:1,
  h:['すきです fala de gosto duradouro, não de reação a algo pontual.','Comente a impressão que o filme deixou.'],
  fbRule:'past-reaction',
@@ -3072,7 +3119,7 @@ EX_ORIGIN='basico';
 /* ============ BÁSICO 1 RIKAI ============ */
 
 /* ---- ています ---- */
-X('teiru-habito','mc','dif',{p:'Você quer dizer <b>onde mora</b>.<br>わたしは とうきょうに（　）。',
+X('teiru-habito','mc','dif',{p:'Você quer dizer onde mora.<br>わたしは とうきょうに（　）。',
  o:['すみます','すんでいます','すみました','すんでです'],a:1,
  h:['Morar não é um evento pontual: é uma situação que continua.','Situações que se mantêm usam forma て ＋ います.'],
  fbRule:'residence-teiru',
@@ -4373,7 +4420,7 @@ X('part-mo','prod','pro',{p:'Escreva em japonês: <b>“Eu também sou engenheir
  acc:['わたしも エンジニアです','わたしも エンジニアです。','わたしもエンジニアです。'],
  h:['A partícula de adição ocupa o lugar do tópico.','pessoa ＋ ? ＋ profissão ＋ です'],
  w:'わたしも エンジニアです。',ne:['あにも おおさかに すんでいます。','Meu irmão também mora em Osaka.']});
-X('past-verb','mc','dif',{p:'Complete em japonês com o sentido: <b>“Ontem vi um filme.”</b><br><span class="jpq">きのう えいがを（　）。</span>',
+X('past-verb','mc','dif',{p:'Complete em japonês com o sentido: “Ontem vi um filme.”<br><span class="jpq">きのう えいがを（　）。</span>',
  o:['みます','みました','みています','みませんでした'],a:1,
  /* きのう fixa o TEMPO, não a polaridade: sem o sentido no enunciado,
     みませんでした era tão gramatical quanto みました. */
@@ -4701,11 +4748,11 @@ X('gimonshi-ka','mc','dif',{p:'A:「なつやすみに どこか いきました
  w:'どこにも いきませんでした。 Com verbo negativo, “lugar nenhum” é どこにも.',
  wr:{'どこかに':'どこか é afirmativo; não combina com negação total.','どこでも':'どこでも diz que qualquer lugar serve.','どこ':'どこ sozinho perguntaria onde.'},
  ne:['だれも きませんでした。','Ninguém veio.']});
-X('gimonshi-ka','mc','dif',{p:'げんかんに ひとの こえが します。<br><span class="jpq">（　）が きたようです。</span><span class="muted">não sei quem é</span>',
+X('gimonshi-ka','mc','dif',{p:'げんかんに ひとの こえが します。<br><span class="jpq">（　）が きたようです。</span>',
  o:['だれか','だれも','だれ','だれでも'],a:0,
  h:['A pessoa existe; só não sei a identidade.','Afirmação, não pergunta.'],
- w:'だれかが きた = “alguém veio”. か transforma o interrogativo em indefinido.',
- wr:{'だれも':'だれも pede verbo negativo (ninguém).','だれ':'だれ perguntaria quem é.','だれでも':'だれでも diz que qualquer pessoa serve.'},
+ w:'だれかが きたようです = “Parece que alguém chegou.” だれ = “quem”; だれか = “alguém”, uma pessoa cuja identidade não sabemos. Interrogativo ＋ か pode formar uma expressão indefinida: なにか também, mas significa “alguma coisa”, não uma pessoa. Aqui se ouviu uma voz, então é だれか.',
+ wr:{'だれも':'だれも vem com verbo negativo e significa “ninguém” (だれも きませんでした). Esta frase é afirmativa e diz que chegou uma pessoa.','だれ':'だれ sozinho significa “quem?” e faz uma pergunta. Aqui não se pergunta nada: afirma-se que alguém chegou.','だれでも':'だれでも significa “qualquer pessoa” (だれでも いいです). Aqui é uma pessoa de verdade, só que não sabemos quem é.'},
  ne:['だれかが でんわを しました。','Alguém telefonou.']});
 X('gimonshi-ka','mc','dif',{p:'Complete a partícula:<br><span class="jpq">かぎは どこか（　）あります。</span>',
  o:['に','を','が','×（nenhuma）'],a:0,
@@ -4753,7 +4800,7 @@ X('demo-mo','mc','dif',{pg:['gimonshi-ka','nanimo'],p:'A:「きのう（①）�
  w:'なにか しましたか (fez alguma coisa?) → いいえ、なにも しませんでした (não fiz nada).',
  wr:{'① なにも ／ ② なにか':'なにも não abre pergunta afirmativa, e なにか não combina com negativa.','① なんでも ／ ② なにか':'なんでも afirma que qualquer coisa serve — não é pergunta.','① なにか ／ ② なんでも':'なんでも com verbo negativo não expressa “nada”.'},
  ne:['だれか きましたか。 — いいえ、だれも きませんでした。','Alguém veio? — Não, ninguém veio.']});
-X('demo-mo','mc','dif',{pg:['gimonshi-demo','nanimo'],p:'Uma destas frases tenta dizer <b>“No feriado não fiz nada”</b>, mas usa o indefinido errado. Qual?',
+X('demo-mo','mc','dif',{pg:['gimonshi-demo','nanimo'],p:'Uma destas frases tenta dizer “No feriado não fiz nada”, mas usa o indefinido errado. Qual?',
  o:['やすみの ひは なんでも しませんでした。','やすみの ひは なにも しませんでした。','やすみの ひは なにか しましたか。','やすみの ひは なんでも できます。'],a:0,
  h:['Procure a frase cuja intenção é negação total: “nada”.','Para negação total, troque o interrogativo por なにも e mantenha o verbo negativo.'],
  w:'A errada é なんでも しませんでした: なんでも pede verbo afirmativo (“qualquer coisa serve”). Para “não fiz nada” o indefinido é なにも ＋ verbo negativo. As outras três estão bem formadas.',
@@ -6746,6 +6793,110 @@ CZ({su:4,exam:'2025/12',qno:'問題3(14)-(17)',
  w:'Duas rotinas de estudantes, no presente: o sorvete da noite e o estudo diário de kanji.'});
 EX_SRC=null; EX_ORIGIN='lab';   /* fim das provas 2025 */
 
+/* ===================================================================
+   PROVA JLPT N5 2023/07 — seção de gramática (もんだい1–3)
+   Liberada pelo plano (24/10). Enunciado, alternativas, ORDEM e gabarito são
+   os da prova, conferidos com o gabarito do mesmo pacote. Sem duplicatas com
+   os demais conjuntos. O PDF é uma redigitação: em 問題2(12) e (13) as aspas
+   finais 」 soltas (sem abertura) foram omitidas; a ★12 traz 【1 4 2 1】 no
+   gabarito, mas a sequência escrita e a resposta são 3-4-2-1 / 2.
+   =================================================================== */
+EX_SRC='provas'; EX_ORIGIN='provas';
+/* ---- 2023年7月 · もんだい1 ---- */
+X('noru-oriru','mc','rec',{su:5,exam:'2023/07',qno:'問題1(1)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">東駅で ちかてつ（　）乗って、西駅で おります。</span>',
+ o:['と','を','が','に'],a:3,h:['乗ります: em que veículo se entra?'],
+ w:'ちかてつに 乗って — 乗ります marca com に o veículo em que se entra. Já おります marca com を o veículo de que se desce.',
+ wr:{'と':'と diria “andar junto com o metrô”, como se fosse uma companhia.','を':'を aparece com おります (でんしゃを おります). Para entrar no veículo, 乗ります pede に.','が':'が faria do metrô o sujeito; quem embarca é a pessoa da frase.'}});
+X('part-ka','mc','rec',{su:5,exam:'2023/07',qno:'問題1(2)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">私は 毎年 1回、春（　）秋に 旅行を します。</span>',
+ o:['も','か','の','は'],a:1,h:['Uma viagem por ano: em uma estação OU na outra.'],
+ w:'春か 秋に — entre dois substantivos, か significa “ou”: “na primavera ou no outono”.',
+ wr:{'も':'春も 秋に não liga as duas estações; も significa “também”.','の':'の ligaria 春 a 秋 como se uma qualificasse a outra.','は':'は marcaria 春 como tópico e deixaria 秋に solto; aqui são duas opções.'}});
+X('de-transporte','mc','rec',{su:5,exam:'2023/07',qno:'問題1(3)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">父は すしを 手（　）食べます。私は はしを 使います。</span>',
+ o:['が','と','に','で'],a:3,h:['Com o que ele come?'],
+ w:'手で 食べます — で marca o meio ou instrumento: “come com as mãos”. O contraste é com はし, que a outra pessoa usa.',
+ wr:{'が':'が faria da mão o sujeito de 食べます.','と':'と significaria “junto com” uma pessoa, não o instrumento.','に':'に marca destino ou alvo, não o instrumento usado.'}});
+X('hou-ga-yori','mc','rec',{su:5,exam:'2023/07',qno:'問題1(4)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">北町としょかんより 南町としょかん（　）ほうが 大きいです。</span>',
+ o:['の','と','を','も'],a:0,h:['Substantivo ＋ ? ＋ ほうが.'],
+ w:'南町としょかんの ほうが 大きいです = “A biblioteca de Minamimachi é maior.” Depois de substantivo, ほうが pede の. より marca a referência (北町としょかん).',
+ wr:{'と':'と liga substantivos numa lista; não se liga a ほうが.','を':'を marca objeto de verbo; 大きい é adjetivo.','も':'も significa “também”; a frase destaca um dos lados.'}});
+X('ya-nado','mc','rec',{su:5,exam:'2023/07',qno:'問題1(5)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">うちの 近くには スーパーや 本屋（　）が あります。</span>',
+ o:['と','も','など','か'],a:2,h:['や já avisa que a lista é só de exemplos.'],
+ w:'スーパーや 本屋などが あります — や cita exemplos e など fecha a lista: “supermercado, livraria etc.”.',
+ wr:{'と':'と fecharia uma lista completa, mas や já indicou que são só exemplos; depois de と também não caberia が aqui.','も':'も significa “também” e não combina com o が seguinte.','か':'か significaria “ou”, e não fecha uma lista de exemplos.'}});
+X('dou-deshita','mc','rec',{su:5,exam:'2023/07',qno:'問題1(6)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">A「きのう、ともだちと 海へ 行きました。」<br>B「そうですか。（　）でしたか。」<br>A「とても きれいでした。魚が たくさん いました。」</span>',
+ o:['だれ','どれ','どう','いつ'],a:2,h:['A responde com uma impressão.'],
+ w:'どうでしたか = “Como foi?” — pergunta a impressão sobre algo que já passou; por isso A responde とても きれいでした.',
+ wr:{'だれ':'だれ pergunta “quem?”; a resposta não diz quem.','どれ':'どれ escolhe entre coisas à vista; aqui não há opções.','いつ':'いつ pergunta “quando?”; きのう já disse quando foi.'}});
+X('mou-mada','mc','rec',{su:5,exam:'2023/07',qno:'問題1(7)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">（電話で）<br>A「しゅくだいは 終わりましたか。」<br>B「いいえ、（　）です。」</span>',
+ o:['よく','あまり','もう','まだ'],a:3,h:['いいえ ＋ “ainda não”.'],
+ w:'いいえ、まだです = “Não, ainda não.” — a lição ainda não terminou.',
+ wr:{'よく':'よく (bem, com frequência) não responde se terminou.','あまり':'あまり pede frase negativa e não forma resposta com です.','もう':'もう diria “já”, o contrário de いいえ.'}});
+X('toki','mc','rec',{su:5,exam:'2023/07',qno:'問題1(8)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">さむい（　）ベッドから 出たく ありません。</span>',
+ o:['ときは','のときは','まえに','のまえに'],a:0,h:['さむい é I-adjetivo.'],
+ w:'さむい ときは = “quando está frio”. I-adjetivo se liga direto a とき, sem の.',
+ wr:{'のときは':'の só entra depois de substantivo (こどもの とき). さむい é I-adjetivo.','まえに':'まえに significa “antes de” e vem depois de verbo; não combina com さむい.','のまえに':'の まえに segue substantivo e significa “antes de”; não é o sentido aqui.'}});
+X('naide-kudasai','mc','rec',{su:5,exam:'2023/07',qno:'問題1(9)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">（学校で）<br>先生「あ、じてんしゃを おく ところは あそこです。ここに じてんしゃを（　）。」<br>学生「はい、わかりました。」</span>',
+ o:['おきませんか','おかないで くださいね','おきますか','おいて くださいね'],a:1,h:['O lugar certo é ALI, não aqui.'],
+ w:'おかないで くださいね = “não deixe aqui, por favor”. O professor diz que o lugar é あそこ, então pede que não se estacione ここに.',
+ wr:{'おきませんか':'〜ませんか faz um convite, e o professor acabou de dizer que o lugar é outro.','おきますか':'おきますか apenas pergunta; o aluno responde はい、わかりました a uma instrução.','おいて くださいね':'Pediria para deixar justamente aqui, o contrário do que o professor explicou.'}});
+/* ---- 2023年7月 · もんだい2 ---- */
+ST('nagara',{su:5,exam:'2023/07',qno:'問題2(10)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'私は いつも ',post:' います。',
+ tk:['聞き','さんぽして','ながら','おんがくを'],ord:[3,0,2,1],star:2,
+ full:'私は いつも おんがくを 聞きながら さんぽして います。',
+ h:['Duas ações ao mesmo tempo.'],
+ w:'おんがくを 聞きながら さんぽして います — ながら se liga à raiz de ます e marca a ação que acompanha a principal.'});
+ST('janakute',{su:5,exam:'2023/07',qno:'問題2(11)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'石川「今日は 林さんの たんじょうびですね。」<br>木山「いいえ、林さんの たんじょうびは ',post:' ですよ。」',
+ tk:['今日','来月','なくて','では'],ord:[0,3,2,1],star:2,
+ full:'いいえ、林さんの たんじょうびは 今日では なくて 来月ですよ。',
+ h:['Não é X, é Y.'],
+ w:'今日では なくて 来月です — A では なくて B corrige uma informação: nega A e apresenta B.'});
+ST('hoshii',{su:5,exam:'2023/07',qno:'問題2(12)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'私は 子どもの ',post:' ほしかったです。',
+ tk:['が','じてんしゃ','ころ','青い'],ord:[2,3,1,0],star:2,
+ full:'私は 子どもの ころ 青い じてんしゃが ほしかったです。',
+ h:['O que se queria leva が.'],
+ w:'子どもの ころ (quando) ＋ 青い じてんしゃが (o que se queria) ＋ ほしかったです. O adjetivo vem antes do substantivo.'});
+ST('ato-de-v',{su:5,exam:'2023/07',qno:'問題2(13)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'きょうは にわの 花に 水を やったり、へやの ',post:'、買い物に 行きました。',
+ tk:['した','そうじを','あとで','したり'],ord:[1,3,0,2],star:2,
+ full:'きょうは にわの 花に 水を やったり、へやの そうじを したり した あとで、買い物に 行きました。',
+ h:['〜たり、〜たり した あとで.'],
+ w:'やったり、そうじを したり した あとで — o par たり fecha com した, e Vた ＋ あとで coloca as compras depois disso.'});
+/* ---- 2023年7月 · もんだい3 ---- */
+CZ({su:5,exam:'2023/07',qno:'問題3(14)-(17)',
+ p:'Leia o texto e escolha o que completa cada lacuna:',
+ tx:'ジョーンズさんと チンさんは さくぶんを 書いて、クラスの みんなの 前で 読みました。\n\n（1）ジョーンズさんの さくぶん\n先週、はじめて 西としょかんに 行きました。西としょかんには いろいろな 本や ざっしが ありました。外国の 本も ありました。｛1｝、CDや DVDも ありました。私は 旅行の ざっしと えいがの DVDを かりました。また 西としょかんで ざっしや DVDを ｛2｝。\n\n（2）チンさんの さくぶん\n私は 北町に 住んで います。北町には 私の 好きな 食堂が あります。食堂の 名前 ｛3｝「春」です。私は よく 「春」に ごはんを 食べに 行きます。「春」の りょうりは 安くて、とても おいしいです。「春」の となりには おいしい アイスクリームの 店が あります。いつも「春」で ごはんを 食べてから、アイスを 買って、家に ｛4｝。',
+ bl:[{g:'sorekara',o:['だから','それから','すぐ','もう'],a:1,
+      w:'それから acrescenta mais um item à lista do que havia na biblioteca: “e também”.',
+      ctx:'O texto vai enumerando: livros, revistas, livros estrangeiros e, depois, CDs e DVDs.'},
+     {g:'tai',o:['かりたいです','かりて ください','かりませんか','かりて いますか'],a:0,
+      w:'かりたいです — quem escreve conta uma vontade própria: “quero pegar emprestado de novo”.',
+      ctx:'また indica o que o autor quer repetir; não há ninguém a quem pedir nem convidar.'},
+     {g:'part-wa-topico',o:['の','で','と','は'],a:3,
+      w:'食堂の 名前は「春」です — は apresenta o nome como assunto e です diz qual é.',
+      ctx:'A frase apresenta o restaurante citado na frase anterior.'},
+     {g:'ni-destino',o:['来ます','来るからです','帰ります','帰るからです'],a:2,
+      w:'家に 帰ります — voltar para a própria casa é 帰ります, e a frase fecha a rotina.',
+      ctx:'いつも descreve o hábito; não há motivo a explicar, então não entra 〜からです.'}],
+ h:['Leia os dois textos inteiros antes de decidir.'],
+ w:'Dois relatos: uma visita à biblioteca e a rotina em um restaurante do bairro.'});
+EX_SRC=null; EX_ORIGIN='lab';   /* fim da prova 2023/07 */
+
 
 /* Explicações específicas para distratores que antes caíam no texto genérico.
    O mapa só completa `wr`; IDs, respostas e correção permanecem inalterados. */
@@ -7096,7 +7247,7 @@ const storeKey=uid=>{const u=uid===undefined?PROFILE:uid; return u?KEY+':user:'+
 /* Política de fontes vigente. Um estado gravado com `cfg.mig` menor passa
    UMA vez pela migração em hydrateProgress; depois disso as escolhas do
    usuário mandam e nada é religado. */
-const CFG_MIG=3;
+const CFG_MIG=4;
 const DEF=()=>({v:2,
   /* Provas nasce ativa com todas as provas importadas marcadas. Como a chave é
      NOVA, um progresso antigo simplesmente não a tem: o merge com DEF() abaixo
@@ -7105,8 +7256,8 @@ const DEF=()=>({v:2,
      precisa). Provas usa sempre `manual` — a seleção é por prova, não por
      alcance crescente. */
   cfg:{src:{intro:true,basico:true,nnk:true,'try':true,provas:true},
-       lim:{intro:18,basico:18,nnk:16,'try':45,provas:4},
-       manual:{intro:null,basico:null,nnk:null,'try':null,provas:[1,2,3,4]},   /* null = usar limite; array = seleção manual */
+       lim:{intro:18,basico:18,nnk:16,'try':45,provas:5},
+       manual:{intro:null,basico:null,nnk:null,'try':null,provas:[1,2,3,4,5]},   /* null = usar limite; array = seleção manual */
        mig:CFG_MIG,
        romaji:true,
        sessionMin:60},                             /* progresso antigo sem esta chave herda 60 */
@@ -7161,6 +7312,11 @@ function hydrateProgress(p){
   if(migFrom<3&&Array.isArray(out.cfg.manual.provas)){
     [3,4].forEach(n=>{ if(!out.cfg.manual.provas.includes(n)) out.cfg.manual.provas=out.cfg.manual.provas.concat(n); });
   } else if(migFrom<3&&(out.cfg.lim.provas|0)>=2){ out.cfg.lim.provas=4; }
+  /* 3 → 4: entrou o conjunto 5 (prova 2023/07), pela mesma regra: marca só o
+     novo, uma vez, sem tocar no que já estava marcado ou desmarcado. */
+  if(migFrom<4&&Array.isArray(out.cfg.manual.provas)){
+    if(!out.cfg.manual.provas.includes(5)) out.cfg.manual.provas=out.cfg.manual.provas.concat(5);
+  } else if(migFrom<4&&(out.cfg.lim.provas|0)>=4){ out.cfg.lim.provas=5; }
   out.cfg.mig=CFG_MIG;
   if(!SESSION_PRESETS[out.cfg.sessionMin]) out.cfg.sessionMin=60;
   out.gp  =(p.gp  &&typeof p.gp  ==='object'&&!Array.isArray(p.gp))  ?p.gp  :{};
@@ -7899,7 +8055,15 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2300);}
 let _mOk=null;
-function openModal(title,body,okLabel,cb,cancelLabel){
+let _mKbd=false,_mSel='mOk';
+/* `kbd`: a confirmação de saída começa com a ação principal selecionada e
+   aceita setas, Tab e Enter — ver o keydown de captura logo abaixo. */
+function modalSel(id){
+  _mSel=id;
+  ['mOk','mCancel'].forEach(k=>document.getElementById(k).classList.toggle('msel',k===id));
+  document.getElementById(id).focus({preventScroll:true});
+}
+function openModal(title,body,okLabel,cb,cancelLabel,opts){
   document.getElementById('mTitle').textContent=title;
   document.getElementById('mBody').textContent=body;
   document.getElementById('mOk').textContent=okLabel;
@@ -7911,9 +8075,15 @@ function openModal(title,body,okLabel,cb,cancelLabel){
      deixaria clockCounting=true — e um app suspenso logo em seguida somaria
      o intervalo inteiro com o modal aberto. */
   clockPulse();
+  _mKbd=!!(opts&&opts.kbd);
+  if(_mKbd) modalSel('mOk');
 }
 function closeModal(){
   document.getElementById('overlay').classList.remove('show');
+  if(_mKbd){
+    _mKbd=false;
+    ['mOk','mCancel'].forEach(k=>{const b=document.getElementById(k); b.classList.remove('msel'); b.blur();});
+  }
   /* Mesma ordem ao fechar: o tempo de modal aberto é creditado com a contagem
      desligada (soma zero, nunca é recuperado depois) e a contagem recomeça
      a partir deste instante, sem depender do próximo tique de 500 ms. */
@@ -7921,6 +8091,19 @@ function closeModal(){
 }
 document.getElementById('mOk').addEventListener('click',()=>{closeModal();if(_mOk)_mOk();});
 document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeModal();});
+/* Na fase de CAPTURA: com a confirmação aberta, setas, Tab e Enter são dela e
+   não chegam aos atalhos da questão. Esc segue para o handler que cancela. */
+document.addEventListener('keydown',e=>{
+  if(!_mKbd||!document.getElementById('overlay').classList.contains('show')) return;
+  if(e.isComposing||e.keyCode===229) return;
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'||e.key==='Tab'){
+    e.preventDefault(); e.stopPropagation();
+    modalSel(_mSel==='mOk'?'mCancel':'mOk');
+  } else if(e.key==='Enter'){
+    e.preventDefault(); e.stopPropagation();
+    if(!e.repeat) document.getElementById(_mSel).click();
+  }
+},true);
 /* o popover de conta fecha ao clicar fora ou com Esc; cliques dentro dele
    param a propagação, e a navegação o fecha em go() */
 document.addEventListener('click',()=>{ if(V.acctOpen){V.acctOpen=false;render();} });
@@ -8182,8 +8365,8 @@ function acctControl(){
   }
   const u=syncUI(st.status);
   return `<div class="acct-wrap">
-    <button class="acct-btn ${u.tone}" onclick="toggleAcct(event)"
-      title="${esc(u.full)}" aria-expanded="${V.acctOpen?'true':'false'}">
+    <button class="acct-btn acct-on ${u.tone}" onclick="toggleAcct(event)"
+      title="${esc(u.full)}" aria-label="${esc(u.full)}" aria-expanded="${V.acctOpen?'true':'false'}">
       <span class="sdot ${u.dot}"></span>
       <span class="lbl full">${esc(u.chip)}</span><span class="lbl short">${esc(u.chip)}</span>
     </button>
@@ -8211,7 +8394,7 @@ function acctPopover(st,u){
 function toggleAcct(ev){ ev.stopPropagation(); V.acctOpen=!V.acctOpen; render(); }
 function confirmQuit(){
   openModal('Sair da sessão?','O que você respondeu até agora já foi salvo. As questões restantes serão descartadas.',
-    'Sair',()=>{stopClock();V.run=null;go('home');},'Continuar');
+    'Sair',()=>{stopClock();V.run=null;go('home');},'Continuar',{kbd:true});
 }
 
 /* ---------- estatísticas por fonte ---------- */
@@ -8482,21 +8665,21 @@ function gpCard(g,openDefault){
      </div>
    </button>
    <div class="gp-body" ${open}>
-     <div class="field"><div class="lab">Função</div><div>${esc(g.f)}</div></div>
+     <div class="field"><div class="lab">Função</div><div>${jx(g.f)}</div></div>
      <div class="field"><div class="lab">Estrutura</div>
-       <div class="struct jp">${esc(g.s).replace(/\n/g,'<br>')}</div></div>
-     ${g.u?`<div class="field"><div class="lab">Quando usar</div><div>${esc(g.u)}</div></div>`:''}
-     ${g.no?`<div class="field"><div class="lab">Quando NÃO usar</div><div>${esc(g.no)}</div></div>`:''}
+       <div class="struct jp">${jx(g.s).replace(/\n/g,'<br>')}</div></div>
+     ${g.u?`<div class="field"><div class="lab">Quando usar</div><div>${jx(g.u)}</div></div>`:''}
+     ${g.no?`<div class="field"><div class="lab">Quando NÃO usar</div><div>${jx(g.no)}</div></div>`:''}
      ${g.ex?`<div class="field"><div class="lab">Exemplos</div><ul class="exlist">${
-        g.ex.map(([j,p])=>`<li><div class="j jp">${esc(j)}</div><div class="p">${esc(p)}</div></li>`).join('')
+        g.ex.map(([j,p])=>`<li><div class="j jp">${jx(j)}</div><div class="p">${esc(p)}</div></li>`).join('')
       }</ul></div>`:''}
      ${g.er?`<div class="callout cl-err"><div class="cl-t">Erro típico</div>
-        <span class="bad jp strike">${esc(g.er[0])}</span> → <span class="good jp">${esc(g.er[1])}</span><br>
-        <span class="muted">${esc(g.er[2])}</span></div>`:''}
+        <span class="bad jp strike">${jx(g.er[0],true)}</span> → <span class="good jp">${jx(g.er[1],true)}</span><br>
+        <span class="muted">${jx(g.er[2])}</span></div>`:''}
      ${cts.length?`<div class="callout cl-con"><div class="cl-t">Contrastes</div>${
         cts.map(c=>`<div style="margin-bottom:4px"><b class="jp">${esc(c.t)}</b> — ${esc(c.note)}</div>`).join('')
       }</div>`:''}
-     ${g.tip?`<div class="callout cl-tip"><div class="cl-t">Dica</div>${esc(g.tip)}</div>`:''}
+     ${g.tip?`<div class="callout cl-tip"><div class="cl-t">Dica</div>${jx(g.tip)}</div>`:''}
      <div class="row" style="margin-top:15px">
        ${practiceN?`<button class="btn btn-sm btn-primary" onclick="startGpPractice('${g.id}')">Praticar este ponto</button>`
          :gpHasPractice(g.id)?'<span class="chip">Praticado dentro de texto com lacunas (sessão e Mini JLPT)</span>'
@@ -8803,6 +8986,323 @@ function sessBar(){
       V.run.notes&&V.run.notes.length?`<div class="muted">${V.run.notes.map(esc).join(' ')}</div>`:''}</div>`:'')}`;
 }
 
+/* ===================================================================
+   KANJI E FURIGANA — camada de APRESENTAÇÃO.
+   Os dados das atividades continuam como foram escritos: gabarito, chaves de
+   `wr`, comparação de respostas, SRS e ordem das ★ nunca veem esta camada.
+   Ela só decide como um texto é desenhado.
+
+   · O conjunto de kanji que pode ser INTRODUZIDO (JK_KNOWN) é a lista do
+     aluno + os kanji das seções かんじ／漢字を読みましょう do Rikai. O léxico
+     abaixo é fechado e leva a leitura de cada palavra; palavra que exigiria
+     outro kanji fica em hiragana.
+   · Conversão por palavra inteira: um trecho só muda se for palavra conhecida
+     + terminação válida. Forma errada de propósito (たいへんかったです) não
+     casa com nada e fica como está.
+   · Kanji que já existe no texto nunca é trocado: no máximo ganha furigana,
+     se a leitura estiver no léxico; sem leitura confirmada, fica sem furigana.
+   · Provas e Workbook (ext) e textos com fórmula (→ ＋) só recebem furigana.
+   =================================================================== */
+const JK_KNOWN=new Set(('一二三四五六七八九十百千万億日週月年時間分午前後今先来毎人男女子母父友本気生車語耳手足目口店駅道国学校名円半全何'+
+  '火水木金土海川山花天空晴雨雪雲風電外内上下右左中北西東南見聞書言話読行買出入食飲休会多少古新大小長短遠近白黒高安'+
+  /* Rikai A1 */ '魚肉卵時分半言話読見聞書東西南北口買金百円千万行来会休本京'+
+  /* Rikai A2 */ '私父母子男女人何国外語英中好本読書春夏秋冬今花海山川今日天気晴雨雪雲風空町店人気多少高安広道通右左一二赤青黒白'+
+  '時間場所駅日出待止食事仕前後朝昼夜乗学校小中高大先生年勉強文化音楽旅行留友週回物飲茶酒作持願料理味色野菜少入会社本支張空港発到着午'+
+  '自分電話気車送使借体頭目口耳手足上下毎末元起歩走泳祝誕結婚絵写真計着来去家思').split(''));
+const JK=(()=>{
+  /* palavra=grafia: 漢字[よみ] marca a furigana; o que fica fora de [] é okurigana */
+  const NOUN=`わたし=私[わたし] わたしたち=私[わたし]たち ともだち=友[とも]だち せんせい=先生[せんせい] がくせい=学生[がくせい] だいがくせい=大学生[だいがくせい]
+ こうこうせい=高校生[こうこうせい] ちち=父[ちち] はは=母[はは] おとうさん=お父[とう]さん おかあさん=お母[かあ]さん こども=子[こ]ども おとこ=男[おとこ] おんな=女[おんな]
+ ひと=人[ひと] おとな=大人[おとな] あかちゃん=赤[あか]ちゃん にほんじん=日本人[にほんじん] がいこくじん=外国人[がいこくじん] ひとり=一人[ひとり] ふたり=二人[ふたり]
+ がっこう=学校[がっこう] しょうがっこう=小学校[しょうがっこう] ちゅうがっこう=中学校[ちゅうがっこう] こうこう=高校[こうこう] だいがく=大学[だいがく]
+ えき=駅[えき] みせ=店[みせ] かいしゃ=会社[かいしゃ] くに=国[くに] にほん=日本[にほん] とうきょう=東京[とうきょう] ちゅうごく=中国[ちゅうごく] がいこく=外国[がいこく]
+ まち=町[まち] みち=道[みち] やま=山[やま] かわ=川[かわ] うみ=海[うみ] そら=空[そら] くうこう=空港[くうこう] ばしょ=場所[ばしょ]
+ ほん=本[ほん] くるま=車[くるま] でんしゃ=電車[でんしゃ] でんわ=電話[でんわ] でんき=電気[でんき] しんぶん=新聞[しんぶん] しゃしん=写真[しゃしん] とけい=時計[とけい]
+ みず=水[みず] おちゃ=お茶[ちゃ] おさけ=お酒[さけ] さかな=魚[さかな] にく=肉[にく] たまご=卵[たまご] やさい=野菜[やさい] たべもの=食[た]べ物[もの] のみもの=飲[の]み物[もの]
+ あさごはん=朝[あさ]ごはん ひるごはん=昼[ひる]ごはん おかね=お金[かね] おいわい=お祝[いわ]い たんじょうび=誕生日[たんじょうび]
+ おんがく=音楽[おんがく] ぶんか=文化[ぶんか] えいご=英語[えいご] にほんご=日本語[にほんご] ちゅうごくご=中国語[ちゅうごくご] なまえ=名前[なまえ] じぶん=自分[じぶん]
+ てんき=天気[てんき] あめ=雨[あめ] ゆき=雪[ゆき] くも=雲[くも] かぜ=風[かぜ] はな=花[はな] はる=春[はる] なつ=夏[なつ] あき=秋[あき] ふゆ=冬[ふゆ]
+ なつやすみ=夏休[なつやす]み やすみ=休[やす]み ひるやすみ=昼休[ひるやす]み あさ=朝[あさ] ひる=昼[ひる] よる=夜[よる] いま=今[いま] きょう=今日[きょう]
+ ことし=今年[ことし] きょねん=去年[きょねん] らいねん=来年[らいねん] せんげつ=先月[せんげつ] こんげつ=今月[こんげつ] らいげつ=来月[らいげつ]
+ せんしゅう=先週[せんしゅう] こんしゅう=今週[こんしゅう] らいしゅう=来週[らいしゅう] まいにち=毎日[まいにち] まいあさ=毎朝[まいあさ] まいしゅう=毎週[まいしゅう]
+ まいつき=毎月[まいつき] まいとし=毎年[まいとし] しゅうまつ=週末[しゅうまつ] ごぜん=午前[ごぜん] ごご=午後[ごご] じかん=時間[じかん] しゅう=週[しゅう] つき=月[つき]
+ みぎ=右[みぎ] ひだり=左[ひだり] そと=外[そと] うえ=上[うえ] まえ=前[まえ] うしろ=後[うし]ろ あと=後[あと] ちかく=近[ちか]く ひがし=東[ひがし] にし=西[にし] みなみ=南[みなみ]
+ あたま=頭[あたま] からだ=体[からだ] くち=口[くち] みみ=耳[みみ] あし=足[あし] いろ=色[いろ] あじ=味[あじ] しろ=白[しろ] くろ=黒[くろ] あか=赤[あか] あお=青[あお]
+ ひとつ=一[ひと]つ ふたつ=二[ふた]つ みっつ=三[みっ]つ よっつ=四[よっ]つ いつつ=五[いつ]つ むっつ=六[むっ]つ ななつ=七[なな]つ やっつ=八[やっ]つ ここのつ=九[ここの]つ
+ すこし=少[すこ]し なに=何[なに] なん=何[なん] なんじ=何時[なんじ] なんかい=何回[なんかい] なんにん=何人[なんにん] なんねん=何年[なんねん] なんがつ=何月[なんがつ]`;
+  /* só com contexto (ver ctxOk) */
+  const NOUN_CTX=`した=下[した]:no なか=中[なか]:no いえ=家[いえ]:tail かぜ=風[かぜ]:kaze`;
+  const NA=`すき=好[す]き だいすき=大好[だいす]き げんき=元気[げんき] じょうず=上手[じょうず] へた=下手[へた]`;
+  const SURU=`べんきょう=勉強[べんきょう] りょこう=旅行[りょこう] りょうり=料理[りょうり] しょくじ=食事[しょくじ] しごと=仕事[しごと] かいもの=買[か]い物[もの]
+ おねがい=お願[ねが]い けっこん=結婚[けっこん] りゅうがく=留学[りゅうがく]`;
+  const ADJ=`おおき=大[おお]き ちいさ=小[ちい]さ あたらし=新[あたら]し ふる=古[ふる] たか=高[たか] やす=安[やす] おお=多[おお] すくな=少[すく]な ひろ=広[ひろ] なが=長[なが]
+ みじか=短[みじか] とお=遠[とお] ちか=近[ちか] しろ=白[しろ] くろ=黒[くろ] あか=赤[あか] あお=青[あお] たのし=楽[たの]し`;
+  const VERB=`たべる:i:食[た]べ みる:i:見[み]:see おきる:i:起[お]き:oki かりる:i:借[か]り でる:i:出[で]:deru でかける:i:出[で]かけ いれる:i:入[い]れ
+ いく:g:行[い]:go いう:g:言[い]:say きく:g:聞[き] かく:g:書[か]:kak よむ:g:読[よ] はなす:g:話[はな] のむ:g:飲[の] かう:g:買[か]:ka のる:g:乗[の]
+ やすむ:g:休[やす] あう:g:会[あ]:au つくる:g:作[つく] もつ:g:持[も] まつ:g:待[ま] あるく:g:歩[ある] はしる:g:走[はし] およぐ:g:泳[およ]
+ おもう:g:思[おも] つかう:g:使[つか] おくる:g:送[おく] だす:g:出[だ] はいる:g:入[はい] とまる:g:止[と]ま:toma`;
+  /* kanji fora das listas, já presentes no conteúdo: só furigana, nunca conversão */
+  const RUBY_N=`兄=兄[あに] 姉=姉[あね] 弟=弟[おとうと] 妹=妹[いもうと] 映画=映画[えいが] 京都=京都[きょうと] 銀行=銀行[ぎんこう] 夕方=夕方[ゆうがた] 今度=今度[こんど] 鳥=鳥[とり]
+ 本屋=本屋[ほんや] すし屋=すし屋[や] 食堂=食堂[しょくどう] 漢字=漢字[かんじ] 疑問詞=疑問詞[ぎもんし] ご飯=ご飯[はん] 手=手[て] 目=目[め] 木=木[き] 水=水[みず] 上=上[うえ] 下=下[した]
+ 中=中[なか] 家=家[いえ] 右=右[みぎ] 左=左[ひだり] 春=春[はる] 秋=秋[あき] 夏=夏[なつ] 冬=冬[ふゆ] 花=花[はな] 海=海[うみ] 山=山[やま] 川=川[かわ] 朝=朝[あさ] 夜=夜[よる] 昼=昼[ひる]
+ 東京=東京[とうきょう] 国=国[くに] 店=店[みせ] お店=お店[みせ] 名前=名前[なまえ] 色=色[いろ] 雪=雪[ゆき] 魚=魚[さかな] 人=人[ひと] 車=車[くるま] 本=本[ほん] 駅=駅[えき] 今=今[いま] 何=何[なに]
+ 何か=何[なに]か 何の=何[なん]の 何です=何[なん]です 何でも=何[なん]でも 何時=何時[なんじ] 田中=田中[たなか] 山田=山田[やまだ] 山下=山下[やました] 山口=山口[やまぐち] 山川=山川[やまかわ]
+ 中川=中川[なかがわ] 川口=川口[かわぐち] 大川=大川[おおかわ] 本田=本田[ほんだ] 石川=石川[いしかわ] 木山=木山[きやま] 林=林[はやし] 北山=北山[きたやま] 青木=青木[あおき] 花子=花子[はなこ]
+ 東駅=東駅[ひがしえき] 西駅=西駅[にしえき] 北町=北町[きたまち] 南町=南町[みなみまち] 西=西[にし] 電話中=電話中[でんわちゅう] 今週=今週[こんしゅう] 土曜日=土曜日[どようび] 日曜日=日曜日[にちようび]
+ 日よう日=日[にち]よう日[び] 土よう日=土[ど]よう日[び] 月よう日=月[げつ]よう日[び] 火よう日=火[か]よう日[び] 水よう日=水[すい]よう日[び] 木よう日=木[もく]よう日[び] 金よう日=金[きん]よう日[び]
+ 三千円=三千円[さんぜんえん] 五千円=五千円[ごせんえん] 三十分=三十分[さんじゅっぷん] 二時間=二時間[にじかん] 六時=六時[ろくじ] 二時=二時[にじ] 七時=七時[しちじ] 九時=九時[くじ] 十二時=十二時[じゅうにじ]
+ 十二時半=十二時半[じゅうにじはん] 四月=四月[しがつ] 二か月=二[に]か月[げつ] 一ど=一[いち]ど 二かい=二[に]かい 二ひき=二[に]ひき 音読み=音読[おんよ]み くん読み=くん読[よ]み 読み方=読[よ]み方[かた] 作りかた=作[つく]りかた
+ 大学生=大学生[だいがくせい] 三つ=三[みっ]つ 一つ=一[ひと]つ 二つ=二[ふた]つ`;
+  const RUBY_V=`かえる:g:帰[かえ] すむ:g:住[す] つく:g:着[つ] おわる:g:終[お]わ あらう:g:洗[あら] はじまる:g:始[はじ]ま うる:g:売[う] でる:i:出[で] きる:i:着[き]`;
+  const RUBY_A=`あか=明[あか]る あつ=暑[あつ] はや=早[はや]`;
+  const VT=['','か','ね','よ','が','から','けど','ので','のに','と','も','は','の','のが','のは','のを','こと','ことが','ことは','ことも','ことを','ことです','とき','ときは','ときに','まえに','ために','ほうが','つもり','つもりです','でしょう','んです','んですか','んですが','んですよ','ようです','し'];
+  const MT=['','か','ね','よ','が','から','けど','ので','と','し'];
+  const TE=['','も','は','から','ください','くださいね','くださいよ','くださいませんか','います','いました','いません','いませんでした','いますか','いましたか','いる','いた','いて','いない','みます','みて','みる','みました','きます','きました','いきます','いきました','あります','おきます'];
+  const DT=['です','ですか','ですね','ですよ','ですが','ですから'];
+  const NT=['','は','が','を','に','で','へ','と','も','の','や','か','ね','よ','から','まで','より','など','だけ','ごろ','ぐらい','くらい','でも','には','では','へは','とは','にも','へも','からは','までは','のが','のは','のを','のも','のに',
+    ...DT,'でした','でしたか','でしたね','でしょう','だ','だった','だと','だから','だけど','じゃないです','じゃありません','じゃない','じゃなくて','ではありません','ではありませんでした','ではなくて','じゃなかったです','なので','すぎ','すぎです','さん','という'];
+  const NAT=[...NT,'な','なのが','なのは','なんです','に'];
+  const ADT=['',...DT,'でしょう','から','ので','けど','が','と','の','のが','のは','のを','ね','よ','か','とき','ときは','んです','んですよ','んですか'];
+  const KUT=['','て','ない','ないです','なかった','なかったです','なくて','ありません','ありませんでした','なります','なりました','します','しました'];
+  const KAT=['',...DT,'から','ので','けど','が','と','ね','よ','か','んです','んですよ'];
+  const SUT=[['します',MT],['しました',MT],['しません',MT],['しませんでした',MT],['しましょう',MT],['したい',['',...DT]],['したいです',MT],['して',TE],['した',VT],['する',VT],['しない',['',...VT,...DT]]];
+  const A={く:'か',ぐ:'が',す:'さ',つ:'た',ぬ:'な',ぶ:'ば',む:'ま',る:'ら',う:'わ'},I={く:'き',ぐ:'ぎ',す:'し',つ:'ち',ぬ:'に',ぶ:'び',む:'み',る:'り',う:'い'};
+  const TF={く:'いて',ぐ:'いで',す:'して',つ:'って',ぬ:'んで',ぶ:'んで',む:'んで',る:'って',う:'って'};
+  const fur=s=>s.replace(/([一-鿿々]+)\[([^\]]+)\]/g,'<ruby>$1<rt>$2</rt></ruby>');
+  const plain=s=>s.replace(/\[[^\]]+\]/g,'');
+  const W=new Map(), K=new Map();     /* W: chave em kana · K: chave com kanji */
+  let MAXW=0,MAXK=0,bad=[];
+  const put=(kana,disp,tails,rule,convert)=>{
+    const p=plain(disp),h=fur(disp);
+    if(!K.has(p)){K.set(p,h); MAXK=Math.max(MAXK,p.length);}
+    if(!convert) return;
+    [...p].forEach(c=>{ if(/[一-鿿]/.test(c)&&!JK_KNOWN.has(c)) bad.push(kana+':'+c); });
+    if(!W.has(kana)) W.set(kana,[]);
+    W.get(kana).push({h,tails:new Set(tails),rule}); MAXW=Math.max(MAXW,kana.length);
+  };
+  const verb=(dict,type,stem,rule,convert)=>{
+    /* stem: grafia até antes da sílaba que flexiona */
+    let forms;
+    if(type==='i'){
+      const s=dict.slice(0,-1), f=(e,t)=>[s+e,stem+e,t];
+      forms=[f('る',VT),[s,stem,null],...['ます','ません','ました','ませんでした','ましょう'].map(e=>f(e,MT)),f('たい',['',...VT,...DT]),f('たくない',['',...DT]),f('たかった',['',...DT]),f('たかったです',MT),f('ながら',['']),f('に',['']),f('て',TE),f('た',[...VT,'あとで','り','りして','りします','りしました']),
+        f('ない',['',...VT,...DT]),f('ないで',['','ください','くださいね','くださいませんか']),f('なかった',['',...DT]),f('なくて',['']),f('なくちゃ',['']),f('すぎ',['']),f('すぎます',MT),f('すぎないで',['','ください','くださいね'])];
+    } else {
+      const l=dict.slice(-1), s=dict.slice(0,-1), a=A[l], i=I[l];
+      const te=dict==='いく'?'って':TF[l], ta=te.slice(0,-1)+(te.endsWith('で')?'だ':'た');
+      const g=(tail,t)=>[s+tail,stem+tail,t];
+      forms=[g(l,VT),[s+i,stem+i,null],...['ます','ません','ました','ませんでした','ましょう'].map(e=>g(i+e,MT)),g(i+'たい',['',...VT,...DT]),g(i+'たくない',['',...DT]),g(i+'たかった',['',...DT]),g(i+'たかったです',MT),g(i+'ながら',['']),...(W.has(s+i)?[]:[g(i+'に',[''])]),g(te,TE),g(ta,[...VT,'あとで','り','りして','りします','りしました']),
+        g(a+'ない',['',...VT,...DT]),g(a+'ないで',['','ください','くださいね','くださいませんか']),g(a+'なかった',['',...DT]),g(a+'なくて',['']),g(a+'なくちゃ',['']),g(i+'すぎ',['']),g(i+'すぎます',MT),g(i+'すぎないで',['','ください','くださいね'])];
+    }
+    forms.forEach(([kana,disp,t])=>put(kana,disp,t||[],rule,convert&&!!t));
+  };
+  const words=s=>s.trim().split(/\s+/).filter(Boolean);
+  words(NOUN).forEach(e=>{const[k,d]=e.split('='); put(k,d,NT,null,true);});
+  words(NOUN_CTX).forEach(e=>{const[k,r]=e.split('='),[d,c]=r.split(':'); put(k,d,NT,c,true);});
+  words(NA).forEach(e=>{const[k,d]=e.split('='); put(k,d,NAT,null,true);});
+  words(SURU).forEach(e=>{const[k,d]=e.split('='); put(k,d,NT,null,true); SUT.forEach(([x,t])=>put(k+x,d+x,t,null,true)); });
+  words(ADJ).forEach(e=>{const[k,d]=e.split('='); put(k+'い',d+'い',ADT,null,true); put(k+'く',d+'く',KUT,null,true); put(k+'かった',d+'かった',KAT,null,true);
+    if(k==='おおき'||k==='ちいさ') put(k+'な',d+'な',[''],null,true); });
+  words(VERB).forEach(e=>{const[d,t,s,r]=e.split(':'); verb(d,t,s,r||null,true);});
+  /* きます: 来 (irregular); 着 só com roupa/objeto + を */
+  const COME=[['くる','来[く]る',VT],['き','来[き]',null],['きます','来[き]ます',MT],['きません','来[き]ません',MT],['きました','来[き]ました',MT],['きませんでした','来[き]ませんでした',MT],['きましょう','来[き]ましょう',MT],
+    ['きて','来[き]て',TE],['きた','来[き]た',[...VT,'あとで','り']],['こない','来[こ]ない',['',...VT,...DT]],['こないで','来[こ]ないで',['','ください']],['こなかった','来[こ]なかった',['',...DT]],['きたい','来[き]たい',['',...DT]],['きたいです','来[き]たいです',MT]];
+  COME.forEach(([k,d,t])=>put(k,d,t||[],'come',!!t));
+  [['きます','着[き]ます',MT],['きました','着[き]ました',MT],['きて','着[き]て',TE],['きた','着[き]た',VT]].forEach(([k,d,t])=>put(k,d,t,'wear',true));
+  words(RUBY_N).forEach(e=>{const[k,d]=e.split('='); put(k,d,[],null,false);});
+  words(RUBY_V).forEach(e=>{const[d,t,s,r]=e.split(':'); verb(d,t,s,r||null,false);});
+  words(RUBY_A).forEach(e=>{const[k,d]=e.split('='); put(k+'い',d+'い',[],null,false); put(k+'く',d+'く',[],null,false); put(k+'かった',d+'かった',[],null,false);});
+  const teLike=p=>/(て|んで|いで)$/.test(p);
+  const ctxOk=(r,prev,tail)=>{
+    switch(r){
+      case 'no':   return /の$/.test(prev);
+      case 'tail': return !!tail||/の$/.test(prev);
+      case 'kaze': return tail!=='を';
+      case 'go':   return !teLike(prev);
+      case 'see':  return !teLike(prev);
+      case 'ka':   return !/(いぬ|ねこ|とり|ペット)を$/.test(prev);
+      case 'kak':  return !/えを$/.test(prev);
+      case 'au':   return /[にと]$/.test(prev);
+      case 'oki':  return !!prev&&!/を$/.test(prev);
+      case 'toma': return /が$/.test(prev);
+      case 'come': return !teLike(prev)&&!/を$/.test(prev);
+      case 'wear': return /を$/.test(prev);
+      case 'deru': return true;
+      case 'say':  return true;
+      default:     return true;
+    }
+  };
+  /* formas curtas que, sem contexto, podem ser outra palavra */
+  const needPrev=new Set(['かって','かった','かいて','かいた','みて','みた','でて','でた','きて','きた','いった','いって','あって','あった','あった',]);
+  const ittRule=(form,prev)=>{ /* いっ…: 行 (に/へ/まで/で antes) ou 言 (と antes); sem pista, não converte */
+    if(/と$/.test(prev)) return 'say';
+    if(/(に|へ|まで)$/.test(prev)) return 'go';
+    return null;
+  };
+  /* parecem substantivo + terminação, mas são outra palavra */
+  const STOP=new Set(['ほんや','はなや','さかなや','やまだ','ほんだ','ほんと','かわだ','やまた']);
+  const parse=(c,prev)=>{
+    if(STOP.has(c)||/^(やまだ|ほんだ|ほんや)/.test(c)) return null;
+    for(let n=Math.min(c.length,MAXW);n>0;n--){
+      const head=c.slice(0,n), es=W.get(head); if(!es) continue;
+      const rest=c.slice(n);
+      if(needPrev.has(head)&&!prev) continue;
+      if((head==='かって'||head==='かった')&&!/を$/.test(prev)) continue;
+      for(const e of es){
+        if(/^いっ/.test(head)){ const want=ittRule(head,prev); if(!want||want!==e.rule) continue; if(teLike(prev)) continue; }
+        else if(!ctxOk(e.rule,prev,rest)) continue;
+        if(e.tails.has(rest)) return e.h+rest;
+        /* substantivo + の + substantivo (男の人, 女の子) */
+        if(rest.startsWith('の')&&e.tails.has('の')){
+          const r=parse(rest.slice(1),'の');
+          if(r) return e.h+'の'+r;
+        }
+      }
+    }
+    return null;
+  };
+  const CNT={じ:'時[じ]',じかん:'時間[じかん]',じはん:'時[じ]半[はん]',がつ:'月[がつ]',ねん:'年[ねん]',かい:'回[かい]',えん:'円[えん]',ねんせい:'年生[ねんせい]',にん:'人[にん]'};
+  const num=s=>parseInt(s.replace(/[０-９]/g,d=>String(d.charCodeAt(0)-0xFF10)).replace(/[,，]/g,''),10);
+  const pun=n=>[1,3,4,6,8,0].includes(n%10)?'ぷん':'ふん';
+  const digit=c=>{
+    const m=c.match(/^([0-9０-９]+)([ぁ-ゟ]+)$/); if(!m) return null;
+    const d=m[1],kr=m[2],v=num(d);
+    for(let n=Math.min(kr.length,4);n>0;n--){
+      const u=kr.slice(0,n),rest=kr.slice(n);
+      if(!NTS.has(rest)&&rest!=='まえ') continue;
+      if(u==='ふん'||u==='ぷん') return d+'<ruby>分<rt>'+u+'</rt></ruby>'+rest;
+      if(u==='にん'&&v<3) continue;
+      if(CNT[u]) return d+fur(CNT[u])+rest;
+    }
+    return null;
+  };
+  const NTS=new Set(NT);
+  const KC=/[一-鿿々]/;
+  const CK={'時':'じ','時間':'じかん','時半':'じはん','月':'がつ','年':'ねん','回':'かい','円':'えん','週間':'しゅうかん'};
+  /* furigana nos kanji que já estão no texto: a palavra precisa cobrir a
+     sequência de kanji inteira; sem isso (花川駅), fica sem furigana */
+  const scan=(s,antes)=>{
+    let o='',i=0;
+    while(i<s.length){
+      if(!KC.test(s[i])){o+=s[i];i++;continue;}
+      const pv=s[i-1]||antes||'';   /* o trecho é só japonês: （　）中です chega sem o ） */
+      let end=i; while(end<s.length&&KC.test(s[end])) end++;
+      if(/[〜～]/.test(pv)){o+=s.slice(i,end);i=end;continue;}
+      if(/[0-9０-９]/.test(pv)){
+        const run=s.slice(i,end), v=num((s.slice(0,i).match(/[0-9０-９]+$/)||['0'])[0]);
+        if(run==='分'){o+='<ruby>分<rt>'+pun(v)+'</rt></ruby>';i=end;continue;}
+        if(run==='人'&&v>=3){o+='<ruby>人<rt>にん</rt></ruby>';i=end;continue;}
+        if(run==='時半'){o+='<ruby>時<rt>じ</rt></ruby><ruby>半<rt>はん</rt></ruby>';i=end;continue;}
+        if(CK[run]){o+='<ruby>'+run+'<rt>'+CK[run]+'</rt></ruby>';i=end;continue;}
+        o+=run;i=end;continue;
+      }
+      if(s[i]==='日'&&end===i+1&&/の\s*$/.test(s.slice(Math.max(0,i-2),i))){o+='<ruby>日<rt>ひ</rt></ruby>';i=end;continue;}
+      const katak=/[\u30a0-\u30ff]/.test(pv);
+      let hit=null;
+      for(let n=Math.min(s.length-i,MAXK);n>0;n--){
+        const k=s.slice(i,i+n);
+        if(K.has(k)&&i+n>=end&&!KC.test(s[i+n]||'')){
+          if(k==='東'&&(s.startsWith('さん',i+1)||pv==='「'||!pv)) break;   /* 東さん, fala de 東: sobrenome sem leitura confirmada */
+          if(n===1&&(katak||(k==='中'&&pv&&!/[\s　の]/.test(pv)))) break;  /* アメリカ人, テスト中: outra leitura */
+          hit=[k,K.get(k)];break;
+        }
+      }
+      if(hit){o+=hit[1];i+=hit[0].length;}
+      else {o+=s.slice(i,end);i=end;}
+    }
+    return o;
+  };
+  const RUN=/[ぁ-ゟ゠-ヿ一-鿿々ー0-9０-９]+/g;
+  const memo=new Map();
+  const view=(html,ext)=>{
+    const key=(ext?'E':'K')+html;
+    if(memo.has(key)) return memo.get(key);
+    const ro=ext||/[→＋]/.test(html);
+    let prev='',out='';
+    String(html).split(/(<[^>]+>|&[a-zA-Z#0-9]+;)/).forEach((part,ix)=>{
+      if(ix%2){ if(/^<br/i.test(part)) prev=''; out+=part; return; }
+      let last=0,m; RUN.lastIndex=0;
+      while((m=RUN.exec(part))){
+        const gap=part.slice(last,m.index), c=m[0], before=part[m.index-1]||'';
+        out+=gap; if(/[。！？!?：:]/.test(gap)) prev='';
+        last=m.index+c.length;
+        if(/[〜～A-Za-z]/.test(before)||(before==='「'&&part[m.index+c.length]==='」')){ out+=c; prev=c; continue; }
+        let h=null;
+        if(!ro&&/^[ぁ-ゟ]+$/.test(c)) h=parse(c,prev);
+        else if(!ro&&/^[0-9０-９]+[ぁ-ゟ]+$/.test(c)) h=digit(c);
+        out+=h!=null?h:scan(c,before);
+        prev=c;
+      }
+      out+=part.slice(last);
+    });
+    memo.set(key,out); return out;
+  };
+  return {view,bad:()=>bad.slice(),size:()=>[W.size,K.size]};
+})();
+/* grupos de alternativas conferidos à mão: ficam só com a furigana original */
+const KANA_KEEP=new Set(['x411','x524']);
+/* jv: texto (HTML já escapado) → HTML com kanji e furigana. ext = só furigana. */
+const jv=(html,ext)=>JK.view(html,!!ext);
+const jx=(s,ext)=>jv(esc(s),ext);
+const isExt=x=>x.sx==='provas';
+/* tira a furigana: o que vai para o ChatGPT é japonês normal */
+const noRuby=h=>String(h||'').replace(/<rt\b[^>]*>[\s\S]*?<\/rt>/g,'').replace(/<\/?ruby\b[^>]*>/g,'').replace(/<[^>]+>/g,'')
+  .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+/* Grupo de alternativas: ou todas convertem, ou nenhuma. Forma errada de
+   propósito não casa com o léxico; sem esta regra, só a correta viraria kanji
+   e o desenho entregaria o gabarito. KANA_KEEP: grupos conferidos à mão. */
+const OV=new WeakMap();
+function jopts(owner,list,ext){
+  if(OV.has(list)) return OV.get(list);
+  const conv=list.map(o=>jx(o,ext));
+  const mudou=list.map((o,i)=>noRuby(conv[i])!==String(o));
+  const r=(ext||(owner&&KANA_KEEP.has(owner.id))||(mudou.some(Boolean)&&!mudou.every(Boolean)))?list.map(o=>jx(o,true)):conv;
+  OV.set(list,r); return r;
+}
+const optsOf=x=>x.t==='star'?jopts(x,x.tk,isExt(x)):jopts(x,x.o,isExt(x));
+/* resposta citada no feedback: mesma grafia que a alternativa tem na tela */
+function jans(x,txt,list){
+  const l=list||(x.t==='star'?x.tk:x.o), i=l?l.indexOf(txt):-1;
+  return i>=0?jopts(x,l,isExt(x))[i]:jx(txt,isExt(x));
+}
+
+/* ---- tesourinha: eliminar alternativas ----
+   Só anotação da tela atual: não passa por finish() nem por applyResult(), não
+   conta como erro, acerto ou chute e não entra no SRS. Vale para a questão em
+   curso (V.cut guarda run e posição) e some ao avançar. Depois da correção a
+   anotação deixa de ser desenhada, para a correta nunca ficar apagada. */
+const CUT_ICON='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></svg>';
+const cutSame=()=>!!(V.cut&&V.cut.run===V.run&&V.cut.i===V.i);
+const cutOn=k=>cutSame()&&V.cut.set.has(k);
+function cutBtn(k,nome){
+  const on=cutOn(k), acao=(on?'Restaurar':'Eliminar')+' alternativa '+nome;
+  return `<button type="button" class="cutb" aria-pressed="${on}" aria-label="${acao}" title="${acao}"
+    onclick="toggleCut(event,'${k}')">${CUT_ICON}</button>`;
+}
+function optWrap(k,nome,btn){
+  const vivo=!V.graded, on=vivo&&cutOn(k);
+  return `<div class="optw${vivo?' has-cut':''}${on?' cut':''}">${btn}${vivo?cutBtn(k,nome):''}</div>`;
+}
+function toggleCut(ev,k){
+  ev.preventDefault(); ev.stopPropagation();
+  if(V.graded) return;
+  if(!cutSame()) V.cut={run:V.run,i:V.i,set:new Set()};
+  const set=V.cut.set;
+  if(set.has(k)) set.delete(k);
+  else {
+    /* a última alternativa de pé não pode sair: sobraria uma questão sem opção */
+    const c=String(k).split(':'), x=cur().ex;
+    const total=c.length>1?x.bl[+c[0]].o.length:(x.t==='star'?x.tk:x.o).length;
+    const cortadas=[...set].filter(q=>c.length>1?String(q).startsWith(c[0]+':'):true).length;
+    if(cortadas>=total-1){ toast('Deixe ao menos uma alternativa.'); return; }
+    set.add(k);
+    /* a alternativa selecionada foi descartada: a seleção sai junto */
+    if(c.length===1){ if(V.ans===+k) V.ans=null; }
+    else if((V.ans||[])[+c[0]]===+c[1]){ const a=V.ans.slice(); a[+c[0]]=null; V.ans=a; }
+  }
+  render();
+}
+
 /* Estado VISUAL de uma alternativa de mc/★ (i e correct no mesmo índice que
    V.ans usa). Só lê o que finish()/markGuess() já registraram em V.graded —
    não decide nada de SRS. Antes da correção, só a seleção azul de sempre.
@@ -8830,12 +9330,13 @@ function renderRun(){
   markStageStart(it);
   const x=it.ex,g=primaryGrammars(x,it.gid)[0]||GMAP[it.gid];
   const gl=x.gl?`<div class="gloss">${Object.entries(x.gl).map(([k,v])=>
-      `<code class="jp">${esc(k)}</code> = ${esc(v)}`).join(' · ')}</div>`:'';
+      `<code class="jp">${jx(k,isExt(x))}</code> = ${esc(v)}`).join(' · ')}</div>`:'';
   let body='';
   if(x.t==='mc'){
+    const ov=optsOf(x);
     body=`<div class="opts">${x.o.map((o,i)=>{const st=optState(i,x.a);
-      return `<button class="opt ${st.cls}" ${V.graded?'disabled':''} onclick="pick(${i})">
-        <span class="k">${'ABCD'[i]}</span><span class="jp">${esc(o)}</span>${st.mark}</button>`;}).join('')}</div>`;
+      return optWrap(String(i),'ABCD'[i],`<button class="opt ${st.cls}" ${V.graded?'disabled':''} onclick="pick(${i})">
+        <span class="k">${'ABCD'[i]}</span><span class="jp">${ov[i]}</span>${st.mark}</button>`);}).join('')}</div>`;
   } else if(x.t==='order'){
     const a=V.ans||[], pool=ordTokens(x), view=orderView(x);
     body=`<div class="slot">${a.map((idx,pos)=>
@@ -8846,10 +9347,10 @@ function renderRun(){
     const a=V.ans||[];
     const parts=V.graded&&V.graded.parts;
     /* o texto: cada ｛n｝ vira um marcador numerado que mostra a escolha atual */
-    const txt=esc(x.tx).replace(/\n/g,'<br>').replace(/｛(\d+)｝/g,(m,n)=>{
+    const txt=jv(esc(x.tx),isExt(x)).replace(/\n/g,'<br>').replace(/｛(\d+)｝/g,(m,n)=>{
       const i=+n-1, sel=a[i];
       const st=parts?(parts[i].ok?'cz-ok':'cz-bad'):(sel!=null?'cz-set':'');
-      return `<b class="czslot ${st}" data-b="${i}">${n}<span>${sel!=null?esc(x.bl[i].o[sel]):'　　'}</span></b>`;
+      return `<b class="czslot ${st}" data-b="${i}">${n}<span>${sel!=null?jans(x,x.bl[i].o[sel],x.bl[i].o):'　　'}</span></b>`;
     });
     body=`<div class="cztext jp">${txt}</div>
       <div class="czblanks">${x.bl.map((b,i)=>`
@@ -8857,21 +9358,21 @@ function renderRun(){
           <div class="czb-h"><span class="czn">${i+1}</span>${
             parts?`<span class="czv ${parts[i].ok?'good':'bad'}">${parts[i].ok?'✓':'✗'}</span>`:''}</div>
           <div class="opts czopts">${b.o.map((o,j)=>
-            `<button class="opt ${a[i]===j?'sel':''} ${parts&&j===b.a?'right':''} ${parts&&a[i]===j&&!parts[i].ok?'wrong':''}"
+            optWrap(i+':'+j,'ABCD'[j]+' da lacuna '+(i+1),`<button class="opt ${a[i]===j?'sel':''} ${parts&&j===b.a?'right':''} ${parts&&a[i]===j&&!parts[i].ok?'wrong':''}"
               ${V.graded?'disabled':''} onclick="czPick(${i},${j})">
-              <span class="k">${'ABCD'[j]}</span><span class="jp">${esc(o)}</span></button>`).join('')}</div>
+              <span class="k">${'ABCD'[j]}</span><span class="jp">${jans(x,o,b.o)}</span></button>`)).join('')}</div>
         </div>`).join('')}</div>`;
   } else if(x.t==='star'){
     const a=V.ans;
     const sv=starView(x);   /* posição visível → índice original em tk */
-    body=`<div class="startx jp">${starText(x.pre)}${
+    body=`<div class="startx jp">${jv(starText(x.pre),isExt(x))}${
         x.ord.map((_,pos)=>`<span class="stslot${pos===x.star?' on':''}">${pos===x.star?'★':'＿＿'}</span>`).join('')
-      }${starText(x.post)}</div>
+      }${jv(starText(x.post),isExt(x))}</div>
       <div class="muted" style="margin:10px 0 4px">Monte a frase mentalmente. Qual fragmento fica na posição ★?</div>
       <div class="opts">${sv.map((i,p)=>{const st=optState(i,x.ord[x.star]);
-        return `<button class="opt ${st.cls}"
+        return optWrap(String(i),String(p+1),`<button class="opt ${st.cls}"
           ${V.graded?'disabled':''} onclick="pick(${i})">
-          <span class="k">${p+1}</span><span class="jp">${esc(x.tk[i])}</span>${st.mark}</button>`;}).join('')}</div>`;
+          <span class="k">${p+1}</span><span class="jp">${optsOf(x)[i]}</span>${st.mark}</button>`);}).join('')}</div>`;
   } else {
     /* Todos os tipos escritos (fill · trans · correct · prod) cabem numa linha:
        a resposta mais longa do banco tem 29 caracteres. Um único campo dá a
@@ -8893,7 +9394,7 @@ function renderRun(){
 
   return `<div class="wrap"><div style="padding:20px 0 0">${sessBar()}
     <div class="qcard">
-      <div class="qtop${takoOpen()&&V.tako.mode==='below'?' tako-below':''}">
+      <div class="qtop">
         <span class="chip skill">${({rec:'reconhecer',dif:'diferenciar',man:'manipular',pro:'produzir',rcl:'recuperar',mix:'gramática em discurso'})[x.s]||x.s}</span>
         ${(()=>{const oi=exOriginInfo(x); if(!oi) return '';
           return `<span class="ori-wrap"><button type="button" class="chip src-${oi.src} ori" aria-expanded="false"
@@ -8906,15 +9407,15 @@ function renderRun(){
             </span></span>`;})()}
         ${exIsContrast(x)?`<span class="chip jp">${esc(CMAP[x.g].t)}</span>`:''}
         ${V.graded?`<span class="chip src-${(g&&g.src[0][0])||'intro'}">${esc(g?g.t:'')}</span>`:''}
-        <div class="tako-pop${takoOpen()?' open':''}" id="takobox" role="search" data-mode="${takoOpen()?V.tako.mode:'left'}">
+        <div class="tako-pop${takoOpen()?' open':''}" id="takobox" role="search">
           <input id="takoq" type="search" lang="ja" autocomplete="off" autocapitalize="off" spellcheck="false"
-            placeholder="Buscar no Takoboto" aria-label="Palavra para buscar no Takoboto"
+            placeholder="Buscar palavra" aria-label="Palavra para buscar no Takoboto"
             value="${esc(takoOpen()?V.tako.q:'')}" oninput="if(V.tako)V.tako.q=this.value" onkeydown="takoKey(event)">
           <button type="button" class="btn btn-primary" onclick="takoGo()">GO</button></div>
         <button type="button" class="tako-btn" onclick="toggleTako(event)" aria-expanded="${takoOpen()}" aria-controls="takobox"
           title="Pesquisar palavra no Takoboto" aria-label="Pesquisar palavra no Takoboto">${TAKO_ICON}</button>
       </div>
-      <div class="qprompt jp">${x.p}</div>
+      <div class="qprompt jp">${jv(x.p,isExt(x))}</div>
       ${gl}
       ${body}
       ${V.graded?feedbackHtml(x,g):`
@@ -8944,8 +9445,8 @@ function renderRun(){
 function canGuess(x){
   return !!V.graded&&V.graded.res==='ok'&&!V.graded.guessed&&x&&x.t!=='cloze';
 }
-function pick(i){ if(V.graded)return; V.ans=i; render(); }
-function czPick(b,j){ if(V.graded)return; const a=(V.ans||[]).slice(); a[b]=j; V.ans=a; render(); }
+function pick(i){ if(V.graded)return; if(cutOn(String(i))){toast('Alternativa eliminada. Use a tesoura para restaurar.');return;} V.ans=i; render(); }
+function czPick(b,j){ if(V.graded)return; if(cutOn(b+':'+j)){toast('Alternativa eliminada. Use a tesoura para restaurar.');return;} const a=(V.ans||[]).slice(); a[b]=j; V.ans=a; render(); }
 function ordAdd(i){ if(V.graded)return; V.ans=(V.ans||[]).concat([i]); render(); }
 function ordDel(p){ if(V.graded)return; const a=(V.ans||[]).slice(); a.splice(p,1); V.ans=a; render(); }
 
@@ -9332,11 +9833,11 @@ function feedbackRuleHtml(x,gs,brief){
   if(Object.prototype.hasOwnProperty.call(x,'fbRule')){
     if(x.fbRule===false)return '';
     if(typeof x.fbRule==='string'&&Object.prototype.hasOwnProperty.call(FEEDBACK_RULES,x.fbRule)){
-      return esc(FEEDBACK_RULES[x.fbRule]).replace(/\n/g,'<br>');
+      return jx(FEEDBACK_RULES[x.fbRule]).replace(/\n/g,'<br>');
     }
     console.warn('[Bunpou Lab] fbRule desconhecida "'+String(x.fbRule)+'" em '+(x.id||'atividade sem id')+'; usando fallback do grammar point.');
   }
-  return gs.map(q=>brief?esc(q.t):`${esc(q.t)} — <span class="jp">${esc((q.s||'').split('\n')[0])}</span>`).join('<br>');
+  return gs.map(q=>brief?esc(q.t):`${esc(q.t)} — <span class="jp">${jx((q.s||'').split('\n')[0])}</span>`).join('<br>');
 }
 function feedbackContrast(x){
   if(x.ct===false)return null;
@@ -9397,7 +9898,7 @@ function feedbackBody(x,g){
     const P=V.graded.parts,acertos=P.filter(p=>p.ok).length;
     if(acertos===P.length&&res==='ok')return `<div class="fb good">
       <div class="verdict">✓ ${acertos} de ${P.length} lacunas corretas</div>
-      ${x.w?`<div class="fline"><span class="fl-t">Ponto-chave</span>${esc(x.w)}</div>`:''}</div>`;
+      ${x.w?`<div class="fline"><span class="fl-t">Ponto-chave</span>${jx(x.w)}</div>`:''}</div>`;
     const cls2=acertos===P.length?'good':(acertos===0?'bad':'idk');
     return `<div class="fb ${cls2}">
       <div class="verdict">${acertos} de ${P.length} lacunas corretas</div>
@@ -9405,14 +9906,14 @@ function feedbackBody(x,g){
         const b=x.bl[i],gb=GMAP[b.g],brule=feedbackRuleHtml(b,gb?[gb]:[],true);
         return `<div class="czfb ${p.ok?'good':'bad'}">
           <div class="czfb-h"><span class="czn">${i+1}</span>
-            ${!p.ok&&p.chosen?`<span class="muted">você marcou <span class="jp bad">${esc(p.chosen)}</span> · </span>`:''}
+            ${!p.ok&&p.chosen?`<span class="muted">você marcou <span class="jp bad">${jans(x,p.chosen,b.o)}</span> · </span>`:''}
             ${!p.ok&&!p.chosen?'<span class="muted">em branco · </span>':''}
-            <span class="jp good">${esc(p.expected)}</span></div>
-          <div class="czfb-w">${esc(b.w||'')}</div>
-          ${b.ctx?`<div class="czfb-ctx"><b>No texto:</b> ${esc(b.ctx)}</div>`:''}
+            <span class="jp good">${jans(x,p.expected,b.o)}</span></div>
+          <div class="czfb-w">${jx(b.w||'')}</div>
+          ${b.ctx?`<div class="czfb-ctx"><b>No texto:</b> ${jx(b.ctx)}</div>`:''}
           ${brule?`<div class="muted" style="margin-top:4px">Regra: ${brule}</div>`:''}
         </div>`;}).join('')}
-      ${x.w?`<div class="fline"><span class="fl-t">Sobre o texto</span>${esc(x.w)}</div>`:''}
+      ${x.w?`<div class="fline"><span class="fl-t">Sobre o texto</span>${jx(x.w)}</div>`:''}
       ${res==='idk'?`<div class="fline muted" data-nochat>${idkNote()}</div>`:''}
     </div>`;
   }
@@ -9426,8 +9927,8 @@ function feedbackBody(x,g){
   const rules=feedbackRuleHtml(x,gs,false);
   const starOrder=x.t==='star'&&(res==='bad'||res==='idk')?`
     <div class="fline"><span class="fl-t">Ordem correta</span><span class="jp">${x.ord.map((i,pos)=>
-      `<span class="stfrag${pos===x.star?' on':''}">${esc(x.tk[i])}</span>`).join('<span class="starrow">→</span>')}</span></div>
-    <div class="fline"><span class="fl-t">Frase montada</span><span class="jp good" style="font-size:16px">${esc(starSentence(x))}</span></div>`:'';
+      `<span class="stfrag${pos===x.star?' on':''}">${optsOf(x)[i]}</span>`).join('<span class="starrow">→</span>')}</span></div>
+    <div class="fline"><span class="fl-t">Frase montada</span><span class="jp good" style="font-size:16px">${jx(starSentence(x),isExt(x))}</span></div>`:'';
   if(res==='ok'){
     /* `okfb` (opcional) separa o acerto em blocos curtos: tradução (só a que
        já existe escrita na atividade), ponto-chave e forma. Sem `okfb`, o
@@ -9435,24 +9936,24 @@ function feedbackBody(x,g){
        chute não usam este campo. */
     const ok=x.okfb;
     if(ok&&(ok.tr||ok.pt||ok.fm)){
-      const bloco=(t,v)=>v?`<div class="fline"><span class="fl-t">${t}</span><span class="fl-tr">${esc(v).replace(/\n/g,'<br>')}</span></div>`:'';
+      const bloco=(t,v)=>v?`<div class="fline"><span class="fl-t">${t}</span><span class="fl-tr">${jx(v).replace(/\n/g,'<br>')}</span></div>`:'';
       return `<div class="fb good"><div class="verdict">${head}</div>
         ${bloco('Tradução',ok.tr)}${bloco('Ponto-chave',ok.pt)}${bloco('Forma',ok.fm)}</div>`;
     }
     return `<div class="fb good"><div class="verdict">${head}</div>
-    ${point?`<div class="fline"><span class="fl-t">Ponto-chave</span>${esc(point)}</div>`:''}</div>`;
+    ${point?`<div class="fline"><span class="fl-t">Ponto-chave</span>${jx(point)}</div>`:''}</div>`;
   }
   return `<div class="fb ${cls}">
     <div class="verdict">${head}</div>
-    ${res==='bad'&&chosen?`<div class="fline"><span class="fl-t">Você marcou</span><span class="jp bad">${esc(chosen)}</span></div>`:''}
-    ${res==='bad'||res==='idk'?`<div class="fline"><span class="fl-t">${x.t==='star'?'Fragmento correto em ★':'Resposta correta'}</span><span class="jp good" style="font-size:16px">${esc(exp)}</span></div>`:''}
-    ${res==='bad'?`<div class="fline"><span class="fl-t">${x.t==='mc'?'Por que sua escolha não é a resposta':'Por que esta resposta não atende ao pedido'}</span>${esc(reason)}</div>`:''}
-    ${point?`<div class="fline"><span class="fl-t">Ponto-chave</span>${esc(point)}</div>`:''}
+    ${res==='bad'&&chosen?`<div class="fline"><span class="fl-t">Você marcou</span><span class="jp bad">${jans(x,chosen)}</span></div>`:''}
+    ${res==='bad'||res==='idk'?`<div class="fline"><span class="fl-t">${x.t==='star'?'Fragmento correto em ★':'Resposta correta'}</span><span class="jp good" style="font-size:16px">${jans(x,exp)}</span></div>`:''}
+    ${res==='bad'?`<div class="fline"><span class="fl-t">${x.t==='mc'?'Por que sua escolha não é a resposta':'Por que esta resposta não atende ao pedido'}</span>${jx(reason)}</div>`:''}
+    ${point?`<div class="fline"><span class="fl-t">Ponto-chave</span>${jx(point)}</div>`:''}
     ${rules?`<div class="fline"><span class="fl-t">Regra utilizada</span>${rules}</div>`:''}
     ${starOrder}
     ${x.ne?`<div class="fline"><span class="fl-t">Outro exemplo da mesma regra</span>
-      <span class="jp" style="font-size:16px">${esc(x.ne[0])}</span><br><span class="muted">${esc(x.ne[1])}</span></div>`:''}
-    ${ct?`<div class="fline"><span class="fl-t">Contraste útil aqui</span><span class="jp">${esc(ct.t)}</span> — ${esc(ct.note)}</div>`:''}
+      <span class="jp" style="font-size:16px">${jx(x.ne[0])}</span><br><span class="muted">${esc(x.ne[1])}</span></div>`:''}
+    ${ct?`<div class="fline"><span class="fl-t">Contraste útil aqui</span><span class="jp">${jx(ct.t)}</span> — ${jx(ct.note)}</div>`:''}
     ${res==='idk'?`<div class="fline muted" data-nochat>${idkNote()}</div>`:''}
   </div>`;
 }
@@ -9905,6 +10406,8 @@ document.addEventListener('keydown',e=>{
   if(t&&t.id!=='inp'&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)) return;
   if(!cur()) return;
   e.preventDefault();
+  /* a busca segue aberta depois de responder, com o foco fora do campo */
+  if(takoOpen()){ toggleTako(); return; }
   confirmQuit();
 });
 /* ---------- Takoboto ----------
@@ -9915,26 +10418,7 @@ document.addEventListener('keydown',e=>{
    ignoram INPUT —, e aqui Enter vale como GO e Esc fecha o painel. */
 const TAKO_URL='https://takoboto.jp/';
 const TAKO_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="#E8312B"><circle cx="12" cy="12.4" r="7.9"/><circle cx="16.89" cy="6.58" r="2.35"/><circle cx="19.23" cy="10.05" r="2.35"/><circle cx="19.37" cy="14.24" r="2.35"/><circle cx="17.28" cy="17.87" r="2.35"/><circle cx="13.58" cy="19.83" r="2.35"/><circle cx="9.40" cy="19.54" r="2.35"/><circle cx="6.01" cy="17.08" r="2.35"/><circle cx="4.44" cy="13.19" r="2.35"/><circle cx="5.17" cy="9.07" r="2.35"/><circle cx="7.97" cy="5.95" r="2.35"/></g><path d="M9.2 11.5a3.9 3.9 0 0 0 7.8 0z" fill="#fff"/><path d="M11.75 11.5a1.6 1.6 0 0 0 3.2 0z" fill="#1C1B18"/></svg>';
-/* A busca tem largura PADRÃO (--tako-w no CSS), igual em toda questão; as
-   etiquetas não influem nela. Só o LUGAR depende delas: se essa largura cabe
-   ao lado da primeira linha de etiquetas, abre ali; senão, no cartão abaixo. */
 function takoOpen(){ return !!(V.tako&&V.tako.run===V.run&&V.tako.i===V.i); }
-function takoFit(){
-  const qt=document.querySelector('.qtop'), b=qt&&qt.querySelector('.tako-btn');
-  if(!qt||!b||!qt.getBoundingClientRect) return {mode:'left'};
-  const largura=parseFloat(getComputedStyle(qt).getPropertyValue('--tako-w'))||280;
-  const tags=[...qt.children].filter(e=>!e.matches('.tako-btn,.tako-pop')).map(e=>e.getBoundingClientRect()).filter(r=>r.width);
-  const top=Math.min(...tags.map(r=>r.top));
-  const fim=Math.max(qt.getBoundingClientRect().left,...tags.filter(r=>r.top<top+4).map(r=>r.right));
-  const livre=b.getBoundingClientRect().left-8-(fim+12);
-  return {mode:livre>=largura?'left':'below'};
-}
-function takoApply(f){
-  const pop=document.getElementById('takobox'), qt=pop&&pop.closest&&pop.closest('.qtop');
-  if(!pop||!qt) return;
-  pop.dataset.mode=f.mode;
-  qt.classList.toggle('tako-below',takoOpen()&&f.mode==='below');
-}
 /* Abre/fecha mexendo só nas classes do que já está na tela (sem render()),
    para que a transição aconteça; um render() posterior redesenha o mesmo
    estado já aberto, sem animar de novo. */
@@ -9943,23 +10427,16 @@ function toggleTako(ev){
   const pop=document.getElementById('takobox'), btn=document.querySelector('.tako-btn');
   if(takoOpen()){
     V.tako=null;
-    if(pop&&pop.classList){ pop.classList.remove('open'); takoApply({mode:pop.dataset.mode||'left'}); }
+    if(pop&&pop.classList) pop.classList.remove('open');
     if(btn){ btn.setAttribute('aria-expanded','false'); if(pop&&pop.contains&&pop.contains(document.activeElement)) btn.focus(); }
     return;
   }
-  const f=takoFit(); V.tako={run:V.run,i:V.i,q:'',mode:f.mode};
+  V.tako={run:V.run,i:V.i,q:''};
   if(!pop||!pop.classList){ render(); return; }
-  takoApply(f);
   const inp=document.getElementById('takoq'); if(inp) inp.value='';
   pop.classList.add('open');
   if(btn) btn.setAttribute('aria-expanded','true');
   if(inp) inp.focus({preventScroll:true});
-}
-/* depois de cada render com a busca aberta (ex.: a correção acrescenta uma
-   etiqueta), reavalia se ela ainda cabe ao lado — sem animação */
-function takoRelayout(){
-  if(!takoOpen()) return;
-  const f=takoFit(); V.tako.mode=f.mode; takoApply(f);
 }
 function takoKey(ev){
   if(ev.isComposing||ev.keyCode===229) return;
@@ -9988,6 +10465,7 @@ const CHAT_PREFILL_MAX=8000;   /* caracteres da URL já codificada */
 /* HTML que o próprio app gerou → texto com as quebras de bloco preservadas. */
 function visibleText(html){
   return String(html||'')
+    .replace(/<rt\b[^>]*>[\s\S]*?<\/rt>/g,'')
     .replace(/<(div|span)\b[^>]*\bdata-nochat\b[^>]*>[\s\S]*?<\/\1>/g,'')
     .replace(/<span class="starrow">[^<]*<\/span>/g,' → ')
     .replace(/<span class="stfrag on">([^<]*)<\/span>/g,'$1 (★)')
@@ -10010,18 +10488,18 @@ function chatPayload(){
   const it=cur(); if(!it||!it.ex||!V.graded) return '';
   const x=it.ex, L=[];
   L.push('Estou estudando japonês para o JLPT N5 e fiquei com dúvida nesta questão do Bunpou Lab.','','QUESTÃO','');
-  L.push(visibleText(x.p));
+  L.push(visibleText(jv(x.p,isExt(x))));
   if(x.gl) L.push('','Vocabulário: '+Object.entries(x.gl).map(([k,v])=>k+' = '+v).join(' · '));
   if(x.t==='mc'){
     L.push('','Alternativas:');
-    x.o.forEach((o,i)=>L.push(chatOptLine('ABCD'[i],o,i,x.a)));
+    x.o.forEach((o,i)=>L.push(chatOptLine('ABCD'[i],noRuby(optsOf(x)[i]),i,x.a)));
   } else if(x.t==='star'){
-    L.push('',(x.pre+x.ord.map((_,p)=>p===x.star?'★':'＿＿').join(' ')+x.post).replace(/<br\s*\/?>/gi,'\n'));
+    L.push('',noRuby(jv(x.pre+x.ord.map((_,p)=>p===x.star?'★':'＿＿').join(' ')+x.post,isExt(x)).replace(/<br\s*\/?>/gi,'\n')));
     L.push('','Alternativas (fragmento da posição ★):');
-    starView(x).forEach((i,p)=>L.push(chatOptLine(String(p+1),x.tk[i],i,x.ord[x.star])));
+    starView(x).forEach((i,p)=>L.push(chatOptLine(String(p+1),noRuby(optsOf(x)[i]),i,x.ord[x.star])));
   } else if(x.t==='cloze'){
-    L.push('',String(x.tx).replace(/｛(\d+)｝/g,'［$1］'));
-    x.bl.forEach((b,i)=>{ L.push('','Lacuna ［'+(i+1)+'］:'); b.o.forEach((o,j)=>L.push('ABCD'[j]+'. '+o)); });
+    L.push('',noRuby(jv(esc(x.tx),isExt(x))).replace(/｛(\d+)｝/g,'［$1］'));
+    x.bl.forEach((b,i)=>{ L.push('','Lacuna ［'+(i+1)+'］:'); b.o.forEach((o,j)=>L.push('ABCD'[j]+'. '+noRuby(jans(x,o,b.o)))); });
   }
   const fbEl=document.querySelector('.qcard .fb');
   const fb=visibleText(fbEl?fbEl.innerHTML:'');
@@ -10157,7 +10635,6 @@ function render(){
     default:         html=renderHome();
   }
   app.innerHTML=topbar()+html;
-  if(V.view==='run') takoRelayout();
   const inp=document.getElementById('inp');
   if(inp&&!V.graded){ inp.focus(); try{inp.setSelectionRange(inp.value.length,inp.value.length);}catch(e){} }
 }
