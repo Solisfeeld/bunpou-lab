@@ -18,7 +18,6 @@ Aplicação web para estudar e praticar gramática japonesa do JLPT N5. O conte�
 
 - **Sessão de gramática**: dividida em etapas (recuperação, reconhecimento e contraste, contexto, ordenação ★, erros e consolidação). Dura 15, 30, 45 ou 60 minutos.
 - **Prática rápida**: 5 ou 10 minutos, só com múltipla escolha.
-- **Mini JLPT — Gramática**: versão curta da seção de gramática da prova, com 10 questões de múltipla escolha, 3 de ordenação ★ e 1 texto com lacunas.
 - **Outros**: revisão mista, pontos fracos e prática de um ponto, de uma lição ou de uma fonte inteira.
 
 **Correção e revisão**
@@ -47,13 +46,15 @@ Os pontos gramaticais e a sequência de estudo foram organizados com apoio deste
 - Introdutório Rikai e Básico 1 Rikai (Marugoto A1 e A2 りかい);
 - Nihongo no Kotsu;
 - TRY! N5;
-- JLPT Official Practice Workbook e provas anteriores do JLPT N5.
+- JLPT Official Practice Workbook e provas anteriores do JLPT N5 (2013/07, 2021/12, 2023/07, 2025/07 e 2025/12);
+- simulados N5 do Bunpro, usados apenas como referência das estruturas cobradas (ver abaixo).
 
 O conteúdo tem três origens diferentes, e cada atividade indica a sua:
 
 - **Autoral**: explicações, feedbacks e exercícios escritos para o Bunpou Lab. Não são conteúdo oficial do JLPT nem dos materiais citados.
 - **Adaptado ou baseado em materiais de estudo**: exercícios ligados às lições do Rikai, do Nihongo no Kotsu e do TRY! N5.
 - **Practice Workbook e provas**: questões de gramática do Practice Workbook e de provas JLPT N5. Mantêm o enunciado, as alternativas e o gabarito originais e indicam o conjunto e o número da questão. As explicações que acompanham essas questões são do Bunpou Lab.
+- **Referência Bunpro — Simulados N5**: exercícios autorais do Bunpou Lab, escritos a partir das estruturas de gramática cobradas nos simulados N5 1, 2 e 3 do Bunpro. Não reproduzem as questões do Bunpro e não são provas oficiais; cada atividade indica o simulado e a questão de referência.
 
 ## Tecnologias
 

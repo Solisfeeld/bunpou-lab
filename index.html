@@ -21,6 +21,7 @@
   --line:#DDD5C3; --line-strong:#C7BDA6;
   --gold:#A8843F; --gold-wash:#F3EBD9;
   --murasaki:#6A4A7C; --murasaki-wash:#EDE5F2;   /* 5ª fonte: Provas antigas */
+  --asagi:#2C6E77; --asagi-wash:#DDECEE;         /* 6ª fonte: referência Bunpro */
   --on-accent:#fff;
   --glass:rgba(244,239,228,.93);
   --g1:rgba(32,57,91,.05); --g2:rgba(195,60,42,.04);
@@ -36,6 +37,7 @@ html[data-theme="dark"]{
   --line:#2C3038; --line-strong:#434A55;
   --gold:#C6A968; --gold-wash:rgba(198,169,104,.14);
   --murasaki:#B18FC9; --murasaki-wash:rgba(177,143,201,.16);
+  --asagi:#69B4BE; --asagi-wash:rgba(105,180,190,.15);
   --on-accent:#12161F;
   --glass:rgba(21,24,30,.90);
   --g1:rgba(110,147,206,.10); --g2:rgba(229,113,91,.07);
@@ -108,9 +110,12 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .g3{grid-template-columns:repeat(3,1fr);}
 .g2{grid-template-columns:repeat(2,1fr);}
 .g4{grid-template-columns:repeat(4,1fr);}
-.gsrc{grid-template-columns:repeat(4,1fr);}
-@media (max-width:860px){.gsrc{grid-template-columns:repeat(2,1fr);}}
-@media (max-width:400px){.gsrc{grid-template-columns:1fr;}}
+.gsrc{grid-template-columns:repeat(6,minmax(0,1fr));}
+/* 3 fontes curriculares numa linha (2/6 cada) e as 2 fontes por conjunto —
+   provas e simulados — na seguinte (3/6 cada): nenhum card fica sozinho. */
+.gsrc>.srccard{grid-column:span 2;}
+.gsrc>.srccard.set{grid-column:span 3;}
+@media (max-width:560px){.gsrc{grid-template-columns:1fr;} .gsrc>.srccard,.gsrc>.srccard.set{grid-column:auto;}}
 @media (max-width:1040px){.g4{grid-template-columns:repeat(2,1fr);}}
 
 /* source cards */
@@ -159,6 +164,54 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .seg button:hover{background:rgba(255,255,255,.12);}
 .seg button.on{background:#fff;color:var(--ai);}
 .seg small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;opacity:.72;}
+/* telas muito estreitas: 2×2, para “RECOMENDADO” caber sem corte */
+@media (max-width:360px){
+  .seg{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .seg button:nth-child(2n){border-right:0;}
+  .seg button:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.24);}
+}
+/* ---------- modos de estudo da Home ----------
+   Três cartões de mesmo peso. Altura igual pela grade; a descrição cresce
+   (flex:1) para o rodapé ficar alinhado nos três. Cor por modo só no selo
+   e na seta — o cartão em si segue o papel do app. */
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px;}
+.mode{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-width:0;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px 13px;
+  box-shadow:var(--shadow);color:var(--ink);transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;}
+.mode-k{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--mw);color:var(--m);
+  font-size:18px;font-weight:700;line-height:1;margin-bottom:12px;flex:none;}
+.mode-t{display:block;font-weight:800;font-size:15.5px;line-height:1.3;margin-bottom:4px;}
+.mode-d{display:block;flex:1;font-size:13px;line-height:1.5;color:var(--ink-soft);}
+.mode-f{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+  margin-top:14px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ink-faint);}
+.mode-go{color:var(--m);font-size:15px;line-height:1;transition:transform .15s ease;}
+.mode:hover{border-color:var(--m);box-shadow:var(--shadow-lg);transform:translateY(-1px);}
+.mode:hover .mode-go{transform:translateX(3px);}
+.mode:active{transform:translateY(0);box-shadow:var(--shadow);}
+.mode:focus-visible{outline:2px solid var(--ai);outline-offset:3px;}
+@media (max-width:720px){
+  .modes{grid-template-columns:1fr;gap:10px;}
+  /* celular: selo à esquerda, texto ao lado — mais compacto e fácil de tocar */
+  .mode{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:14px;padding:14px 16px 12px;}
+  .mode-k{grid-row:1 / span 3;margin:2px 0 0;}
+  .mode-t,.mode-d,.mode-f{grid-column:2;}
+  .mode-f{margin-top:9px;padding-top:0;border-top:0;}
+}
+/* Acompanhamento: consulta, não início de sessão. Painel plano (sem a
+   elevação dos cartões de ação) com os números que já existiam na Home. */
+.track{display:flex;align-items:center;gap:24px;flex-wrap:wrap;background:var(--card-2);
+  border:1px solid var(--line);border-radius:14px;padding:16px 20px;}
+.trk-stats{display:flex;gap:26px;flex:none;}
+.trk-stat b{display:block;font-size:22px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums;color:var(--ink);}
+.trk-stat span{display:block;font-size:12px;color:var(--ink-faint);font-weight:600;}
+.trk-d{flex:1 1 220px;margin:0;font-size:13px;line-height:1.5;color:var(--ink-soft);}
+.trk-btn{flex:none;}
+.trk-btn:focus-visible{outline:2px solid var(--ai);outline-offset:2px;}
+@media (max-width:560px){
+  .track{gap:12px;padding:15px 16px;}
+  .trk-d{flex-basis:100%;}
+  .trk-btn{width:100%;}
+}
 /* seletor de duração da Prática rápida: fundo claro e alvo de toque grande */
 .qpick{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 4px;}
 .qpick button{flex:1 1 150px;min-height:60px;border:1px solid var(--line-strong);border-radius:13px;
@@ -238,6 +291,7 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 .chip.src-nnk{background:var(--midori-wash);border-color:transparent;color:var(--midori);}
 .chip.src-try{background:var(--gold-wash);border-color:transparent;color:var(--gold);}
 .chip.src-provas{background:var(--murasaki-wash);border-color:transparent;color:var(--murasaki);}
+.chip.src-bunpro{background:var(--asagi-wash);border-color:transparent;color:var(--asagi);}
 .chip.src-lab{background:var(--card-2);border-color:var(--line-strong);color:var(--ink-soft);}
 .chip.ori{cursor:pointer;font:inherit;font-size:12px;font-weight:600;}
 .chip.ori:focus-visible{outline:2px solid var(--ai);outline-offset:2px;}
@@ -297,7 +351,7 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 
 /* ---------- exercise ---------- */
 .qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);padding:22px 24px;}
-.qtop{display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-wrap:wrap;}
+.qtop{display:flex;align-items:flex-start;gap:9px;}
 .qprompt{font-size:17px;line-height:1.65;margin-bottom:6px;}
 .qprompt .muted{display:block;}   /* nota em português sempre em linha própria, nunca grudada na frase japonesa */
 .qprompt .blank{
@@ -467,19 +521,37 @@ rt{font-size:.52em;font-weight:400;letter-spacing:0;line-height:1;color:var(--in
   .chat-btn{width:34px;height:34px;min-height:34px;padding:0;justify-content:center;}
   .chat-btn span{display:none;}
 }
-/* Takoboto. Layout único em todas as telas: ícone no canto superior esquerdo do
-   cartão e busca à direita dele, numa linha própria ACIMA das etiquetas. O
-   espaço dessa linha já fica reservado com a busca fechada (padding-top) e os
-   dois ficam fora do fluxo. Abrir e fechar anima só clip-path e opacidade, que
-   não mexem em layout: a busca nunca move etiquetas nem enunciado. */
-.qtop{position:relative;padding-top:42px;}
+/* Cabeçalho do cartão. Uma linha: Takoboto no canto esquerdo e etiquetas
+   alinhadas à direita; um filete separa esse cabeçalho do enunciado. O ícone
+   e a busca ficam fora do fluxo (o padding-left reserva o lugar do ícone):
+   abrir e fechar anima só clip-path e opacidade, que não mexem em layout — a
+   busca nunca move etiquetas nem enunciado. As etiquetas nunca entram na
+   faixa da busca (ícone + 320px): em tela larga, max-width as faz quebrar
+   dentro da coluna da direita; abaixo de 700px a busca ganha uma linha
+   compacta própria, reservada acima das etiquetas. */
+.qtop{position:relative;min-height:34px;padding:0 0 12px 46px;margin:-2px 0 16px;border-bottom:1px solid var(--line);}
+.qtags{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto;min-height:34px;min-width:0;
+  max-width:calc(100% - 330px);}
+.qtags .chip{font-size:11.5px;padding:2px 10px;line-height:1.55;}
+.qtags .chip.ori{font-size:11.5px;}
+.qtags .ori-pop{left:auto;right:0;}
+@media (max-width:700px){
+  /* linha 1: ícone (e a busca, quando aberta); linha 2: etiquetas */
+  .qtop{padding:42px 0 11px 0;}
+  .qtags{justify-content:flex-start;margin-left:0;max-width:none;min-height:0;}
+  /* o popover de origem ancora no cabeçalho (não na etiqueta): começa na
+     margem esquerda do cartão e nunca passa da direita */
+  .qtags .ori-wrap{position:static;}
+  .qtags .ori-pop{left:0;right:auto;top:calc(100% - 4px);max-width:100%;}
+}
 .tako-btn{position:absolute;top:0;left:0;display:grid;place-items:center;width:34px;height:34px;padding:0;border-radius:50%;
   border:1px solid var(--line-strong);background:var(--card);transition:border-color .13s,background .13s;}
 .tako-btn:hover{border-color:var(--ai);}
 .tako-btn[aria-expanded="true"]{border-color:var(--ai);background:var(--ai-wash);}
 .tako-btn:focus-visible{outline:2px solid var(--ai);outline-offset:2px;}
 .tako-btn svg{width:21px;height:21px;}
-.tako-pop{position:absolute;top:0;left:42px;width:min(300px,calc(100% - 42px));height:34px;display:flex;gap:6px;align-items:center;z-index:3;
+.tako-pop{position:absolute;top:0;left:44px;width:min(320px,calc(100% - 44px));height:34px;display:flex;gap:6px;align-items:center;z-index:3;
+  background:var(--card);
   clip-path:inset(0 100% 0 0 round 10px);opacity:0;visibility:hidden;
   transition:clip-path .2s ease,opacity .2s ease,visibility 0s linear .2s;}
 .tako-pop.open{clip-path:inset(0 0 0 0 round 10px);opacity:1;visibility:visible;
@@ -581,7 +653,7 @@ rt{font-size:.52em;font-weight:400;letter-spacing:0;line-height:1;color:var(--in
   .qcard{padding:18px 16px;}
   .pad{padding:16px 16px;}
 }
-@media print{.topbar,.acts{display:none;}}
+@media print{.topbar,.acts,.modes,.track{display:none;}}
 </style>
 </head>
 <body>
@@ -632,13 +704,26 @@ const SOURCES = {
      progresso salvo), então nada gravado precisa migrar por causa do nome. */
   provas: { id:'provas', name:'Workbook e provas JLPT', jp:'もんだいしゅう', kanji:'問',
             sub:'JLPT N5 · Practice Workbook (2012) e provas anteriores', accent:'var(--murasaki)',
-            unitWord:'Conjunto', examSource:true }
+            unitWord:'Conjunto', examSource:true },
+  /* Sexta fonte, IRMÃ de Provas no comportamento (seleção por conjunto, `su`
+     na atividade, liberação só das próprias atividades) e separada dela no
+     conteúdo: não é prova oficial. As atividades são AUTORAIS do Bunpou Lab,
+     escritas com referência às estruturas dos simulados N5 do Bunpro — não
+     reproduzem as questões do Bunpro (ver bloco “SIMULADOS N5 DO BUNPRO”). */
+  bunpro: { id:'bunpro', name:'Bunpro — Simulados N5', jp:'もぎしけん', kanji:'模',
+            sub:'Exercícios autorais com referência aos simulados N5 do Bunpro', accent:'var(--asagi)',
+            unitWord:'Simulado', examSource:true }
 };
-const SRC_ORDER = ['intro','basico','nnk','try','provas'];
+const SRC_ORDER = ['intro','basico','nnk','try','provas','bunpro'];
 /* Rótulo curto para os chips de proveniência mostrados na atividade. Os nomes
    completos dos Ajustes continuam sendo SOURCES[x].name e não mudam. */
-const SRC_SHORT={intro:'Intro Rikai',basico:'Básico Rikai',nnk:'NNK','try':'TRY',provas:'Workbook e provas'};
+const SRC_SHORT={intro:'Intro Rikai',basico:'Básico Rikai',nnk:'NNK','try':'TRY',provas:'Workbook e provas',bunpro:'Ref. Bunpro'};
 const SRC_PROVAS='provas';
+/* Fontes organizadas por CONJUNTO (provas, simulados): a atividade traz a
+   própria unidade em `su`, os Ajustes usam caixas por conjunto e a fonte
+   libera só as próprias atividades, nunca o acervo geral do ponto. */
+const SET_SRCS=['provas','bunpro'];
+const isSetSrc=s=>SET_SRCS.includes(s);
 /* Rótulo da PROVENIÊNCIA. 'lab' não é uma sexta fonte: não entra em SRC_ORDER,
    não tem interruptor, não participa de elegibilidade nem de filtros. É só o
    nome honesto do material de origem quando o exercício é autoral. */
@@ -647,6 +732,7 @@ const ORIGIN={intro :{label:'Intro Rikai',   name:'Introdutório Rikai (Marugoto
               nnk   :{label:'NNK',           name:'Nihongo no Kotsu'},
               'try' :{label:'TRY',           name:'TRY! N5'},
               provas:{label:'Workbook e provas',name:'Workbook e provas JLPT N5'},
+              bunpro:{label:'Ref. Bunpro',   name:'Exercício autoral do Bunpou Lab com referência aos simulados N5 do Bunpro'},
               lab   :{label:'Bunpou Lab',    name:'Exercício escrito para o Bunpou Lab'}};
 
 /* --- Unidades -------------------------------------------------------
@@ -665,7 +751,19 @@ provas:[
  {n:2, jp:'Workbook 2012', pt:'JLPT Official Practice Workbook — N5 (2012)', tag:'Practice Workbook', kind:'g'},
  {n:3, jp:'2025年7月',     pt:'Prova JLPT N5 — julho de 2025',               tag:'Prova 2025/07',     kind:'g'},
  {n:4, jp:'2025年12月',    pt:'Prova JLPT N5 — dezembro de 2025',            tag:'Prova 2025/12',     kind:'g'},
- {n:5, jp:'2023年7月',     pt:'Prova JLPT N5 — julho de 2023',               tag:'Prova 2023/07',     kind:'g'}
+ {n:5, jp:'2023年7月',     pt:'Prova JLPT N5 — julho de 2023',               tag:'Prova 2023/07',     kind:'g'},
+ {n:6, jp:'2021年12月',    pt:'Prova JLPT N5 — dezembro de 2021',            tag:'Prova 2021/12',     kind:'g'}
+],
+/* Simulados do Bunpro: cada “unidade” é um simulado de REFERÊNCIA. `tag` é o
+   rótulo curto da atividade; `name` vai no popover de origem e deixa claro que
+   a atividade é autoral. */
+bunpro:[
+ {n:1, jp:'模擬試験 1', pt:'Bunpro — Simulado 1', tag:'Ref. Bunpro · Sim. 1', kind:'g',
+  name:'Exercício autoral do Bunpou Lab, escrito com referência ao Simulado 1 (N5) do Bunpro. Não é questão do Bunpro.'},
+ {n:2, jp:'模擬試験 2', pt:'Bunpro — Simulado 2', tag:'Ref. Bunpro · Sim. 2', kind:'g',
+  name:'Exercício autoral do Bunpou Lab, escrito com referência ao Simulado 2 (N5) do Bunpro. Não é questão do Bunpro.'},
+ {n:3, jp:'模擬試験 3', pt:'Bunpro — Simulado 3', tag:'Ref. Bunpro · Sim. 3', kind:'g',
+  name:'Exercício autoral do Bunpou Lab, escrito com referência ao Simulado 3 (N5) do Bunpro. Não é questão do Bunpro.'}
 ],
 intro:[
  {n:1,  jp:'ひらがな',                pt:'Hiragana e cumprimentos',        kind:'base'},
@@ -4492,10 +4590,21 @@ X('counters','mc','dif',{p:'へやが（　）あります。<br><span class="mu
  o:['さんにん','みっつ','さんまい','さんびき'],a:1,
  h:['Quartos não são pessoas nem animais.','Objetos genéricos têm contador próprio.'],
  w:'Objetos genéricos usam 〜つ: みっつ.',ne:['かぞくは ３にんです。','Minha família tem 3 pessoas.']});
-X('ga-ii','mc','dif',{p:'A: いつが いいですか。<br>B: （　）が いいです。<br><span class="muted">Sábado.</span>',
- o:['どようびは','どようび','どようびに','どようびを'],a:1,
- h:['A opção escolhida já vai receber が logo depois.','Não se acumulam duas partículas.'],
- w:'A opção liga-se direto a が: どようびが いいです.',ne:['おちゃが いいです。','Prefiro chá.']});
+/* x336 — reconstruída (14/11/2026, 2ª versão). A 1ª trazia はいいです como
+   distrator, mas 〜は いいです pode ser natural (comentar um item já citado).
+   Agora a lacuna fica depois do INTERROGATIVO: なに＋が é a única forma
+   possível — interrogativo não leva は, いい não recebe を, e なにも só
+   existe com negativa. O tópico のみもの/ばんごはん は na mesma frase mostra
+   os dois papéis lado a lado: は para o assunto, が para a escolha. */
+X('ga-ii','mc','dif',{p:'A：「こんばん、わたしが りょうりを つくります。ばんごはんは なに（　）いいですか。」<br>B：「カレーが いいです。」',
+ o:['は','が','を','も'],a:1,
+ h:['ばんごはんは já é o assunto. A lacuna marca o que está sendo escolhido.'],
+ w:'ばんごはんは なにが いいですか = “O que você quer no jantar?” ばんごはんは apresenta o assunto; なにが pede a ESCOLHA, e a resposta usa a mesma estrutura: カレーが いいです. 〜が いいです marca a opção preferida. Isso não torna は errado com いいです: どようびは いいですよ (“quanto ao sábado, está bom”) é natural para comentar algo já mencionado. O que não existe é interrogativo ＋ は.',
+ okfb:{tr:'ばんごはんは なにが いいですか。\n“O que você quer no jantar?”',pt:'Assunto ＋ は ＋ interrogativo ＋ が いいですか: は marca o tema conhecido; が, a escolha pedida.'},
+ wr:{'は':'Interrogativos (なに, どこ, だれ, いつ) não levam は: eles são a informação NOVA que se pede, e は marca o que já é conhecido — aqui, ばんごはんは. A escolha pedida fica com が: なにが いいですか.',
+     'を':'を marca o objeto de um verbo; いい é adjetivo e não recebe objeto.',
+     'も':'なにも só aparece com verbo negativo (なにも たべません = não como nada); não forma uma pergunta de escolha.'},
+ ne:['A：りょこうは どこが いいですか。 B：きょうとが いいです。','A: Para a viagem, onde você prefere? B: Prefiro Quioto.']});
 X('de-transporte','prod','pro',{p:'Escreva em japonês: <b>“Falo em japonês.”</b> （にほんご · はなします）',
  acc:['にほんごで はなします','にほんごで はなします。','にほんごではなします。'],
  h:['A língua aqui é o meio pelo qual se fala.','MEIO ＋ ? ＋ verbo'],
@@ -5353,14 +5462,19 @@ X('nagara-tari','mc','dif',{pg:'tari-tari',p:'Explicando como você passa o domi
  w:'えいがを みたり、かいものを したり します。 たり cita exemplos, sem simultaneidade.',
  wr:{'しながら':'ながら exigiria que as duas acontecessem ao mesmo tempo.','して':'〜て daria sequência fixa dos fatos.','します':'Quebraria o par たり…たり.'},
  ne:['そうじしたり、せんたくしたり しました。','Limpei, lavei roupa, essas coisas.']});
-X('nagara-tari','mc','dif',{pg:['nagara','tari-tari'],p:'Uma destas frases usa ながら para ações que não são simultâneas. Qual está ERRADA?',
- o:['あさ はしりながら、よる およぎながら します。','あるきながら はなします。','そうじしたり、せんたくしたり します。','コーヒーを のみながら しんぶんを よみます。'],a:0,
- h:['ながら exige que as ações sejam simultâneas.','Manhã e noite não são o mesmo momento.'],
- w:'Correr de manhã e nadar à noite são momentos diferentes: pede たり…たり, não ながら.',
- wr:{'あるきながら はなします。':'Está certa: andar e falar acontecem ao mesmo tempo, que é o que ながら exige. Sem erro, não é a procurada.',
-     'そうじしたり、せんたくしたり します。':'Está certa — e note que aqui o autor usou たり justamente porque as ações NÃO são simultâneas. Não é a errada.',
-     'コーヒーを のみながら しんぶんを よみます。':'Está certa: tomar café e ler o jornal são simultâneos. A errada é a que põe manhã e noite sob ながら.'},
- ne:['あさ はしったり、よる およいだり します。','De manhã corro, à noite nado, essas coisas.']});
+/* x481 — reconstruída (14/11/2026). A versão anterior pedia a frase ERRADA e
+   misturava uma alternativa com たり…たり, fora da comparação. Agora as quatro
+   usam ながら e só uma cumpre as duas condições: MESMA pessoa e ações que
+   DURAM ao mesmo tempo. Cobra só ながら (g:'nagara'), não mais o contraste. */
+X('nagara','mc','dif',{p:'Em qual destas frases <b>〜ながら</b> está bem empregado?',
+ o:['ははが りょうりを しながら、ちちが テレビを みます。','えきに つきながら、ともだちに でんわします。','おんがくを ききながら、しゅくだいを します。','シャワーを あびながら、ベッドで ねます。'],a:2,
+ h:['ながら junta duas ações que a MESMA pessoa faz ao mesmo tempo.','As duas ações precisam durar juntas.'],
+ w:'おんがくを ききながら、しゅくだいを します = “Faço a lição ouvindo música.” Uma só pessoa faz as duas ações, e elas duram ao mesmo tempo: ouvir música acompanha a ação principal (fazer a lição), que fica no fim da frase.',
+ okfb:{tr:'おんがくを ききながら、しゅくだいを します。\n“Faço a lição ouvindo música.”',pt:'ながら liga duas ações simultâneas da MESMA pessoa; a ação principal fica no fim.'},
+ wr:{'ははが りょうりを しながら、ちちが テレビを みます。':'Há duas pessoas: a mãe cozinha e o pai vê TV. ながら só liga ações do MESMO sujeito. Para pessoas diferentes, use duas frases ou とき: ははが りょうりを して いる とき、ちちは テレビを みます.',
+     'えきに つきながら、ともだちに でんわします。':'つきます (chegar) acontece num instante; não dura para acompanhar outra ação. Primeiro se chega, depois se telefona: えきに ついてから、でんわします.',
+     'シャワーを あびながら、ベッドで ねます。':'Tomar banho e dormir na cama não acontecem ao mesmo tempo: um vem depois do outro. Para sequência, use 〜てから: シャワーを あびてから、ねます.'},
+ ne:['コーヒーを のみながら、しんぶんを よみます。','Leio o jornal tomando café.']});
 X('nagara-tari','fill','man',{pg:'tari-tari',p:'Complete com <b>ながら</b> ou <b>たり</b>:<br>ひまな ときは ほんを よんだり、おんがくを きい（　）します。',short:true,acc:['たり'],
  h:['A frase já começou com よんだり.','O par precisa fechar do mesmo jeito.'],
  w:'よんだり、きいたり します。 O par たり…たり se fecha com します.',
@@ -6897,6 +7011,410 @@ CZ({su:5,exam:'2023/07',qno:'問題3(14)-(17)',
  w:'Dois relatos: uma visita à biblioteca e a rotina em um restaurante do bairro.'});
 EX_SRC=null; EX_ORIGIN='lab';   /* fim da prova 2023/07 */
 
+/* ===================================================================
+   PROVA JLPT N5 2021/12 — seção de gramática (言語知識2: もんだい1–3)
+   Fonte: pacote 2021年12月N5 (真题.pdf, págs. 14–16, redigitação sem camada
+   de texto; 答案.docx, tabela 言語知識2 em imagem). Enunciado, alternativas,
+   ORDEM e gabarito são os da prova; os 17 itens foram conferidos um a um com
+   o gabarito (2 4 2 2 1 3 3 2 4 | 4 3 3 1 | 4 3 1 1). As páginas de 聴解 e
+   読解 do mesmo PDF não entram. Sem duplicatas com os demais conjuntos.
+   Redigitação: em 問題1(9) o PDF traz “タクシ-で” com hífen; normalizado
+   para タクシーで, como no restante do diálogo.
+   =================================================================== */
+EX_SRC='provas'; EX_ORIGIN='provas';
+/* ---- 2021年12月 · もんだい1 ---- */
+X('ni-aite','mc','rec',{su:6,exam:'2021/12',qno:'問題1(1)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">きのう 学校で 先生（　）会いました。</span>',
+ o:['で','に','を','へ'],a:1,h:['会います: com quem?'],
+ w:'先生に 会いました — 会います marca com に a pessoa que se encontra.',
+ wr:{'で':'で já está em 学校で, marcando o lugar; não marca a pessoa encontrada.','を':'Em japonês, 会います não recebe objeto com を: a pessoa leva に.','へ':'へ marca direção de deslocamento; o professor não é um destino.'}});
+X('gurai','mc','rec',{su:6,exam:'2021/12',qno:'問題1(2)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">わたしの アパートから 学校まで 30分（　）かかります。</span>',
+ o:['を','ごろ','が','くらい'],a:3,h:['30分 é uma duração.'],
+ w:'30分くらい かかります — くらい aproxima uma DURAÇÃO: “leva uns 30 minutos”.',
+ wr:{'を':'かかります não recebe objeto; o tempo gasto fica sem を.','ごろ':'ごろ aproxima um MOMENTO do relógio (3時ごろ), não uma duração como 30分.','が':'が faria de 30分 o sujeito; aqui ele só mede quanto tempo leva.'}});
+X('part-wo','mc','rec',{su:6,exam:'2021/12',qno:'問題1(3)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">わたしは 毎朝 シャワー（　）あびます。</span>',
+ o:['で','を','に','が'],a:1,h:['あびます: o que se toma?'],
+ w:'シャワーを あびます = “tomar banho de chuveiro”. A ducha é o objeto de あびます e leva を.',
+ wr:{'で':'で marcaria o meio ou o lugar; a ducha é o objeto do verbo.','に':'に marcaria destino ou alvo; não se usa com あびます.','が':'が faria da ducha o sujeito; quem toma banho é わたし.'}});
+X('kara-made','mc','rec',{su:6,exam:'2021/12',qno:'問題1(4)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">雨が まど（　）入ります。しめて ください。</span>',
+ o:['へ','から','まで','で'],a:1,h:['Por onde a chuva entra?'],
+ w:'まどから 入ります — から marca o ponto de onde algo vem ou por onde passa: “a chuva entra pela janela”.',
+ wr:{'へ':'へ diria que a chuva vai EM DIREÇÃO à janela; ela vem de fora por ela.','まで':'まで marca o limite (“até a janela”), não a passagem.','で':'で marcaria o lugar de uma ação; a janela é a abertura por onde a chuva entra.'}});
+X('part-wa-topico','mc','rec',{su:6,exam:'2021/12',qno:'問題1(5)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">中山「アンさんは りょうりを しますか。」<br>アン「はい。でも、いそがしい 日（　）しません。」</span>',
+ o:['は','を','で','も'],a:0,h:['はい, mas há uma exceção.'],
+ w:'いそがしい 日は しません — は destaca o caso em CONTRASTE: “cozinho, mas nos dias corridos, não”.',
+ wr:{'を':'を faria de 日 o objeto de しません; o objeto (りょうり) já está subentendido.','で':'で marca lugar ou meio; 日 aqui é o caso que recebe o contraste.','も':'も (“também nos dias corridos”) pressupõe outro caso em que ela não cozinha, mas ela acabou de dizer はい.'}});
+X('mou-mada','mc','rec',{su:6,exam:'2021/12',qno:'問題1(6)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">A「すみません、田中さんは いますか。」<br>B「いいえ、（　）かえりましたよ。」</span>',
+ o:['よく','まだ','もう','あまり'],a:2,h:['Ele não está porque a ação já aconteceu.'],
+ w:'もう かえりました = “já foi embora”. もう ＋ passado afirma que a ação já se completou.',
+ wr:{'よく':'よく fala de frequência (“volta sempre”); não explica por que ele não está agora.','まだ':'まだ ＋ afirmativa significa “ainda”, e まだ não acompanha かえりました para dizer que já foi.','あまり':'あまり pede verbo negativo.'}});
+X('toki','mc','rec',{su:6,exam:'2021/12',qno:'問題1(7)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">（　）とき、本を 読んだり えいがを 見たり します。</span>',
+ o:['ひま','ひまだ','ひまな','ひまで'],a:2,h:['ひま é NA-adjetivo.'],
+ w:'ひまな とき = “quando estou livre”. NA-adjetivo liga-se a とき com な.',
+ wr:{'ひま':'Sem な, o NA-adjetivo não qualifica とき.','ひまだ':'だ fecha uma frase; antes de substantivo, o NA-adjetivo usa な.','ひまで':'で liga duas qualidades ou dá motivo; não liga o adjetivo a とき.'}});
+X('ageru-morau','mc','rec',{su:6,exam:'2021/12',qno:'問題1(8)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">A「あしたは 山田さんの たんじょうびですね。何を（　）か。」<br>B「花は どうですか。」<br>A「いいですね。」</span>',
+ o:['もらいます','あげます','もらいました','あげました'],a:1,h:['Quem vai dar, e quando?'],
+ w:'何を あげますか = “o que vamos dar?”. O presente vai PARA Yamada (あげます), e o aniversário é amanhã: não passado.',
+ wr:{'もらいます':'もらいます seria “receber”; quem ganha o presente é Yamada, não quem pergunta.','もらいました':'Além de “receber”, está no passado; o aniversário é amanhã.','あげました':'あげます está certo, mas no passado: o aniversário é amanhã.'}});
+X('onegai-shimasu','mc','rec',{su:6,exam:'2021/12',qno:'問題1(9)',
+ p:'Escolha a opção que completa corretamente a frase:<br><span class="jpq">（タクシーで）<br>タクシーの 人「どこまで 行きますか。」<br>西川「東京駅まで（　）。」<br>タクシーの 人「はい、わかりました。」</span>',
+ o:['して ください','ほしいです','いかがですか','おねがいします'],a:3,h:['Um pedido curto e educado ao motorista.'],
+ w:'東京駅まで おねがいします = “Até a estação de Tóquio, por favor.” Destino ＋ まで ＋ おねがいします é o pedido padrão no táxi.',
+ wr:{'して ください':'して ください pede que o outro FAÇA algo; falta o verbo (“levar”) e não se diz assim ao motorista.','ほしいです':'ほしいです expressa desejo de TER uma coisa; não pede um serviço.','いかがですか':'いかがですか oferece algo ao outro (“que tal?”); quem oferece é o atendente, não o passageiro.'}});
+/* ---- 2021年12月 · もんだい2 ---- */
+ST('kute-de',{su:6,exam:'2021/12',qno:'問題2(10)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'この ',post:' とき べんりです。',
+ tk:['旅行の','じょうぶだから','かばんは','軽くて'],ord:[2,3,1,0],star:1,
+ full:'この かばんは 軽くて じょうぶだから 旅行の とき べんりです。',
+ h:['Primeiro o assunto (このかばんは), depois as duas qualidades.'],
+ w:'かばんは 軽くて じょうぶだから — 軽い vira 軽くて para somar a segunda qualidade; だから dá o motivo; 旅行の とき diz quando é útil.'});
+ST('ni-quantidade',{su:6,exam:'2021/12',qno:'問題2(11)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'れいぞうこの ',post:' 3本 あります。',
+ tk:['に','中','ぎゅうにゅう','が'],ord:[1,0,2,3],star:2,
+ full:'れいぞうこの 中に ぎゅうにゅうが 3本 あります。',
+ h:['LOCAL に ＋ coisa が ＋ quantidade ＋ あります.'],
+ w:'れいぞうこの 中に (lugar) ＋ ぎゅうにゅうが (o que existe) ＋ 3本 (quantidade, sem partícula) ＋ あります.'});
+ST('hoshii',{su:6,exam:'2021/12',qno:'問題2(12)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'たんじょうびには ',post:' ですか。',
+ tk:['ほしい','どんな','が','プレゼント'],ord:[1,3,2,0],star:2,
+ full:'たんじょうびには どんな プレゼントが ほしいですか。',
+ h:['どんな ＋ substantivo; o que se quer leva が.'],
+ w:'どんな プレゼントが ほしいですか — どんな vem colado ao substantivo, e o objeto de desejo de ほしい leva が.'});
+ST('part-to-comp',{su:6,exam:'2021/12',qno:'問題2(13)',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'きのう 山下さん ',post:' 家に 行きました。',
+ tk:['森さん','いっしょに','の','と'],ord:[3,1,0,2],star:2,
+ full:'きのう 山下さんと いっしょに 森さんの 家に 行きました。',
+ h:['Com quem foi? E à casa de quem?'],
+ w:'山下さんと いっしょに (companhia) ＋ 森さんの 家に (destino: a casa do Mori). と marca com quem se faz a ação.'});
+/* ---- 2021年12月 · もんだい3 ---- */
+CZ({su:6,exam:'2021/12',qno:'問題3(14)-(17)',
+ p:'Leia o texto e escolha o que completa cada lacuna:',
+ tx:'下の ぶんしょうは りゅうがくせいが 書いた さくぶんです。\n\n（1）サンホさんの さくぶん\n私は まいばん 本を 読みます。本は いつも としょかんで かります。毎日、ばんごはんを 食べて、しゅくだいを してから、本を 読みます。きのうは しゅくだいが ありませんでした。私は ｛1｝ すぐ 本を 読みました。\n先週 かりた 本は ぜんぶ 読みました。今日の ゆうがた、本を ｛2｝ 行きます。そして、また ほかの 本を かります。\n\n（2）ジョイさんの さくぶん\n私の 家の 近くに「みなみコーヒー」が あります。「みなみコーヒー」の コーヒーは 安くて おいしいです。｛3｝、私は 毎朝 行きます。「みなみコーヒー」で コーヒーを 飲んでから、学校に 行きます。ときどき、夜も「みなみコーヒー」で コーヒーを ｛4｝。',
+ bl:[{g:'ato-de-n',o:['ねる まえに','かりる まえに','しゅくだいの あと','ばんごはんの あと'],a:3,
+      w:'ばんごはんの あと = “depois do jantar”. Sem lição, o jantar passou a vir logo antes da leitura.',
+      ctx:'A rotina é jantar → lição → ler. Ontem não houve lição, então leu logo depois do jantar.'},
+     {g:'ni-ikimasu-obj',o:['かしに','かして','かえしに','かえして'],a:2,
+      w:'かえしに 行きます = “vou devolver”. Raiz de ます ＋ に ＋ 行きます diz a finalidade da ida.',
+      ctx:'Os livros emprestados já foram lidos; depois ela pega outros: vai DEVOLVER, não emprestar.'},
+     {g:'kara-motivo',o:['だから','それから','では','でも'],a:0,
+      w:'だから = “por isso”: o café ser barato e gostoso é o motivo de ir toda manhã.',
+      ctx:'A frase anterior dá a razão; a seguinte, a consequência.'},
+     {g:'teiru-habito',o:['飲んで います','飲んで いるから です','飲んで いません','飲んで いないから です'],a:0,
+      w:'ときどき 飲んで います — 〜て います descreve um hábito: “às vezes também tomo café lá à noite”.',
+      ctx:'ときどき e も acrescentam mais um hábito; não há motivo a explicar, então não entra 〜からです.'}],
+ h:['Leia os dois textos inteiros antes de decidir.'],
+ w:'Dois relatos de rotina: a leitura de livros da biblioteca e o café do bairro.'});
+EX_SRC=null; EX_ORIGIN='lab';   /* fim da prova 2021/12 */
+
+/* ===================================================================
+   SIMULADOS N5 DO BUNPRO — EXERCÍCIOS AUTORAIS DE REFERÊNCIA
+   Não há autorização para reproduzir as questões do Bunpro num site público.
+   Por isso NADA aqui é questão do Bunpro: cada atividade foi escrita para o
+   Bunpou Lab (frase, contexto, alternativas e explicação próprios), cobrando
+   a MESMA estrutura de uma questão de gramática (もんだい1–3) dos simulados
+   N5 1, 2 e 3. `su` = simulado de referência; `ref` = questão de referência.
+   Selecionadas 38 das 51 questões de gramática (29 atividades: as 4 lacunas
+   de cada もんだい3 viram um texto). Fora: vocabulário/pragmática, estrutura
+   além do N5, decisão já bem coberta no banco ou repetida entre simulados.
+   =================================================================== */
+EX_SRC='bunpro'; EX_ORIGIN='bunpro';
+/* ---- Simulado 1 ---- */
+X('freq-adv','mc','dif',{su:1,ref:'もんだい1 · 2',
+ p:'A：「この ケーキ、わたしが つくりました。どうぞ。」<br>B：「ありがとう。……わあ、（　）おいしいです！」',
+ o:['とても','よく','あまり','ときどき'],a:0,
+ h:['B acabou de provar: a pergunta é QUANTO, não QUANTAS VEZES.'],
+ w:'とても おいしいです = “Está muito gostoso!” とても intensifica o adjetivo. よく e ときどき falam de frequência, e あまり pede frase negativa.',
+ okfb:{tr:'とても おいしいです！\n“Está muito gostoso!”',pt:'とても mede o GRAU de um adjetivo; よく e ときどき medem frequência.'},
+ wr:{'よく':'よく diz com que FREQUÊNCIA algo acontece (よく たべます = como sempre). Para o grau de um adjetivo, use とても.',
+     'あまり':'あまり pede frase negativa: あまり おいしくないです = “não é muito gostoso”. Com おいしいです afirmativo, não serve.',
+     'ときどき':'ときどき = “às vezes”: fala de frequência. Um bolo provado agora não é gostoso “às vezes”.'},
+ ne:['この へやは とても しずかです。','Este quarto é muito silencioso.']});
+X('aru-iru','mc','dif',{su:1,ref:'もんだい1 · 3',
+ p:'A：「らいしゅうの どようび、がっこうで おまつりが（　）。」<br>B：「そうですか。わたしも いきたいです。」',
+ o:['います','します','あります','なります'],a:2,
+ h:['おまつり não é pessoa nem objeto: é um acontecimento.'],
+ w:'おまつりが あります = “vai ter um festival”. Eventos (festa, prova, aula, reunião) “acontecem” com あります; o lugar do evento leva で: がっこうで おまつりが あります.',
+ okfb:{tr:'がっこうで おまつりが あります。\n“Vai ter um festival na escola.”',pt:'Evento ＋ が あります = o evento acontece. O lugar do evento leva で.'},
+ wr:{'います':'います é para pessoas e animais. Um festival é um evento, e eventos usam あります.',
+     'します':'Com します, o festival seria o objeto: おまつりを します. Com が, o verbo que diz que o evento acontece é あります.',
+     'なります':'なります significa “tornar-se”; não diz que o evento vai acontecer.'},
+ ne:['あした テストが あります。','Amanhã tem prova.']});
+X('part-ka','mc','dif',{su:1,ref:'もんだい1 · 4',
+ p:'（ともだちの いえで）<br>A：「のみものは なにが いいですか。」<br>B：「なんでも いいですよ。コーヒー（　）こうちゃを ください。」',
+ o:['と','か','も','や'],a:1,
+ h:['なんでも いいです: qualquer uma das duas serve.'],
+ w:'コーヒーか こうちゃ = “café ou chá”. Entre dois substantivos, か apresenta alternativas: B aceita qualquer uma das duas.',
+ okfb:{tr:'コーヒーか こうちゃを ください。\n“Café ou chá, por favor.”',pt:'A か B = A ou B. と pediria os dois.'},
+ wr:{'と':'と fecha uma lista: pediria café E chá, duas bebidas. Quem diz なんでも いいです aceita uma OU outra.',
+     'も':'も significa “também” e acompanha um item só; コーヒーも こうちゃを não forma frase.',
+     'や':'や cita exemplos de um conjunto (“café, chá etc.”); não expressa a escolha entre uma coisa e outra.'},
+ ne:['どようびか にちようびに いきます。','Vou no sábado ou no domingo.']});
+X('onegai-shimasu','mc','dif',{su:1,ref:'もんだい1 · 5',
+ p:'（パンやで）<br>みせの ひと：「ふくろに いれましょうか。」<br>きゃく：「（　）。」<br>みせの ひと：「はい、どうぞ。」',
+ o:['はい、いれましょう','いいえ、いれて ください','はい、いれたいです','はい、おねがいします'],a:3,
+ h:['Quem vai colocar o pão na sacola?'],
+ w:'〜ましょうか é uma OFERTA (“quer que eu coloque?”). Quem aceita responde はい、おねがいします; quem faz a ação é o vendedor.',
+ okfb:{tr:'はい、おねがいします。\n“Sim, por favor.”',pt:'Oferta com 〜ましょうか → aceite com はい、おねがいします.'},
+ wr:{'はい、いれましょう':'いれましょう convida a fazer junto (“vamos colocar”). Quem ofereceu e vai colocar é o vendedor; o cliente só aceita.',
+     'いいえ、いれて ください':'いいえ recusa, mas いれて ください pede que coloque: a resposta se contradiz.',
+     'はい、いれたいです':'いれたいです diria que o CLIENTE quer colocar. Quem coloca é o vendedor; o cliente aceita a oferta.'},
+ ne:['A：まどを あけましょうか。 B：はい、おねがいします。','A: Quer que eu abra a janela? B: Sim, por favor.']});
+X('ageru-morau','mc','dif',{su:1,ref:'もんだい1 · 8',
+ p:'たんじょうびに、わたしは そふ（　）とけいを もらいました。',
+ o:['で','を','から','が'],a:2,
+ h:['もらいました: quem recebe é わたし. E de quem veio?'],
+ w:'そふから もらいました = “ganhei do meu avô”. Com もらいます, quem recebe é o sujeito (わたしは) e quem dá leva から (ou に).',
+ okfb:{tr:'わたしは そふから とけいを もらいました。\n“Ganhei um relógio do meu avô.”',pt:'もらいます: quem recebe ＋ は; quem dá ＋ から／に; a coisa ＋ を.'},
+ wr:{'で':'で marcaria o lugar ou o meio; o avô é a pessoa de quem o relógio veio.',
+     'を':'を já marca とけい, a coisa recebida; o avô não é objeto.',
+     'が':'が faria do avô o sujeito, mas o sujeito de もらいました é わたし, quem recebe.'},
+ ne:['ともだちから てがみを もらいました。','Recebi uma carta de um amigo.']});
+X('aru-iru','mc','dif',{su:1,ref:'もんだい1 · 9',
+ p:'（でんわで）<br>A：「はい、やまだです。」<br>B：「もしもし、すずきです。（　）。」<br>A：「はい、ちょっと まって ください。」',
+ o:['はなこさんは いますか','はなこさんは ありますか','はなこさんは いきますか','はなこさんは どうですか'],a:0,
+ h:['B quer falar com a Hanako: ela está em casa?'],
+ w:'はなこさんは いますか = “A Hanako está?” Ao telefone, pergunta-se pela pessoa com います, o verbo de existência para seres vivos.',
+ okfb:{tr:'もしもし、すずきです。はなこさんは いますか。\n“Alô, é o Suzuki. A Hanako está?”',pt:'Pessoa ＋ は いますか = perguntar se alguém está presente.'},
+ wr:{'はなこさんは ありますか':'あります é para coisas e eventos. Para perguntar se uma PESSOA está, use います.',
+     'はなこさんは いきますか':'いきますか pergunta se ela vai a algum lugar; A responde “espere um pouco” porque vai chamá-la.',
+     'はなこさんは どうですか':'どうですか pede opinião ou estado (“como ela está?”); não pede para falar com ela.'},
+ ne:['せんせいは いま きょうしつに いますか。','O professor está na sala agora?']});
+ST('suki-no-ga',{su:1,ref:'もんだい2 · 10',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'わたしは あさ ',post:' すきです。',
+ tk:['が','あるく','こうえんを','の'],ord:[2,1,3,0],star:1,
+ full:'わたしは あさ こうえんを あるくのが すきです。',
+ h:['Do que a pessoa gosta? De uma ação inteira: caminhar no parque.'],
+ w:'こうえんを あるく (a ação) ＋ の (vira “o ato de caminhar”) ＋ が ＋ すきです. Para gostar de uma AÇÃO, o verbo na forma de dicionário recebe の antes de が.'});
+ST('node',{su:1,ref:'もんだい2 · 11',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'きょうは ',post:'、どこにも でかけません。',
+ tk:['ので','ふって いる','あめ','が'],ord:[2,3,1,0],star:2,
+ full:'きょうは あめが ふって いるので、どこにも でかけません。',
+ h:['Primeiro a causa completa (sujeito ＋ verbo); ので fecha a causa.'],
+ w:'あめが ふって いる (a causa) ＋ ので ＋ a consequência. ので vem logo depois do verbo da causa, antes da vírgula.'});
+ST('tsumori',{su:1,ref:'もんだい2 · 12',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'なつやすみは うみへ ',post:' です。',
+ tk:['つもり','に','およぎ','いく'],ord:[2,1,3,0],star:2,
+ full:'なつやすみは うみへ およぎに いく つもりです。',
+ h:['“Ir nadar” e, por cima disso, “pretendo”.'],
+ w:'およぎに いく = “ir nadar” (raiz de ます ＋ に ＋ いく). つもりです pede a forma de dicionário antes: いく つもりです = “pretendo ir”.'});
+ST('rentai',{su:1,ref:'もんだい2 · 13',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'A：「',post:' なにを しますか。」<br>B：「いえで えいがを みます。」',
+ tk:['ひは','あめ','ふる','が'],ord:[1,3,2,0],star:2,fbRule:'relative-subject',
+ full:'A：「あめが ふる ひは なにを しますか。」 B：「いえで えいがを みます。」',
+ h:['Que dias? Os dias em que chove.'],
+ w:'あめが ふる ＋ ひ: a oração inteira qualifica ひ — “os dias em que chove”. Dentro dela, o sujeito あめ leva が.'});
+CZ({su:1,ref:'もんだい3 · 14–17',
+ p:'Leia o texto e escolha o que completa cada lacuna:',
+ tx:'クラスで じこしょうかいを しました。\n\n（1）マリアさんの じこしょうかい\nはじめまして、マリアです。ブラジルの サンパウロから ｛1｝。にほんの りょうりが だいすきです。これから、にほんで いろいろな りょうりを ｛2｝。\n\n（2）ケビンさんの じこしょうかい\nケビンです。アメリカから きました。わたしは サッカーが すきです。｛3｝、まいしゅう どようびに こうえんで サッカーを して います。みなさんも いっしょに ｛4｝。',
+ bl:[{g:'past-verb',o:['きました','いきました','きます','いきます'],a:0,
+      w:'サンパウロから きました — ela já está no Japão: vir para onde se está é きます, e a chegada já aconteceu.',
+      ctx:'É uma apresentação feita no Japão, depois da chegada.'},
+     {g:'tai',o:['たべました','たべたいです','たべて います','たべて ください'],a:1,
+      w:'これから … たべたいです = “daqui em diante, quero comer…”: um desejo para o futuro.',
+      ctx:'これから aponta para o futuro; um fato passado ou um hábito atual não combinam com ele.'},
+     {g:'kara-motivo',o:['でも','それから','だから','では'],a:2,
+      w:'だから = “por isso”: gostar de futebol é o motivo de jogar todo sábado.',
+      ctx:'A primeira frase dá a razão; a segunda, a consequência.'},
+     {g:'mashou',o:['しました','しましょう','しましたか','して いません'],a:1,
+      w:'みなさんも いっしょに しましょう = “vamos jogar juntos, pessoal”: convite com 〜ましょう.',
+      ctx:'みなさんも いっしょに chama os colegas para uma ação futura.'}],
+ h:['Leia cada apresentação inteira antes de escolher.'],
+ w:'Duas apresentações: quem fala já chegou, um desejo para o futuro, um motivo e um convite.'});
+/* ---- Simulado 2 ---- */
+X('time-ni','mc','dif',{su:2,ref:'もんだい1 · 1',
+ p:'A：「あしたの かいぎは なんじからですか。」<br>B：「ごご 2じ（　）はじまります。」',
+ o:['に','で','を','まで'],a:0,
+ h:['Um horário exato marca quando a ação acontece.'],
+ w:'2じに はじまります = “começa às 2”. Um horário exato marca o momento da ação com に.',
+ okfb:{tr:'ごご 2じに はじまります。\n“Começa às 2 da tarde.”',pt:'Hora exata ＋ に ＋ verbo.'},
+ wr:{'で':'で marca lugar ou meio; um horário exato leva に.',
+     'を':'を marca objeto; はじまります não tem objeto, e o horário não é objeto.',
+     'まで':'まで marca o fim (“até as 2”); はじまります fala do começo.'},
+ ne:['まいあさ 7じに おきます。','Acordo às 7 todas as manhãs.']});
+X('ya-nado','mc','dif',{su:2,ref:'もんだい1 · 2',
+ p:'つくえの うえに ほん（　）ノートなどが あります。',
+ o:['と','も','か','や'],a:3,
+ h:['など no fim avisa que a lista continua.'],
+ w:'ほんや ノートなど = “livros, cadernos etc.” や cita exemplos e など confirma que há mais coisas.',
+ okfb:{tr:'つくえの うえに ほんや ノートなどが あります。\n“Na mesa há livros, cadernos etc.”',pt:'A や B など = lista aberta de exemplos.'},
+ wr:{'と':'と fecha uma lista completa; など avisa que há outras coisas, então a lista é aberta e pede や.',
+     'も':'も significa “também”; não liga dois itens de uma lista.',
+     'か':'か apresentaria alternativas (“livro ou caderno”), mas na mesa estão os dois e mais coisas.'},
+ ne:['こうえんに いぬや ねこなどが います。','No parque há cachorros, gatos etc.']});
+X('wo-kudasai','mc','dif',{su:2,ref:'もんだい1 · 3',
+ p:'（きっさてんで）<br>みせの ひと：「いらっしゃいませ。なにが いいですか。」<br>きゃく：「ええと……（　）。」',
+ o:['オレンジジュースを のみましょう','オレンジジュースが ありました','オレンジジュースを ください','オレンジジュースを あげます'],a:2,
+ h:['O cliente faz o pedido.'],
+ w:'N を ください = “quero N, por favor”: a forma básica de pedir algo numa loja ou café.',
+ okfb:{tr:'オレンジジュースを ください。\n“Um suco de laranja, por favor.”',pt:'Para pedir algo: N ＋ を ください.'},
+ wr:{'オレンジジュースを のみましょう':'のみましょう convida a beber junto; o cliente está pedindo ao atendente.',
+     'オレンジジュースが ありました':'ありました só constata que havia suco (passado); não faz o pedido.',
+     'オレンジジュースを あげます':'あげます diria que o cliente vai DAR o suco ao atendente.'},
+ ne:['すみません、おみずを ください。','Com licença, uma água, por favor.']});
+X('part-to-comp','mc','dif',{su:2,ref:'もんだい1 · 5',
+ p:'にちようびに かぞく（　）こうえんへ いきました。',
+ o:['に','を','へ','と'],a:3,
+ h:['A família é COM QUEM se foi.'],
+ w:'かぞくと いきました = “fui com a família”. Depois de pessoa, と marca a companhia.',
+ okfb:{tr:'にちようびに かぞくと こうえんへ いきました。\n“No domingo fui ao parque com a família.”',pt:'Pessoa ＋ と ＋ verbo = fazer algo junto com alguém.'},
+ wr:{'に':'に marcaria destino ou alvo; a família não é para onde se vai, é com quem se vai.',
+     'を':'を marca objeto; いきます não recebe a família como objeto.',
+     'へ':'へ marca direção; o destino já é こうえんへ.'},
+ ne:['ともだちと えいがを みました。','Vi um filme com um amigo.']});
+X('kara-made','mc','dif',{su:2,ref:'もんだい1 · 7',
+ p:'A：「きょうも アルバイトですか。」<br>B：「ええ、あさ 9じから よる 8じ（　）はたらきます。」',
+ o:['から','に','まで','ごろ'],a:2,
+ h:['から abriu um intervalo; falta fechá-lo.'],
+ w:'9じから 8じまで = “das 9 às 8”. から marca o início e まで o fim do intervalo.',
+ okfb:{tr:'あさ 9じから よる 8じまで はたらきます。\n“Trabalho das 9 da manhã às 8 da noite.”',pt:'A から B まで = de A até B.'},
+ wr:{'から':'から já marca o início (9じから); o fim do intervalo pede まで.',
+     'に':'に marca um momento pontual; aqui o horário fecha um intervalo de trabalho.',
+     'ごろ':'ごろ só aproxima um horário (8じごろ); sozinho não fecha o intervalo aberto por から.'},
+ ne:['ぎんこうは 9じから 3じまでです。','O banco funciona das 9 às 3.']});
+X('kureru','mc','dif',{su:2,ref:'もんだい1 · 9',
+ p:'たんじょうびに、あねが わたし（　）かわいい ハンカチを くれました。',
+ o:['を','で','から','に'],a:3,
+ h:['あねが dá; わたし recebe.'],
+ w:'くれます: quem dá ＋ が, quem recebe (eu) ＋ に, a coisa ＋ を. あねが わたしに ハンカチを くれました = “minha irmã me deu um lenço”.',
+ okfb:{tr:'あねが わたしに ハンカチを くれました。\n“Minha irmã me deu um lenço.”',pt:'くれます: quem recebe (eu ou alguém do meu lado) leva に.'},
+ wr:{'を':'を já marca ハンカチ, a coisa dada; わたし é quem recebe.',
+     'で':'で marca lugar ou meio; não indica quem recebe.',
+     'から':'から marca a ORIGEM, quem dá. Aqui quem dá é あね (com が); わたし recebe.'},
+ ne:['ともだちが わたしに ほんを くれました。','Um amigo me deu um livro.']});
+ST('rentai',{su:2,ref:'もんだい2 · 10',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'A：「これは ',post:' ですか。」<br>B：「ええ、きのう こうえんで とりました。」',
+ tk:['しゃしん','あなた','とった','が'],ord:[1,3,2,0],star:1,fbRule:'relative-subject',
+ full:'A：「これは あなたが とった しゃしんですか。」 B：「ええ、きのう こうえんで とりました。」',
+ h:['Que foto? A que VOCÊ tirou.'],
+ w:'あなたが とった ＋ しゃしん: a oração “que você tirou” qualifica しゃしん. Dentro dela, o sujeito leva が, não は.'});
+ST('no-pronome',{su:2,ref:'もんだい2 · 12',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'A：「この ',post:' ですか。」<br>B：「いいえ、わたしのは あおい かさです。」',
+ tk:['あなた','かさ','の','は'],ord:[1,3,0,2],star:3,
+ full:'A：「この かさは あなたのですか。」 B：「いいえ、わたしのは あおい かさです。」',
+ h:['かさ já está na frase: não precisa repeti-lo.'],
+ w:'この かさは あなたのですか — あなたの ＋ です: o の substitui かさ, que já apareceu (“é seu?”). B usa o mesmo recurso: わたしのは.'});
+ST('kosoado-pron',{su:2,ref:'もんだい2 · 13',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'A：「たなかさんの ',post:' か。」<br>B：「あの しろい くるまです。」',
+ tk:['です','は','くるま','どれ'],ord:[2,1,3,0],star:2,
+ full:'A：「たなかさんの くるまは どれですか。」 B：「あの しろい くるまです。」',
+ h:['Entre vários carros à vista: qual?'],
+ w:'たなかさんの くるまは どれですか = “Qual é o carro do Tanaka?” どれ escolhe uma coisa entre várias e ocupa o lugar da resposta, antes de ですか.'});
+CZ({su:2,ref:'もんだい3 · 14–17',
+ p:'Leia o texto e escolha o que completa cada lacuna:',
+ tx:'りょこうの ことを ぶんしょうに かきました。\n\n（1）リンさんの ぶんしょう\nなつやすみに ほっかいどう｛1｝ いきました。ともだちと やまに のぼったり、おいしい さかなを たべたり しました。とても たのしかったです。こんどは ふゆに ｛2｝。\n\n（2）トムさんの ぶんしょう\nせんしゅう、きょうとの おてらに いきました。とても しずかで、きれいでした。みなさんも ｛3｝。でも、おてらの なかでは しゃしんを ｛4｝。きを つけて ください。',
+ bl:[{g:'ni-destino',o:['を','が','へ','で'],a:2,
+      w:'ほっかいどうへ いきました — o destino do deslocamento leva へ (ou に).',
+      ctx:'いきました: aonde ela foi?'},
+     {g:'tai',o:['いきたいです','いきました','いきませんでした','いって います'],a:0,
+      w:'こんどは ふゆに いきたいです = “da próxima vez, quero ir no inverno”.',
+      ctx:'こんどは (da próxima vez) aponta para o futuro: um desejo, não um fato.'},
+     {g:'hou-ga-ii',o:['いっては いけませんよ','いった ほうが いいですよ','いきませんでしたか','いって いませんよ'],a:1,
+      w:'いった ほうが いいですよ = “é bom vocês irem”: conselho com Vた ＋ ほうが いい.',
+      ctx:'Depois de elogiar o templo, ele recomenda a visita aos colegas.'},
+     {g:'te-wa-ikemasen',o:['とった ほうが いいです','とって ください','とっては いけません','とりたいです'],a:2,
+      w:'しゃしんを とっては いけません = “não se pode tirar fotos”: proibição com Vて ＋ は いけません.',
+      ctx:'でも e きを つけて ください anunciam uma regra a respeitar dentro do templo.'}],
+ h:['Leia os dois textos inteiros antes de decidir.'],
+ w:'Dois relatos de viagem: o destino, um desejo para a próxima vez, um conselho e uma proibição.'});
+/* ---- Simulado 3 ---- */
+X('part-no','mc','dif',{su:3,ref:'もんだい1 · 1',
+ p:'A：「なんじの しんかんせんに のりますか。」<br>B：「11じ（　）しんかんせんに のります。」',
+ o:['の','で','を','が'],a:0,
+ h:['A pergunta なんじの… quer saber QUAL trem-bala.'],
+ w:'11じの しんかんせん = “o trem-bala das 11”. の liga o horário ao veículo e diz qual é.',
+ okfb:{tr:'11じの しんかんせんに のります。\n“Vou pegar o trem-bala das 11.”',pt:'なんじの N? → horário ＋ の ＋ N.'},
+ wr:{'で':'で marcaria meio ou lugar; 11じ aqui identifica qual trem-bala.',
+     'を':'を não liga um horário a um substantivo; e o veículo de のります já leva に.',
+     'が':'が faria de 11じ o sujeito; o horário só especifica o trem.'},
+ ne:['8じはんの バスで かえります。','Volto no ônibus das 8h30.']});
+X('gurai','mc','dif',{su:3,ref:'もんだい1 · 2',
+ p:'A：「その くつは いくらでしたか。」<br>B：「よく おぼえて いませんが、5000えん（　）でした。」',
+ o:['ごろ','まで','くらい','すぎ'],a:2,
+ h:['B não lembra bem: dá um valor aproximado.'],
+ w:'5000えんくらい = “uns 5.000 ienes”. くらい／ぐらい aproxima preços, quantidades e durações.',
+ okfb:{tr:'5000えんくらいでした。\n“Custou uns 5.000 ienes.”',pt:'Valor aproximado: número ＋ くらい／ぐらい.'},
+ wr:{'ごろ':'ごろ aproxima um MOMENTO (3じごろ). Para preço, quantidade ou duração, use くらい／ぐらい.',
+     'まで':'まで marca limite (“até 5.000 ienes”); não diz quanto custou aproximadamente.',
+     'すぎ':'すぎ se usa com horas (7じすぎ = passado das 7); não aproxima preços.'},
+ ne:['えきまで 10ぷんくらい かかります。','Leva uns 10 minutos até a estação.']});
+X('de-transporte','mc','dif',{su:3,ref:'もんだい1 · 4',
+ p:'A：「うちから だいがくまで（　）いきますか。」<br>B：「じてんしゃで いきます。」',
+ o:['いつ','どうやって','だれと','どこ'],a:1,
+ h:['A resposta diz o MEIO: じてんしゃで.'],
+ w:'どうやって いきますか = “como (de que jeito) você vai?”. A resposta com で dá o meio: じてんしゃで.',
+ okfb:{tr:'A：うちから だいがくまで どうやって いきますか。\nB：じてんしゃで いきます。\n“Como você vai de casa à faculdade?” “De bicicleta.”',pt:'どうやって pergunta o meio; a resposta usa meio ＋ で.'},
+ wr:{'いつ':'いつ pergunta QUANDO; a resposta じてんしゃで fala do meio.',
+     'だれと':'だれと pergunta com QUEM; a resposta não fala de companhia.',
+     'どこ':'O trajeto (うちから だいがくまで) já foi dito; e どこ sem partícula não se liga a いきますか.'},
+ ne:['A：えきまで どうやって いきますか。 B：バスで いきます。','A: Como você vai até a estação? B: De ônibus.']});
+X('mou-mada','mc','dif',{su:3,ref:'もんだい1 · 8',
+ p:'A：「レポートは もう だしましたか。」<br>B：「（　）。あした だします。」',
+ o:['はい、もう だしました','いいえ、だしませんでした','いいえ、まだです','はい、まだです'],a:2,
+ h:['B ainda vai entregar amanhã.'],
+ w:'いいえ、まだです = “Não, ainda não.” É a resposta a もう〜ましたか quando a ação está pendente e ainda vai acontecer.',
+ okfb:{tr:'いいえ、まだです。あした だします。\n“Ainda não. Entrego amanhã.”',pt:'もう〜ましたか → pendente: いいえ、まだです.'},
+ wr:{'はい、もう だしました':'Diz que já entregou, mas logo depois B avisa que vai entregar amanhã.',
+     'いいえ、だしませんでした':'〜ませんでした fecha o assunto como “não entreguei (e pronto)”. Para algo que ainda vai acontecer, use まだです ou まだ だして いません.',
+     'はい、まだです':'はい concordaria com “já entregou?”, e まだです diz o contrário: a resposta se contradiz.'},
+ ne:['A：ひるごはんは もう たべましたか。 B：いいえ、まだです。','A: Já almoçou? B: Não, ainda não.']});
+ST('de-local',{su:3,ref:'もんだい2 · 11',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'A：「きのうの ',post:' たべましたか。」<br>B：「えきの ちかくの みせで たべました。」',
+ tk:['どこ','で','ばんごはん','は'],ord:[2,3,0,1],star:3,
+ full:'A：「きのうの ばんごはんは どこで たべましたか。」 B：「えきの ちかくの みせで たべました。」',
+ h:['Onde aconteceu a AÇÃO de jantar?'],
+ w:'ばんごはんは どこで たべましたか — o lugar onde a AÇÃO acontece leva で; por isso a resposta também traz みせで.'});
+ST('mae-ni-v',{su:3,ref:'もんだい2 · 12',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'A：「まいばん ',post:' なにを しますか。」<br>B：「ほんを よみます。」',
+ tk:['は','に','ねる','まえ'],ord:[2,3,1,0],star:2,
+ full:'A：「まいばん ねる まえには なにを しますか。」 B：「ほんを よみます。」',
+ h:['“Antes de dormir” forma um bloco; は destaca esse momento.'],
+ w:'ねる まえに = “antes de dormir”: verbo na forma de dicionário ＋ まえ ＋ に. は destaca esse momento como assunto da pergunta: ねる まえには なにを しますか.'});
+ST('gurai',{su:3,ref:'もんだい2 · 13',
+ p:'Monte a frase e indique o fragmento que fica em ★:',
+ pre:'A：「どこに すんで いますか。」<br>B：「えきから ',post:' ところに すんで います。」',
+ tk:['の','くらい','あるいて','10ぷん'],ord:[2,3,1,0],star:2,
+ full:'A：「どこに すんで いますか。」 B：「えきから あるいて 10ぷんくらいの ところに すんで います。」',
+ h:['Que lugar? Um lugar a uns 10 minutos a pé.'],
+ w:'あるいて 10ぷんくらい ＋ の ＋ ところ = “um lugar a uns 10 minutos a pé”. くらい aproxima a duração, e の liga essa medida ao substantivo.'});
+CZ({su:3,ref:'もんだい3 · 14–17',
+ p:'Leia o texto e escolha o que completa cada lacuna:',
+ tx:'クラスで「わたしの しゅみ」の ぶんしょうを かいて、よみました。\n\n（1）アナさんの ぶんしょう\nわたしの しゅみは りょうりです。にほんに ｛1｝、まいにち にほんの りょうりを つくって います。いまは すしを つくりたいです。みなさん、おいしい すしの みせを ｛2｝。\n\n（2）ニックさんの ぶんしょう\nわたしの しゅみは やまのぼりです。わたしは やまが だいすき｛3｝、おとうとは やまが あまり すきでは ありません。でも、らいげつ おとうとと いっしょに ふじさんに ｛4｝。',
+ bl:[{g:'te-kara',o:['きてから','くる まえに','きながら','こないで'],a:0,
+      w:'にほんに きてから = “depois de vir ao Japão”: Vて ＋ から marca o ponto a partir do qual algo começa.',
+      ctx:'Hoje ela cozinha comida japonesa todo dia — um hábito que começou depois da chegada.'},
+     {g:'te-kudasai',o:['おしえましょう','おしえて ください','おしえました','おしえて います'],a:1,
+      w:'みなさん、…みせを おしえて ください = “pessoal, me indiquem um bom restaurante”: pedido com Vて ください.',
+      ctx:'Ela quer fazer sushi e pede uma informação aos colegas.'},
+     {g:'ga-contraste',o:['ですから','ですが','でしたか','だから'],a:1,
+      w:'だいすきですが、おとうとは… = “eu adoro, mas meu irmão…”: が liga duas orações em contraste, no registro formal.',
+      ctx:'As duas metades se opõem: eu adoro montanha; meu irmão não gosta muito.'},
+     {g:'tsumori',o:['のぼりました','のぼる つもりです','のぼって いました','のぼりませんでした'],a:1,
+      w:'らいげつ … のぼる つもりです = “no mês que vem, pretendo subir”: Vる ＋ つもりです expressa um plano.',
+      ctx:'らいげつ (mês que vem) pede uma forma de futuro; passado não combina.'}],
+ h:['Leia os dois textos inteiros antes de decidir.'],
+ w:'Dois textos sobre hobbies: quando algo começou, um pedido, um contraste e um plano.'});
+EX_SRC=null; EX_ORIGIN='lab';   /* fim dos exercícios de referência Bunpro */
+
 
 /* Explicações específicas para distratores que antes caíam no texto genérico.
    O mapa só completa `wr`; IDs, respostas e correção permanecem inalterados. */
@@ -7039,7 +7557,6 @@ Object.assign(WR_CLARITY,{
  x330:{'みっつが':'ほん já recebe が como aquilo que existe; a quantidade não vira um segundo sujeito e fica sem partícula.','みっつに':'に marcaria destino/momento, não a quantidade de livros existentes.'},
  x332:{'とても':'とても すき significa “gosto muito”, mas não compara o verão às outras estações para dizer “o que mais gosto”.','あまり':'あまり pede negativa e daria “não gosto muito”, o oposto do superlativo.','よく':'よく significa “frequentemente/bem”, não “mais que todas as opções”.'},
  x335:{'さんにん':'〜にん conta pessoas, não quartos.','さんまい':'〜まい conta objetos planos, não cômodos.','さんびき':'〜ひき conta animais pequenos, não quartos.'},
- x336:{'どようびは':'Como が já vem depois da lacuna, isso produziria はが, duas partículas no mesmo lugar.','どようびに':'Isso produziria にが; a opção escolhida deve entrar diretamente antes de が.','どようびを':'Isso produziria をが; não acrescente partícula ao substantivo que já receberá が.'},
  x338:{'いくら':'いくら pergunta preço; o enunciado pergunta quantas maçãs existem.','どれ':'どれ pergunta qual maçã entre opções, não a quantidade.','いつ':'いつ pergunta quando, não quantos objetos.'},
  x339:{'どの':'どのもの perguntaria “qual coisa” dentro de um conjunto definido; a resposta descreve um tipo/categoria.','どれ':'どれ fica sozinho e não pode vir diretamente antes de もの.','なに':'なにもの forma outra palavra/ideia (“que pessoa/ser”), não a pergunta N5 “que tipo de coisa”.'},
  x340:{'なが':'なが não contém の, que é o elemento que transforma “ser silencioso” em “o silêncio/o que é silencioso”.','のが':'Com NA-adjetivo, の precisa vir depois de な: しずかなのが.'},
@@ -7247,7 +7764,7 @@ const storeKey=uid=>{const u=uid===undefined?PROFILE:uid; return u?KEY+':user:'+
 /* Política de fontes vigente. Um estado gravado com `cfg.mig` menor passa
    UMA vez pela migração em hydrateProgress; depois disso as escolhas do
    usuário mandam e nada é religado. */
-const CFG_MIG=4;
+const CFG_MIG=5;
 const DEF=()=>({v:2,
   /* Provas nasce ativa com todas as provas importadas marcadas. Como a chave é
      NOVA, um progresso antigo simplesmente não a tem: o merge com DEF() abaixo
@@ -7255,9 +7772,11 @@ const DEF=()=>({v:2,
      necessidade de subir CFG_MIG (o que faria rodar migração em quem não
      precisa). Provas usa sempre `manual` — a seleção é por prova, não por
      alcance crescente. */
-  cfg:{src:{intro:true,basico:true,nnk:true,'try':true,provas:true},
-       lim:{intro:18,basico:18,nnk:16,'try':45,provas:5},
-       manual:{intro:null,basico:null,nnk:null,'try':null,provas:[1,2,3,4,5]},   /* null = usar limite; array = seleção manual */
+  /* `bunpro` segue a mesma regra de chave nova: quem não a tem recebe a fonte
+     ligada e os três simulados marcados pelo merge, sem migração. */
+  cfg:{src:{intro:true,basico:true,nnk:true,'try':true,provas:true,bunpro:true},
+       lim:{intro:18,basico:18,nnk:16,'try':45,provas:6,bunpro:3},
+       manual:{intro:null,basico:null,nnk:null,'try':null,provas:[1,2,3,4,5,6],bunpro:[1,2,3]},   /* null = usar limite; array = seleção manual */
        mig:CFG_MIG,
        romaji:true,
        sessionMin:60},                             /* progresso antigo sem esta chave herda 60 */
@@ -7317,6 +7836,11 @@ function hydrateProgress(p){
   if(migFrom<4&&Array.isArray(out.cfg.manual.provas)){
     if(!out.cfg.manual.provas.includes(5)) out.cfg.manual.provas=out.cfg.manual.provas.concat(5);
   } else if(migFrom<4&&(out.cfg.lim.provas|0)>=4){ out.cfg.lim.provas=5; }
+  /* 4 → 5: entrou o conjunto 6 (prova 2021/12). Mesma regra: marca só o novo,
+     uma vez. A fonte Bunpro não precisa de etapa — é chave nova (ver DEF). */
+  if(migFrom<5&&Array.isArray(out.cfg.manual.provas)){
+    if(!out.cfg.manual.provas.includes(6)) out.cfg.manual.provas=out.cfg.manual.provas.concat(6);
+  } else if(migFrom<5&&(out.cfg.lim.provas|0)>=5){ out.cfg.lim.provas=6; }
   out.cfg.mig=CFG_MIG;
   if(!SESSION_PRESETS[out.cfg.sessionMin]) out.cfg.sessionMin=60;
   out.gp  =(p.gp  &&typeof p.gp  ==='object'&&!Array.isArray(p.gp))  ?p.gp  :{};
@@ -7394,14 +7918,16 @@ function gpEligible(g,ignoreKind){
    por gpEligible (seu src é [['provas',n]]); o que este conjunto acrescenta são
    os pontos COMPARTILHADOS que uma questão de prova cobra mas que o currículo
    ainda não liberou — sem ele a questão da prova ficaria escondida. */
-function provasGidSet(){
+/* Sem argumento: todas as fontes por conjunto (provas e simulados Bunpro).
+   Com `sid`: só aquela fonte — é o recorte da tela de Progresso. */
+function provasGidSet(sid){
   const out=new Set();
-  if(!S.cfg.src[SRC_PROVAS]) return out;
-  ALLEX.forEach(x=>{ if(x.sx===SRC_PROVAS&&exSourceOn(x)) exGids(x).forEach(id=>out.add(id)); });
+  const srcs=sid?[sid]:SET_SRCS;
+  ALLEX.forEach(x=>{ if(srcs.includes(x.sx)&&S.cfg.src[x.sx]&&exSourceOn(x)) exGids(x).forEach(id=>out.add(id)); });
   return out;
 }
 /* Praticável AGORA = currículo liberado ∪ alcance das provas marcadas. É o
-   conjunto que monta sessão, quick, Mini JLPT, fracos, top-up e etapa 5.
+   conjunto que monta sessão, quick, revisão mista, fracos, top-up e etapa 5.
    A assimetria é deliberada: a prova libera a PRÓPRIA questão, nunca o acervo
    geral daquele ponto — quem garante isso é a guarda `curricular` de poolFor,
    que só dispensa atividades com sx:'provas'. */
@@ -7418,7 +7944,7 @@ function gpInSource(g,src){ return g.src.some(([s])=>s===src); }
    nunca o acervo geral de Rikai/NNK/TRY do mesmo ponto. */
 function gpEligibleCurricular(gid){
   const g=GMAP[gid]; if(!g) return false;
-  return g.src.some(([s,u])=>s!==SRC_PROVAS&&unitOn(s,u)&&unitInfo(s,u).kind==='g');
+  return g.src.some(([s,u])=>!isSetSrc(s)&&unitOn(s,u)&&unitInfo(s,u).kind==='g');
 }
 /* Ponto PRÓPRIO de Provas (src só [['provas',n]]) não tem currículo que o
    libere: sem esta exceção, a atividade autoral dele nunca entraria em sessão,
@@ -7500,7 +8026,7 @@ function noteConfusion(expected,got){
    Os objetos CONTINUAM no banco: IDs, histórico e progresso já registrado ficam
    intactos. O que muda é a elegibilidade, e ela é cortada aqui — poolFor é o
    gargalo único por onde passam sessão, quick, top-up, etapa 5, prática de
-   fonte/lição/ponto, Mini JLPT e altExercise. */
+   fonte/lição/ponto e altExercise. */
 const isConjDrill=x=>!!(x.gen||x.conj);
 /* Resposta ESCRITA: o usuário digita a resposta (lacuna aberta, transformação,
    correção, produção). A prova JLPT N5 não pede produção escrita — só escolha,
@@ -7556,7 +8082,7 @@ function exSourceOn(x){
      currículo não ganha entrada nenhuma — a questão segue presa à `su`. */
   /* `alt`: a MESMA questão reapareceu noutro conjunto — vale se qualquer um
      dos dois estiver marcado, sem cadastrar cópia. */
-  if(sid===SRC_PROVAS) return unitOn(SRC_PROVAS,x.su)||(x.alt||[]).some(a=>unitOn(SRC_PROVAS,a.su));
+  if(isSetSrc(sid)) return unitOn(sid,x.su)||(x.alt||[]).some(a=>unitOn(sid,a.su));
   const per=exSrcUnitsByGid(x,sid);
   if(!per.length) return true;
   /* cloze cobra várias estruturas de uma vez: TODAS as que pertencem à fonte
@@ -7583,9 +8109,10 @@ function exSourceIds(x){
    delas estão disponíveis. O card da Home não traz barra de domínio porque a
    unidade aqui é a PROVA, não a lição; o domínio dos pontos que as provas
    cobrem aparece na tela de Progresso. */
-function provasStats(){
-  const units=UNITS[SRC_PROVAS]||[];
-  const all=ALLEX.filter(x=>x.sx===SRC_PROVAS);
+function provasStats(sid){
+  sid=sid||SRC_PROVAS;
+  const units=UNITS[sid]||[];
+  const all=ALLEX.filter(x=>x.sx===sid);
   /* Conta QUESTÕES, não objetos: um 文章の文法 é UMA atividade, mas vale uma
      questão por lacuna — é assim que a prova as numera, e é esse número que os
      rótulos prometem ao dizer "questões". */
@@ -7595,9 +8122,9 @@ function provasStats(){
      currículo ter liberado a gramática que ela cobra. */
   const qOn=soma(all.filter(x=>exSourceOn(x)));
   return {total:units.length,
-          on:units.filter(u=>unitOn(SRC_PROVAS,u.n)).length,
+          on:units.filter(u=>unitOn(sid,u.n)).length,
           q:soma(all), qOn,
-          byUnit:units.map(u=>({u,n:soma(all.filter(x=>x.su===u.n||(x.alt||[]).some(a=>a.su===u.n))),on:unitOn(SRC_PROVAS,u.n)}))};
+          byUnit:units.map(u=>({u,n:soma(all.filter(x=>x.su===u.n||(x.alt||[]).some(a=>a.su===u.n))),on:unitOn(sid,u.n)}))};
 }
 /* UMA origem por atividade. Responde “de onde esta atividade veio”, nunca
    “em quais fontes o ponto também aparece” — é por isso que não deriva de
@@ -7638,9 +8165,17 @@ const LOC_NAO_CONFIRMADA={'sugiru|basico|15':1};
    x632  しっていますか → しりません: não encontrado nas fontes do projeto. */
 const LOC_ATIVIDADE={x622:['intro|12'], x629:[], x630:[], x631:['intro|11','intro|17'], x632:[]};
 function exOriginInfo(x){
-  const o=x.og||(x.sx===SRC_PROVAS?'provas':(x.sx||null));
+  const o=x.og||(isSetSrc(x.sx)?x.sx:(x.sx||null));
   const meta=o&&ORIGIN[o]; if(!meta) return null;
   const out={src:o,label:meta.label,name:meta.name,loc:''};
+  if(o==='bunpro'){
+    /* Simulado de REFERÊNCIA e questão que inspirou a estrutura. O nome da
+       unidade diz que a atividade é autoral; o conteúdo segue tendo onde ser
+       estudado, como nas atividades autorais (bloco abaixo). */
+    const u=unitInfo('bunpro',x.su);
+    if(u.tag) out.label=u.tag; if(u.name) out.name=u.name;
+    out.loc=x.ref||''; out.locK='Questão de referência';
+  }
   if(o==='provas'){
     /* origem pelo CONJUNTO real (Practice Workbook 2012 ou a prova), com o
        número da questão; reaparições noutro conjunto vêm junto */
@@ -7650,7 +8185,7 @@ function exOriginInfo(x){
     out.loc=[x.qno].concat(alt).filter(Boolean).join(' · ');
     return out;
   }
-  if(o==='lab'){
+  if(o==='lab'||o==='bunpro'){
     /* Origem é autoral, mas o CONTEÚDO tem onde ser estudado. São coisas
        diferentes e o popover as mostra separadas: nunca vira tag. */
     const own=Object.prototype.hasOwnProperty.call(LOC_ATIVIDADE,x.id);
@@ -7712,7 +8247,7 @@ function poolFor(gids,filter){
        geral de Rikai/NNK/TRY. `filter.curricular` é posto por quem monta
        prática a partir de practiceGrammar(); um recorte explícito de pontos
        ("Praticar este ponto/lição/fonte") não o usa e segue como antes. */
-    if(filter&&filter.curricular&&x.sx!==SRC_PROVAS&&!g.some(id=>gpEligibleCurricular(id)||gpProvasOwnOn(id))) return false;
+    if(filter&&filter.curricular&&!isSetSrc(x.sx)&&!g.some(id=>gpEligibleCurricular(id)||gpProvasOwnOn(id))) return false;
     if(filter&&filter.types&&!filter.types.includes(x.t)) return false;
     if(filter&&filter.skills&&!filter.skills.includes(x.s)) return false;
     if(filter&&filter.contrastOnly&&!exIsContrast(x)) return false;
@@ -7893,7 +8428,7 @@ function buildPractice(opts){
   /* O fallback relaxa tipo/habilidade, como sempre fez. A fonte escolhida
      explicitamente é filtro DURO e segue junto: nunca "não achei, então vale
      qualquer fonte". Quem não passa `src` (sessão, quick, mista, fracos, ponto,
-     Mini JLPT) cai no mesmo poolFor(gids,null) de antes. */
+     revisão mista) cai no mesmo poolFor(gids,null) de antes. */
   if(!pool.length) pool=poolFor(gids,{src:opts.src,sxOnly:opts.sxOnly,curricular:!opts.gidStrict});
   if(!pool.length) return null;
   /* prioriza exercícios não vistos recentemente */
@@ -7902,7 +8437,7 @@ function buildPractice(opts){
   let src=(fresh.length>=8?fresh:pool).slice();
   for(let i=src.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[src[i],src[j]]=[src[j],src[i]];}
   const n=Math.min(opts.count||20,src.length);
-  /* teto opcional por tipo (o Mini JLPT limita 文章の文法 a 2). Percorre a
+  /* teto opcional por tipo (hoje nenhum chamador o usa). Percorre a
      lista já embaralhada e PULA o excedente, seguindo em frente — assim o
      conjunto continua chegando a n itens, sem repetir exercício. */
   let sel;
@@ -8468,14 +9003,14 @@ function srcCardHtml(sid,title){
     /* Card da fonte Provas: a unidade é a prova, não a lição, então em vez de
        barra de domínio e "lições liberadas" mostra provas e questões. */
     if(S0.examSource){
-      const pv=provasStats();
-      return `<button class="srccard" style="--accent:${S0.accent};${off?'opacity:.55':''}" onclick="go('source',{src:'${sid}'})">
+      const pv=provasStats(sid);
+      return `<button class="srccard set" style="--accent:${S0.accent};${off?'opacity:.55':''}" onclick="go('source',{src:'${sid}'})">
         <span class="rail"></span>
         <div class="kanji mincho">${S0.kanji}</div>
         <h3>${S0.name}</h3>
         <div class="sub">${S0.sub}</div>
         <div class="stats">
-          <span><b>${pv.on}</b>/${pv.total} conjuntos habilitados</span>
+          <span><b>${pv.on}</b>/${pv.total} ${sid===SRC_PROVAS?'conjuntos habilitados':'simulados habilitados'}</span>
           <span><b>${pv.qOn}</b> questões disponíveis</span>
         </div>
         ${off?'<div class="muted" style="margin-top:8px">desativada na revisão</div>':''}
@@ -8520,24 +9055,39 @@ function renderHome(){
             ${d.min} min<small>${d.tag}</small></button>`).join('')}</div>
        <button class="startbtn" onclick="startSession()">Iniciar sessão · ${sessionMin()} min</button>
      </div>
-     <button class="act" onclick="go('quick')">
-       <span class="t">Prática rápida</span>
-       <span class="d">Revisão curta para intervalos de 5 ou 10 minutos.</span></button>
-     <button class="act" onclick="startMixed()">
-       <span class="t">Revisão mista</span>
-       <span class="d">Tudo que você liberou, sem avisar qual regra vem.</span></button>
-     <button class="act" onclick="startWeak()">
-       <span class="t">Treinar pontos fracos</span>
-       <span class="d">${weak?weak+' pontos pedindo atenção':'Nada pendente ainda'}</span></button>
-     <button class="act" onclick="go('progress')">
-       <span class="t">Ver progresso</span>
-       <span class="d">${elig} pontos ativos · ${due} para revisar</span></button>
-     <button class="act" onclick="startJlpt()">
-       <span class="t">Mini JLPT — Gramática</span>
-       <span class="d">Formato de prova: escolha, posição ★ e texto com lacunas.</span></button>
+   </div>
+   <!-- Três modos de estudo com o mesmo peso: a Sessão (acima) é o estudo
+        completo; estes são alternativas. “Ver progresso” NÃO mora aqui: é
+        consulta, não início de sessão — fica em Acompanhamento, abaixo. -->
+   <div class="modes">
+     <button class="mode" style="--m:var(--gold);--mw:var(--gold-wash)" onclick="go('quick')">
+       <span class="mode-k mincho" aria-hidden="true">速</span>
+       <span class="mode-t">Prática rápida</span>
+       <span class="mode-d">Só múltipla escolha, priorizando revisões vencidas e erros recentes.</span>
+       <span class="mode-f"><span>5 ou 10 min</span><span class="mode-go" aria-hidden="true">→</span></span></button>
+     <button class="mode" style="--m:var(--ai-2);--mw:var(--ai-wash)" onclick="startMixed()">
+       <span class="mode-k mincho" aria-hidden="true">混</span>
+       <span class="mode-t">Revisão mista</span>
+       <span class="mode-d">Estruturas variadas do conteúdo liberado, sem aviso de qual regra vem.</span>
+       <span class="mode-f"><span>até 24 atividades</span><span class="mode-go" aria-hidden="true">→</span></span></button>
+     <button class="mode" style="--m:var(--shu);--mw:var(--shu-wash)" onclick="startWeak()">
+       <span class="mode-k mincho" aria-hidden="true">弱</span>
+       <span class="mode-t">Treinar pontos fracos</span>
+       <span class="mode-d">Foca nos pontos com erros, “não sei”, chutes e revisões vencidas.</span>
+       <span class="mode-f"><span>${weak?weak+(weak===1?' ponto pedindo atenção':' pontos pedindo atenção'):'Nada pendente ainda'}</span><span class="mode-go" aria-hidden="true">→</span></span></button>
    </div>
 
-   <div class="foot">文法ラボ · construído a partir de Rikai (Introdutório + Básico 1), Nihongo no Kotsu, TRY! N5, Practice Workbook e provas JLPT anteriores.
+   <div class="h-sec">Acompanhamento</div>
+   <div class="track">
+     <div class="trk-stats">
+       <div class="trk-stat"><b>${elig}</b><span>${elig===1?'ponto ativo':'pontos ativos'}</span></div>
+       <div class="trk-stat"><b>${due}</b><span>para revisar</span></div>
+     </div>
+     <p class="trk-d">Domínio de cada ponto, confusões recorrentes e histórico das sessões.</p>
+     <button class="btn trk-btn" onclick="go('progress')">Ver progresso <span aria-hidden="true">→</span></button>
+   </div>
+
+   <div class="foot">文法ラボ · construído a partir de Rikai (Introdutório + Básico 1), Nihongo no Kotsu, TRY! N5, Practice Workbook e provas JLPT anteriores, com exercícios autorais de referência aos simulados N5 do Bunpro.
      <br><a href="#" onclick="go('config');return false;">Ajustes, backup e reset</a></div>
   </div>`;
 }
@@ -8545,48 +9095,70 @@ function renderHome(){
 /* ---------- FONTE: lições + estudar ---------- */
 /* Página da fonte Provas: lista as provas, quantas questões cada uma trouxe e
    as fichas dos pontos que só existem por causa delas. */
-function renderProvasSource(){
-  const S0=SOURCES[SRC_PROVAS],pv=provasStats();
+/* Textos próprios de cada fonte por conjunto. Bunpro: o conteúdo é autoral e
+   a página diz isso antes de qualquer botão. */
+const SET_COPY={
+  provas:{intro:`Questões de gramática dos conjuntos marcados — o Practice
+      Workbook e as provas JLPT anteriores. Elas podem aparecer <b>mesmo que a estrutura ainda não
+      tenha sido liberada</b> pelas outras fontes. A liberação vale só para essas questões — os
+      exercícios gerais de Introdutório, Básico, Nihongo no Kotsu e TRY! continuam obedecendo aos
+      próprios limites.`,
+    btn:'Praticar questões dos conjuntos liberados',unit:'conjuntos',item:['questão','questões'],
+    cfg:`Cada conjunto — o Practice Workbook ou uma prova — é um recorte independente.
+            As questões dos conjuntos marcados podem aparecer mesmo que a estrutura ainda não
+            tenha sido liberada pelas outras fontes. Isso vale só para essas questões — os
+            exercícios gerais de Rikai, Nihongo no Kotsu e TRY! seguem os limites de cada fonte.`,
+    label:'Workbook e provas JLPT',cfgTitle:'Conjuntos incluídos'},
+  bunpro:{intro:`Exercícios <b>escritos para o Bunpou Lab</b> a partir das estruturas de gramática
+      cobradas nos três simulados N5 do Bunpro (もんだい1 a 3). Não são questões do Bunpro nem provas
+      oficiais do JLPT: frases, alternativas e explicações são próprias. Como nas provas, os
+      exercícios dos simulados marcados podem aparecer mesmo que a estrutura ainda não tenha sido
+      liberada pelas outras fontes — e só eles; o acervo geral segue os limites de cada fonte.`,
+    btn:'Praticar exercícios dos simulados marcados',unit:'simulados',item:['questão','questões'],
+    cfg:`Cada simulado de referência é um recorte independente. Os exercícios são autorais do
+            Bunpou Lab (não reproduzem questões do Bunpro) e podem aparecer mesmo que a estrutura
+            ainda não tenha sido liberada pelas outras fontes; o acervo geral segue os limites de cada fonte.`,
+    label:'Bunpro — Simulados N5',cfgTitle:'Simulados incluídos'}
+};
+function renderProvasSource(sid){
+  sid=sid||SRC_PROVAS;
+  const S0=SOURCES[sid],pv=provasStats(sid),C=SET_COPY[sid];
   /* Pontos que existem SÓ por causa das provas: ficam visíveis aqui com a mesma
      ficha dos demais (função, estrutura, exemplos, dica). */
-  const proprios=GRAMMAR.filter(g=>g.src.length&&g.src.every(([sc])=>sc===SRC_PROVAS));
+  const proprios=GRAMMAR.filter(g=>g.src.length&&g.src.every(([sc])=>sc===sid));
   const linhas=pv.byUnit.map(b=>`<div class="gp"><div class="gp-head" style="cursor:default">
       <div class="chip" style="flex:none">${esc(b.u.jp)}</div>
       <div class="tt"><b>${esc(b.u.pt)}</b></div>
       <div style="text-align:right;flex:none">
-        <div class="muted">${b.n} ${b.n===1?'questão':'questões'} de gramática</div>
+        <div class="muted">${b.n} ${b.n===1?C.item[0]:C.item[1]} de gramática</div>
         ${b.on?'':'<div class="muted" style="color:var(--shu)">desmarcado</div>'}
       </div></div></div>`).join('');
   return `<div class="wrap">
     <div style="padding:28px 0 4px">
-      <div class="chip src-provas">${S0.jp}</div>
+      <div class="chip src-${sid}">${S0.jp}</div>
       <h1 class="h-page mincho" style="margin-top:8px">${S0.name}</h1>
       <p class="lead" style="margin-top:6px">${S0.sub}</p>
     </div>
     <div class="card pad" style="margin:16px 0 6px">
-      <p class="muted" style="margin:0">Questões de gramática dos conjuntos marcados — o Practice
-      Workbook e as provas JLPT anteriores. Elas podem aparecer <b>mesmo que a estrutura ainda não
-      tenha sido liberada</b> pelas outras fontes. A liberação vale só para essas questões — os
-      exercícios gerais de Introdutório, Básico, Nihongo no Kotsu e TRY! continuam obedecendo aos
-      próprios limites.</p>
+      <p class="muted" style="margin:0">${C.intro}</p>
     </div>
     <div class="row" style="margin:14px 0 6px">
-      <button class="btn btn-primary" onclick="startProvasPractice()">Praticar questões dos conjuntos liberados</button>
-      <button class="btn" onclick="go('config')">${pv.on}/${pv.total} conjuntos marcados</button>
+      <button class="btn btn-primary" onclick="startProvasPractice('${sid}')">${C.btn}</button>
+      <button class="btn" onclick="go('config')">${pv.on}/${pv.total} ${C.unit} marcados</button>
     </div>
-    <div class="muted" style="margin-bottom:10px">${pv.qOn} de ${pv.q} questões disponíveis agora.</div>
-    <div class="h-sec">Conjuntos</div>
+    <div class="muted" style="margin-bottom:10px">${pv.qOn} de ${pv.q} ${C.item[1]} disponíveis agora.</div>
+    <div class="h-sec">${sid===SRC_PROVAS?'Conjuntos':'Simulados'}</div>
     ${linhas}
     ${proprios.length?`<div class="h-sec">Pontos próprios desta fonte</div>
       <p class="muted" style="margin:-4px 0 12px">Estruturas cobradas por estes conjuntos que não
       constam das outras quatro fontes. Pertencem somente a Workbook e provas JLPT.</p>
-      ${proprios.map(g=>`<div class="muted" style="margin:0 0 4px">${esc((UNITS[SRC_PROVAS].find(u=>u.n===g.src[0][1])||{}).pt||'')}</div>${gpCard(g)}`).join('')}`:''}
+      ${proprios.map(g=>`<div class="muted" style="margin:0 0 4px">${esc((UNITS[sid].find(u=>u.n===g.src[0][1])||{}).pt||'')}</div>${gpCard(g)}`).join('')}`:''}
     <div class="foot"><button class="btn btn-ghost" onclick="goBack()">← Voltar</button></div>
   </div>`;
 }
 function renderSource(){
   const sid=V.src,S0=SOURCES[sid],st=srcStats(sid);
-  if(S0&&S0.examSource) return renderProvasSource();
+  if(S0&&S0.examSource) return renderProvasSource(sid);
   const units=UNITS[sid].map(u=>{
     const on=unitOn(sid,u.n);
     const gs=GRAMMAR.filter(g=>g.src.some(([s,n])=>s===sid&&n===u.n));
@@ -8648,7 +9220,7 @@ function renderUnit(){
 /* cartão de explicação de um ponto gramatical */
 function gpCard(g,openDefault){
   const st=stateOf(g.id);
-  const srcChips=g.src.map(([s,u])=>`<span class="chip src-${s}">${s===SRC_PROVAS?esc(unitInfo(s,u).tag||('Conjunto '+u)):SOURCES[s].name.split(' ')[0]+' '+u}</span>`).join(' ');
+  const srcChips=g.src.map(([s,u])=>`<span class="chip src-${s}">${isSetSrc(s)?esc(unitInfo(s,u).tag||('Conjunto '+u)):SOURCES[s].name.split(' ')[0]+' '+u}</span>`).join(' ');
   const cts=contrastsOf(g.id);
   /* Praticáveis = exatamente o pool de "Praticar este ponto" (poolFor, que já
      aplica isPracticable e exSourceOn). Cadastradas = todas as atividades do
@@ -8682,7 +9254,7 @@ function gpCard(g,openDefault){
      ${g.tip?`<div class="callout cl-tip"><div class="cl-t">Dica</div>${jx(g.tip)}</div>`:''}
      <div class="row" style="margin-top:15px">
        ${practiceN?`<button class="btn btn-sm btn-primary" onclick="startGpPractice('${g.id}')">Praticar este ponto</button>`
-         :gpHasPractice(g.id)?'<span class="chip">Praticado dentro de texto com lacunas (sessão e Mini JLPT)</span>'
+         :gpHasPractice(g.id)?'<span class="chip">Praticado dentro de texto com lacunas (sessão de gramática e revisões)</span>'
          :'<span class="chip">Referência · prática de conjugação fora do Bunpou Lab</span>'}
        <span class="muted">${practiceN} ${practiceN===1?'atividade disponível':'atividades disponíveis'}${
          cadN>practiceN?` · ${cadN} cadastradas`:''}</span>
@@ -8746,95 +9318,23 @@ function startSourcePractice(sid){
    marcadas, não uma amostra: por isso monta o run direto em vez de passar por
    buildPractice, que corta por "frescor" (com 8+ itens usa só os não vistos
    recentemente) e devolveria menos que o total. A ordem segue sorteada. */
-function startProvasPractice(){
-  if(!S.cfg.src[SRC_PROVAS]){toast('Ative “Workbook e provas JLPT” em Ajustes.');return;}
-  const pool=poolFor(practiceGrammar().map(g=>g.id),{sxOnly:SRC_PROVAS});
-  if(!pool.length){toast('Marque ao menos um conjunto em Ajustes.');return;}
+function startProvasPractice(sid){
+  sid=sid||SRC_PROVAS; const C=SET_COPY[sid];
+  if(!S.cfg.src[sid]){toast('Ative “'+C.label+'” em Ajustes.');return;}
+  const pool=poolFor(practiceGrammar().map(g=>g.id),{sxOnly:sid});
+  if(!pool.length){toast(sid===SRC_PROVAS?'Marque ao menos um conjunto em Ajustes.':'Marque ao menos um simulado em Ajustes.');return;}
   const ex=pool.slice();
   for(let i=ex.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ex[i],ex[j]]=[ex[j],ex[i]];}
   const run={items:ex.map(x=>({stage:-1,ex:x,gid:primaryGids(x)[0]})),
              started:Date.now(),mode:'provas',estSec:0};
   run.estSec=run.items.reduce((a,i)=>a+costOf(i.ex),0);
-  beginSession(); startRun(run,'Workbook e provas JLPT');
+  beginSession(); startRun(run,C.label);
 }
-/* ---------- Mini JLPT — Gramática ----------
-   Versão curta da seção de gramática da prova (2013/07: 16 escolhas, 5 ★ e 5
-   decisões num texto). Em vez de um sorteio uniforme — que saía sem ★ ou sem
-   texto em boa parte das execuções —, há cota por formato:
-   10 mc + 3 ★ + 1 texto com lacunas = 14 telas. `order` não entra: é montagem
-   guiada por tradução, não o formato ★ da prova (hoje inativo em toda a prática).
-   A elegibilidade é a mesma de sempre: practiceGrammar + poolFor com a guarda
-   curricular. Nada bloqueado entra para completar cota. */
-const MINI_QUOTA={mc:10,star:3,cloze:1};
-const MINI_SCREENS=14;
-const MINI_GID_CAP=2;       /* aparições do mesmo ponto na execução inteira */
-const MINI_PROVAS_CAP=3;    /* telas de Provas antigas por execução */
-/* pontos realmente cobrados: no cloze, cada lacuna conta; nos demais, pg
-   quando existe (mesma regra da proveniência) */
-const miniGids=x=>x.t==='cloze'?x.bl.map(b=>b.g).filter(id=>GMAP[id]):coverGids(x);
-function buildMiniJlpt(){
-  const elig=practiceGrammar().map(g=>g.id);
-  if(!elig.length) return null;
-  const pool=poolFor(elig,{types:['mc','star','cloze'],curricular:true});
-  const seen=new Set(); elig.forEach(g=>recentlyUsed(g).forEach(i=>seen.add(i)));
-  const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-  const byT={}; ['mc','star','cloze'].forEach(t=>byT[t]=shuf(pool.filter(x=>x.t===t)));
-  const sel=[],used=new Set(),perG={}; let provas=0;
-  const fits=(x,cap,pvCap)=>{
-    if(used.has(x.id)) return false;
-    if(x.sx===SRC_PROVAS&&provas>=pvCap) return false;
-    const c={};
-    for(const id of miniGids(x)){ c[id]=(c[id]||0)+1; if((perG[id]||0)+c[id]>cap) return false; }
-    return true;
-  };
-  const take=x=>{ sel.push(x); used.add(x.id); if(x.sx===SRC_PROVAS) provas++;
-                  miniGids(x).forEach(id=>perG[id]=(perG[id]||0)+1); };
-  /* Uma vaga do formato t. Relaxa só o necessário, nesta ordem: aceita item
-     recente → aceita mais uma tela de prova → sobe o teto por ponto um degrau
-     (e recomeça). A cota do formato só é dada como perdida quando nem assim
-     sobra candidato. */
-  const fill=t=>{
-    const all=byT[t]; if(!all.length) return false;
-    const fresh=all.filter(x=>!seen.has(x.id));
-    for(let cap=MINI_GID_CAP;cap<=MINI_GID_CAP+MINI_SCREENS;cap++)
-      for(const pvCap of [MINI_PROVAS_CAP,Infinity])
-        for(const src of [fresh,all]){
-          const x=src.find(e=>fits(e,cap,pvCap));
-          if(x){ take(x); return true; }
-        }
-    return false;
-  };
-  /* formatos mais escassos primeiro, para o teto por ponto pesar sobre o mc */
-  const got={cloze:0,star:0,mc:0};
-  for(let k=0;k<MINI_QUOTA.cloze;k++) if(fill('cloze')) got.cloze++;
-  for(let k=0;k<MINI_QUOTA.star;k++)  if(fill('star'))  got.star++;
-  /* mc cobre a própria cota e o que faltou de ★/texto (nunca order) */
-  const mcWant=MINI_SCREENS-got.cloze-got.star;
-  for(let k=0;k<mcWant;k++){ if(fill('mc')) got.mc++; else break; }
-  /* faltou mc: completa com ★ adicional elegível */
-  while(sel.length<MINI_SCREENS&&fill('star')) got.star++;
-  if(!sel.length) return null;
-  const notes=[];
-  const nStar=byT.star.length;
-  if(nStar<MINI_QUOTA.star) notes.push(nStar===0?'Nenhuma questão ★ estava disponível com os filtros atuais.'
-    :nStar===1?'Somente 1 questão ★ estava disponível com os filtros atuais.'
-    :`Somente ${nStar} questões ★ estavam disponíveis com os filtros atuais.`);
-  if(!byT.cloze.length) notes.push('Nenhuma questão de gramática textual estava disponível com os filtros atuais.');
-  if(sel.length<MINI_SCREENS) notes.push(`Só havia ${sel.length} ${sel.length===1?'questão disponível':'questões disponíveis'} com os filtros atuais.`);
-  /* as telas saem misturadas; a composição por formato fica preservada.
-     Um sorteio que deixe cada formato num bloco só (≈0,15%) é refeito. */
-  const blocos=a=>{let m=0;for(let i=1;i<a.length;i++) if(a[i].t!==a[i-1].t) m++;
-                   return m===new Set(a.map(x=>x.t)).size-1;};
-  let ordem=shuf(sel);
-  for(let k=0;k<10&&new Set(sel.map(x=>x.t)).size>1&&blocos(ordem);k++) ordem=shuf(sel);
-  const items=ordem.map(x=>({stage:-1,ex:x,gid:primaryGids(x)[0]}));
-  const estSec=items.reduce((a,i)=>a+costOf(i.ex),0);
-  return {items,started:Date.now(),mode:'jlpt',estSec,notes};
-}
-function startJlpt(){
-  beginSession();
-  startRun(buildMiniJlpt(),'Mini JLPT — Gramática');
-}
+/* O antigo modo “Mini JLPT — Gramática” saiu da interface (14/11/2026) e o
+   seu montador foi removido. Os formatos que ele usava — ★ e texto com
+   lacunas — continuam no banco e na Sessão de gramática, Revisão mista,
+   Pontos fracos e práticas de fonte/lição/ponto. Nenhum run tinha `mode:'jlpt'`
+   persistido (o run vive só em memória), então nada gravado depende dele. */
 
 const cur=()=>V.run&&V.run.items[V.i];
 const quickRun=()=>!!(V.run&&V.run.mode==='quick');
@@ -9394,26 +9894,31 @@ function renderRun(){
 
   return `<div class="wrap"><div style="padding:20px 0 0">${sessBar()}
     <div class="qcard">
+      <!-- Cabeçalho do cartão: ferramenta (Takoboto) à esquerda, etiquetas à
+           direita, numa linha só. A busca abre por cima do espaço livre, fora
+           do fluxo: nunca desloca etiquetas nem enunciado. -->
       <div class="qtop">
-        <span class="chip skill">${({rec:'reconhecer',dif:'diferenciar',man:'manipular',pro:'produzir',rcl:'recuperar',mix:'gramática em discurso'})[x.s]||x.s}</span>
-        ${(()=>{const oi=exOriginInfo(x); if(!oi) return '';
-          return `<span class="ori-wrap"><button type="button" class="chip src-${oi.src} ori" aria-expanded="false"
-            aria-haspopup="dialog" onclick="toggleOrigin(event,this)">${esc(oi.label)}</button>
-            <span class="ori-pop" role="dialog" hidden>
-              <span class="ori-k">Origem da atividade</span>${esc(oi.name)}
-              ${oi.loc?`<span class="ori-k">Localização</span>${esc(oi.loc)}`:''}
-              ${oi.cov&&oi.cov.length?`<span class="ori-k">Onde estudar este conteúdo</span>${
-                oi.cov.map(c=>esc(c)).join('<br>')}`:''}
-            </span></span>`;})()}
-        ${exIsContrast(x)?`<span class="chip jp">${esc(CMAP[x.g].t)}</span>`:''}
-        ${V.graded?`<span class="chip src-${(g&&g.src[0][0])||'intro'}">${esc(g?g.t:'')}</span>`:''}
+        <button type="button" class="tako-btn" onclick="toggleTako(event)" aria-expanded="${takoOpen()}" aria-controls="takobox"
+          title="Pesquisar palavra no Takoboto" aria-label="Pesquisar palavra no Takoboto">${TAKO_ICON}</button>
         <div class="tako-pop${takoOpen()?' open':''}" id="takobox" role="search">
           <input id="takoq" type="search" lang="ja" autocomplete="off" autocapitalize="off" spellcheck="false"
             placeholder="Buscar palavra" aria-label="Palavra para buscar no Takoboto"
             value="${esc(takoOpen()?V.tako.q:'')}" oninput="if(V.tako)V.tako.q=this.value" onkeydown="takoKey(event)">
           <button type="button" class="btn btn-primary" onclick="takoGo()">GO</button></div>
-        <button type="button" class="tako-btn" onclick="toggleTako(event)" aria-expanded="${takoOpen()}" aria-controls="takobox"
-          title="Pesquisar palavra no Takoboto" aria-label="Pesquisar palavra no Takoboto">${TAKO_ICON}</button>
+        <div class="qtags">
+          <span class="chip skill">${({rec:'reconhecer',dif:'diferenciar',man:'manipular',pro:'produzir',rcl:'recuperar',mix:'gramática em discurso'})[x.s]||x.s}</span>
+          ${(()=>{const oi=exOriginInfo(x); if(!oi) return '';
+            return `<span class="ori-wrap"><button type="button" class="chip src-${oi.src} ori" aria-expanded="false"
+              aria-haspopup="dialog" onclick="toggleOrigin(event,this)">${esc(oi.label)}</button>
+              <span class="ori-pop" role="dialog" hidden>
+                <span class="ori-k">Origem da atividade</span>${esc(oi.name)}
+                ${oi.loc?`<span class="ori-k">${esc(oi.locK||'Localização')}</span>${esc(oi.loc)}`:''}
+                ${oi.cov&&oi.cov.length?`<span class="ori-k">Onde estudar este conteúdo</span>${
+                  oi.cov.map(c=>esc(c)).join('<br>')}`:''}
+              </span></span>`;})()}
+          ${exIsContrast(x)?`<span class="chip jp">${esc(CMAP[x.g].t)}</span>`:''}
+          ${V.graded?`<span class="chip src-${(g&&g.src[0][0])||'intro'}">${esc(g?g.t:'')}</span>`:''}
+        </div>
       </div>
       <div class="qprompt jp">${jv(x.p,isExt(x))}</div>
       ${gl}
@@ -9506,7 +10011,7 @@ function finish(res,r){
       if(br!=='ok') falhou.push(b.g);
     });
     /* só as gramáticas realmente erradas voltam na etapa de consolidação */
-    if(V.run.mode!=='jlpt'){
+    {
       falhou.slice(0,2).forEach(gid=>{
         const alt=altExercise(gid,x.id);
         if(alt&&alt.t!=='cloze'&&!V.requeue.some(q=>q.ex.id===alt.id))
@@ -9530,7 +10035,7 @@ function finish(res,r){
   if(res==='bad'&&x.t==='star'&&r.chosen) noteConfusion(r.expected,r.chosen);
   V.sessionLog.push({gid:gids[0],gids,exId:x.id,res,skill:x.s,t:x.t});
   /* errou ou não sabe → volta mais tarde NA MESMA sessão, com OUTRO exemplo */
-  if((res==='bad'||res==='idk')&&V.run.mode!=='jlpt'){
+  if(res==='bad'||res==='idk'){
     const alt=altExercise(gids[0],x.id);
     if(alt&&!V.requeue.some(q=>q.ex.id===alt.id)) V.requeue.push({stage:4,ex:alt,gid:gids[0],requeued:true});
   }
@@ -9865,11 +10370,11 @@ function genericWrongWhy(x){
   return 'Esta escolha não completa a estrutura pedida neste contexto.';
 }
 /* Efeito de “Não sei” no SRS, dito com precisão: applyResult('idk') conta
-   idk, zera o intervalo e marca revisão para a próxima sessão; fora do Mini
-   JLPT, finish() ainda enfileira outro exemplo do ponto nesta mesma sessão. */
+   idk, zera o intervalo e marca revisão para a próxima sessão; finish() ainda
+   enfileira outro exemplo do ponto nesta mesma sessão. */
 function idkNote(){
   return 'Registrado como “não sei” — não conta como acerto. O ponto volta para revisão na próxima sessão'+
-    (V.run&&V.run.mode!=='jlpt'?' e outro exemplo aparece mais adiante nesta.':'.');
+    ' e outro exemplo aparece mais adiante nesta.';
 }
 /* Rodapé interno de TODO quadro de feedback: o controle do ChatGPT pertence
    à explicação. `data-nochat` marca o que é da interface ou do registro
@@ -10091,18 +10596,18 @@ function renderProgress(){
        próprios de Provas e os compartilhados que as provas cobrem — que também
        aparecem na fonte curricular, como já acontece entre Rikai/NNK/TRY. */
     if(S0.examSource){
-      const pv=provasStats();
-      const cob=[...provasGidSet()].map(id=>GMAP[id]).filter(Boolean);
+      const pv=provasStats(sid);
+      const cob=[...provasGidSet(sid)].map(id=>GMAP[id]).filter(Boolean);
       const byState={};STATES.forEach(k=>byState[k]=0);
       cob.forEach(g=>byState[stateOf(g.id)]++);
       return `<div class="card pad" style="margin-bottom:14px;border-left:4px solid ${S0.accent}">
         <h3 style="font-size:17px">${S0.name}</h3>
-        <div class="muted" style="margin-bottom:10px">${pv.on}/${pv.total} conjuntos habilitados ·
-          ${pv.qOn} de ${pv.q} questões disponíveis ·
+        <div class="muted" style="margin-bottom:10px">${pv.on}/${pv.total} ${SET_COPY[sid].unit} habilitados ·
+          ${pv.qOn} de ${pv.q} ${SET_COPY[sid].item[1]} disponíveis ·
           ${cob.length} ${cob.length===1?'ponto gramatical coberto':'pontos gramaticais cobertos'}</div>
         ${cob.length?`<div class="row">${STATES.map(k=>byState[k]?
           `<span class="state st-${k}">${STATE_LABEL[k]}: ${byState[k]}</span>`:'').join('')}</div>`
-          :'<span class="muted">Marque um conjunto em Ajustes para ver os pontos cobertos.</span>'}
+          :`<span class="muted">Marque ${sid===SRC_PROVAS?'um conjunto':'um simulado'} em Ajustes para ver os pontos cobertos.</span>`}
       </div>`;
     }
     const on=srcOnGrammar(sid);
@@ -10341,24 +10846,21 @@ function setSessionMin(m){ if(SESSION_PRESETS[m]){S.cfg.sessionMin=m;save();rend
    interruptor da fonte e uma caixa por prova. A seleção vive sempre em
    `cfg.manual.provas` (array), nunca em `cfg.lim`. */
 function provasConfigBlock(S0,on){
-  const pv=provasStats();
+  const sid=S0.id,pv=provasStats(sid),C=SET_COPY[sid];
   /* Só a data da prova no rótulo: a contagem de questões já aparece no card da
      Home e na página da fonte, e aqui deixava o botão comprido sem necessidade.
      `pv.byUnit[].n` continua sendo calculado — é usado nos outros dois lugares. */
   const boxes=pv.byUnit.map(b=>`<button type="button" class="pvbtn ${b.on?'on':''}"
-      title="${esc(b.u.pt)}" onclick="toggleProva(${b.u.n})">${esc(b.u.jp)}</button>`).join('');
+      title="${esc(b.u.pt)}" onclick="toggleSetUnit('${sid}',${b.u.n})">${esc(sid===SRC_PROVAS?b.u.jp:b.u.pt.replace('Bunpro — ',''))}</button>`).join('');
   return `<div class="card pad" style="margin-bottom:14px;border-left:4px solid ${S0.accent}">
     <div class="optrow" style="padding-top:0">
       <div class="lbl"><b>${S0.name}</b><span>${S0.sub}</span></div>
-      <button class="sw ${on?'on':''}" onclick="toggleSrc('${SRC_PROVAS}')"></button>
+      <button class="sw ${on?'on':''}" onclick="toggleSrc('${sid}')"></button>
     </div>
     <div style="opacity:${on?1:.45};pointer-events:${on?'auto':'none'}">
       <div class="optrow">
-        <div class="lbl"><b>Conjuntos incluídos</b>
-          <span>Cada conjunto — o Practice Workbook ou uma prova — é um recorte independente.
-            As questões dos conjuntos marcados podem aparecer mesmo que a estrutura ainda não
-            tenha sido liberada pelas outras fontes. Isso vale só para essas questões — os
-            exercícios gerais de Rikai, Nihongo no Kotsu e TRY! seguem os limites de cada fonte.</span></div>
+        <div class="lbl"><b>${C.cfgTitle}</b>
+          <span>${C.cfg}</span></div>
       </div>
       <div class="pvgrid">${boxes}</div>
     </div>
@@ -10531,13 +11033,14 @@ async function askChatGPT(){
   toast('Questão copiada. No ChatGPT, cole (Ctrl+V ou ⌘V) e escreva sua dúvida.');
   window.open(CHAT_URL,'_blank','noopener');
 }
-function toggleProva(n){
-  const cur=S.cfg.manual[SRC_PROVAS];
+function toggleSetUnit(sid,n){
+  const cur=S.cfg.manual[sid];
   const man=Array.isArray(cur)?cur.slice():[];
   const i=man.indexOf(n);
   if(i<0) man.push(n); else man.splice(i,1);
-  S.cfg.manual[SRC_PROVAS]=man; save(); render();
+  S.cfg.manual[sid]=man; save(); render();
 }
+function toggleProva(n){ toggleSetUnit(SRC_PROVAS,n); }
 function toggleSrc(sid){S.cfg.src[sid]=!S.cfg.src[sid];save();render();}
 function setLim(sid,v){S.cfg.lim[sid]=Math.max(0,Math.min(unitCount(sid),parseInt(v)||0));save();render();}
 function toggleManual(sid){
