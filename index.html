@@ -235,10 +235,13 @@ h1,h2,h3,h4{line-height:1.28;margin:0;}
 }
 .acct-btn:hover{border-color:var(--ai);color:var(--ai);}
 .acct-btn .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* A tinta da Zen Kaku fica ~1px abaixo do meio da caixa de linha; sobe o
+   rótulo esse 1px para que ponto e texto tenham o mesmo centro óptico. */
+.acct-btn .sdot ~ .lbl{position:relative;top:-1px;}
 .acct-btn .lbl.short{display:none;}
 /* conectado: o rótulo troca a cada salvamento (Pendente, Sincronizando,
    Sincronizado); a largura fixa evita que a barra se mexa junto */
-.acct-btn.acct-on{width:138px;max-width:none;}
+.acct-btn.acct-on{width:138px;max-width:none;justify-content:center;}   /* ponto + texto centrados: folgas iguais dos dois lados */
 .acct-btn.warn{border-color:var(--gold);color:var(--gold);background:var(--gold-wash);}
 .acct-btn.attn{border-color:var(--shu);color:var(--shu);background:var(--shu-wash);}
 .acct-pop{
