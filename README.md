@@ -46,7 +46,7 @@ Os pontos gramaticais e a sequência de estudo foram organizados com apoio deste
 - Introdutório Rikai e Básico 1 Rikai (Marugoto A1 e A2 りかい);
 - Nihongo no Kotsu;
 - TRY! N5;
-- JLPT Official Practice Workbook e provas anteriores do JLPT N5 (2013/07, 2021/12, 2023/07, 2025/07 e 2025/12);
+- JLPT Official Practice Workbook e provas anteriores do JLPT N5 (2013/07, 2021/12, 2023/07, 2024/07, 2025/07 e 2025/12) e uma prova N5 de 2018 de mês não identificado;
 - simulados N5 do Bunpro, usados apenas como referência das estruturas cobradas (ver abaixo).
 
 O conteúdo tem três origens diferentes, e cada atividade indica a sua:
@@ -54,7 +54,7 @@ O conteúdo tem três origens diferentes, e cada atividade indica a sua:
 - **Autoral**: explicações, feedbacks e exercícios escritos para o Bunpou Lab. Não são conteúdo oficial do JLPT nem dos materiais citados.
 - **Adaptado ou baseado em materiais de estudo**: exercícios ligados às lições do Rikai, do Nihongo no Kotsu e do TRY! N5.
 - **Practice Workbook e provas**: questões de gramática do Practice Workbook e de provas JLPT N5. Mantêm o enunciado, as alternativas e o gabarito originais e indicam o conjunto e o número da questão. As explicações que acompanham essas questões são do Bunpou Lab.
-- **Referência Bunpro — Simulados N5**: exercícios autorais do Bunpou Lab, escritos a partir das estruturas de gramática cobradas nos simulados N5 1, 2 e 3 do Bunpro. Não reproduzem as questões do Bunpro e não são provas oficiais; cada atividade indica o simulado e a questão de referência.
+- **Referência Bunpro — Simulados N5**: exercícios autorais do Bunpou Lab, escritos a partir das estruturas de gramática cobradas nos simulados N5 1 a 5 do Bunpro. Não reproduzem as questões do Bunpro e não são provas oficiais; cada atividade indica o simulado e a questão de referência.
 
 ## Tecnologias
 
